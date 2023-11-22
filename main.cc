@@ -9,11 +9,14 @@ int main() {
     Board game{0};
 
     // auto n = players.at(0)->getMove();
-    game.init(false, 'p', 14);
+    game.init(false, 'P', 17);
     game.init(false, 'Q', 34);
     game.init(false, 'k', 26);
     game.init(false, 'B', 57);
-    game.init(false, 'N', 20);
-    game.init(false, 'j', 14);
+    game.init(false, 'n', 20);
+    game.init(false, 'p', 0);
+    if(!game.validInit()) {
+        game.init(false, '\0', 0, true);
+    }
     game.display();
 }
