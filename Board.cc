@@ -10,6 +10,7 @@ Board::GraphicsDisplay::GraphicsDisplay(map<int, char> *whitePieces, map<int, ch
 
 void Board::TextDisplay::display() {
     for(int i = 7; i >= 0; --i) {
+        std::cout << i+1 << " ";
         for(int j = 0; j < 8; ++j) {
             // Checks if white has a piece at that location and prints it if
             // true
@@ -24,6 +25,7 @@ void Board::TextDisplay::display() {
         }
         std::cout << "\n";
     }
+    std::cout << "\n  abcdefgh\n";
 }
 
 void Board::GraphicsDisplay::display() { // Make one for Graphics
