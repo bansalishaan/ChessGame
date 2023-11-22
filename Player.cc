@@ -45,4 +45,3 @@ vector<vector<int>> Human::getMove() {
 
     return move;
 }
-
