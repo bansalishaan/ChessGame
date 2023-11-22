@@ -1,6 +1,5 @@
 #include <iostream>
 #include <map>
-// #include <string>
 #include <vector>
 #include <memory>
 using namespace std;
@@ -36,7 +35,9 @@ class Board {
 
     public:
         Board(int boardType);
-        bool init(bool normal = true, char piece='\0', int location = 0);
+        bool init(bool normal = true, char piece='\0', int location = 0, 
+            bool remove = false);
+        bool validInit();
         bool makeMove(vector<vector<int>> move, int col);
         bool noMoves();
         bool inCheck();
