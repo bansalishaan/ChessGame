@@ -3,10 +3,9 @@
 using namespace std;
 
 class Player {
-    protected:
-        virtual vector<vector<int>> getMove() = 0;
     public:
-        virtual ~Player();
+        virtual vector<vector<int>> getMove() = 0;
+        virtual ~Player() = default;
 };
 
 class Human: public Player {
