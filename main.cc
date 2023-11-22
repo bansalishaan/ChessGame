@@ -2,6 +2,8 @@
 #include "Player.h"
 
 int main() {
+    vector<Player> players;
+    players.emplace_back(Human{});
     Human white;
 
     auto n = white.getMove();

@@ -3,14 +3,16 @@
 using namespace std;
 
 class Player {
-
+    protected:
+        virtual vector<vector<int>> getMove() = 0;
     public:
-        vector<vector<int>> getMove();
-        virtual ~Player() = 0;
+        virtual ~Player();
 };
 
 class Human: public Player {
     public:
         Human();
-        vector<vector<int>> getMove();
+        vector<vector<int>> getMove() override;
 };
+
+// class Bot: public
