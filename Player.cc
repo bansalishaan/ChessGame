@@ -15,10 +15,8 @@ int charToInt(char num) {
 }
 
 Human::Human(): Player{} {}
-vector<vector<int>> Human::getMove() {
-    vector<vector<int>> move;
-    move.emplace_back();
-    move.emplace_back();
+vector<int> Human::getMove() {
+    vector<int> move;
 
     string commandLine;
     getline(cin, commandLine);
@@ -34,10 +32,8 @@ vector<vector<int>> Human::getMove() {
         getline(cin, commandLine);
         input = istringstream{commandLine};
     }
-    move.at(0).emplace_back(piece[0] - 97);
-    move.at(0).emplace_back(charToInt(piece[1]));
-    move.at(1).emplace_back(moveLoc[0] - 97);
-    move.at(1).emplace_back(charToInt(moveLoc[1]));
+    move.emplace_back((piece[0] - 97) * 10 + charToInt(piece[1]));
+    move.emplace_back((moveLoc[0] - 97) * 10 + charToInt(moveLoc[1]));
     
     if(!(promotion == "")) {    // ADD PROMOTION TO MOVE
         move.emplace_back();
