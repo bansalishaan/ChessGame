@@ -603,6 +603,141 @@ bool Board::makeMove(vector<int> move, int col) {
         }
         return true;
     }
+    else if((*ownPieces)[move.at(0)] == 'Q'
+             || (*ownPieces)[move.at(0)] == 'q') {
+        // Queen is moving horizontally
+        if(currNum == moveNum) {
+            int i = currLetter > moveLetter ? move.at(1) + 10 : move.at(0) + 10;
+            int j = currLetter > moveLetter ? move.at(0) : move.at(1);
+            for(int i; i < j; i += 10) {
+                if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
+                    std::cout << "INVALID MOVE: There's a piece in between. ";
+                    std::cout << "Try a different move.\n";
+                    return false;
+                }
+            }
+            if(ownPieces->count(move.at(1)) == 1) {
+                std::cout << "INVALID MOVE: There's a piece in between. ";
+                std::cout << "Try a different move.\n";
+                return false;
+            }
+
+            char oppPiece = '\0';
+            if(oppPieces->count(move.at(1)) == 1) {
+                oppPiece = (*oppPieces)[move.at(1)];
+                oppPieces->erase(move.at(1));
+            }
+            (*ownPieces)[move.at(1)] = (*ownPieces)[move.at(0)];
+            ownPieces->erase(move.at(0));
+            // Checks if moving rook puts King in check
+            if(inCheck(col)) {
+                if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+            }
+        }
+        // Queen is moving vertically
+        else if(currLetter == moveLetter) {
+            int i = currNum > moveNum ? move.at(1) + 1 : move.at(0) + 1;
+            int j = currNum > moveNum ? move.at(0) : move.at(1);
+            for(i; i < j; ++i) {
+                if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
+                    std::cout << "INVALID MOVE: Try a different move.\n";
+                    return false;
+                }
+            }
+            if(ownPieces->count(move.at(1)) == 1) {
+                std::cout << "INVALID MOVE: There's a piece in between. ";
+                std::cout << "Try a different move.\n";
+                return false;
+            }
+
+            char oppPiece = '\0';
+            if(oppPieces->count(move.at(1)) == 1) {
+                oppPiece = (*oppPieces)[move.at(1)];
+                oppPieces->erase(move.at(1));
+            }
+            (*ownPieces)[move.at(1)] = (*ownPieces)[move.at(0)];
+            ownPieces->erase(move.at(0));
+            // Checks if moving rook puts King in check
+            if(inCheck(col)) {
+                if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+            }
+        }
+        else if(moveNum - currNum == moveLetter - currLetter) { // right diagonal
+            int i = moveNum - currNum < 0 ? move.at(1) + 11 : move.at(0) + 11;
+            int j = moveNum - currNum < 0 ? move.at(0) : move.at(1);
+            for(i; i < j; i += 11) {
+                if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
+                    std::cout << "INVALID MOVE: Try a different move.\n";
+                    return false;
+                }
+            }
+            if(ownPieces->count(move.at(1)) == 1) {
+                std::cout << "INVALID MOVE: Try a different move.\n";
+                    return false;
+            }
+            char oppPiece = '\0';
+            if(oppPieces->count(move.at(1)) == 1) {
+                oppPiece = (*oppPieces)[move.at(1)];
+                oppPieces->erase(move.at(1));
+            }
+            (*ownPieces)[move.at(1)] = (*ownPieces)[move.at(0)];
+            ownPieces->erase(move.at(0));
+            // Checks if moving rook puts King in check
+            if(inCheck(col)) {
+                if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+            }
+        }
+        else if(moveNum - currNum == currLetter - moveLetter) { // left diagonal
+            int i = moveNum - currNum < 0 ? move.at(0) + 9 : move.at(1) + 9;
+            int j = moveNum - currNum < 0 ? move.at(1) : move.at(0);
+            for(i; i < j; i += 9) {
+                if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
+                    std::cout << "INVALID MOVE: Try a different move.\n";
+                    return false;
+                }
+            }
+            if(ownPieces->count(move.at(1)) == 1) {
+                std::cout << "INVALID MOVE: Try a different move.\n";
+                    return false;
+            }
+            char oppPiece = '\0';
+            if(oppPieces->count(move.at(1)) == 1) {
+                oppPiece = (*oppPieces)[move.at(1)];
+                oppPieces->erase(move.at(1));
+            }
+            (*ownPieces)[move.at(1)] = (*ownPieces)[move.at(0)];
+            ownPieces->erase(move.at(0));
+            // Checks if moving rook puts King in check
+            if(inCheck(col)) {
+                if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+            }
+        }
+        else {
+            std::cout << "INVALID MOVE: Try a different move\n";
+            return false;
+        }
+        return true;
+    }
 }
 
 bool Board::noMoves() {return true;}
