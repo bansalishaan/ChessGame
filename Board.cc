@@ -564,10 +564,11 @@ bool Board::makeMove(vector<int> move, int col) {
     }
     else if((*ownPieces)[move.at(0)] == 'N'
              || (*ownPieces)[move.at(0)] == 'n') {
-        if(((currNum == moveNum + 1 || currNum == moveNum - 1) && 
+        if((((currNum == moveNum + 1 || currNum == moveNum - 1) && 
             (currLetter == moveLetter + 2 || currLetter == moveLetter - 2)) 
             || ((currNum == moveNum + 2 || currNum == moveNum - 2) && 
-            (currLetter == moveLetter + 1 || currLetter == moveLetter - 1))) {
+            (currLetter == moveLetter + 1 || currLetter == moveLetter - 1)))
+            && ownPieces->count(move.at(1)) == 0) {
             char oppPiece = '\0';
             if(oppPieces->count(move.at(1)) == 1) {
                 oppPiece = (*oppPieces)[move.at(1)];
