@@ -562,6 +562,35 @@ bool Board::makeMove(vector<int> move, int col) {
         }
         return true;
     }
+    else if((*ownPieces)[move.at(0)] == 'N'
+             || (*ownPieces)[move.at(0)] == 'n') {
+        if(((currNum == moveNum + 1 || currNum == moveNum - 1) && 
+            (currLetter == moveLetter + 2 || currLetter == moveLetter - 2)) 
+            || ((currNum == moveNum + 2 || currNum == moveNum - 2) && 
+            (currLetter == moveLetter + 1 || currLetter == moveLetter - 1))) {
+            char oppPiece = '\0';
+            if(oppPieces->count(move.at(1)) == 1) {
+                oppPiece = (*oppPieces)[move.at(1)];
+                oppPieces->erase(move.at(1));
+            }
+            (*ownPieces)[move.at(1)] = (*ownPieces)[move.at(0)];
+            ownPieces->erase(move.at(0));
+            // Checks if moving rook puts King in check
+            if(inCheck(col)) {
+                if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+            }
+        }
+        else {
+            std::cout << "INVALID MOVE: Try a different move\n";
+            return false;
+        }
+        return true;
+    }
 }
 
 bool Board::noMoves() {return true;}
