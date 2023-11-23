@@ -79,7 +79,7 @@ bool Board::init(bool normal, char piece, int location, bool remove) {
                 || whitePieces.count(location) == 1) {
             char loc = 'a' + location / 10;
             std::cout << "There already exists a piece at " << loc 
-                      << location % 10 << "!\n";
+                      << location % 10 + 1 << "!\n";
             return false;
         }
         else {
