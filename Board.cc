@@ -592,6 +592,74 @@ bool Board::makeMove(vector<int> move, int col) {
         }
         return true;
     }
+    else if((*ownPieces)[move.at(0)] == 'B'
+             || (*ownPieces)[move.at(0)] == 'b') {
+        if(moveNum - currNum == moveLetter - currLetter) { // right diagonal
+            int i = moveNum - currNum < 0 ? move.at(1) + 11 : move.at(0) + 11;
+            int j = moveNum - currNum < 0 ? move.at(0) : move.at(1);
+            for(i; i < j; i += 11) {
+                if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
+                    std::cout << "INVALID MOVE: Try a different move.\n";
+                    return false;
+                }
+            }
+            if(ownPieces->count(move.at(1)) == 1) {
+                std::cout << "INVALID MOVE: Try a different move.\n";
+                    return false;
+            }
+            char oppPiece = '\0';
+            if(oppPieces->count(move.at(1)) == 1) {
+                oppPiece = (*oppPieces)[move.at(1)];
+                oppPieces->erase(move.at(1));
+            }
+            (*ownPieces)[move.at(1)] = (*ownPieces)[move.at(0)];
+            ownPieces->erase(move.at(0));
+            // Checks if moving rook puts King in check
+            if(inCheck(col)) {
+                if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+            }
+        }
+        else if(moveNum - currNum == currLetter - moveLetter) { // left diagonal
+            int i = moveNum - currNum < 0 ? move.at(0) + 9 : move.at(1) + 9;
+            int j = moveNum - currNum < 0 ? move.at(1) : move.at(0);
+            for(i; i < j; i += 9) {
+                if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
+                    std::cout << "INVALID MOVE: Try a different move.\n";
+                    return false;
+                }
+            }
+            if(ownPieces->count(move.at(1)) == 1) {
+                std::cout << "INVALID MOVE: Try a different move.\n";
+                    return false;
+            }
+            char oppPiece = '\0';
+            if(oppPieces->count(move.at(1)) == 1) {
+                oppPiece = (*oppPieces)[move.at(1)];
+                oppPieces->erase(move.at(1));
+            }
+            (*ownPieces)[move.at(1)] = (*ownPieces)[move.at(0)];
+            ownPieces->erase(move.at(0));
+            // Checks if moving rook puts King in check
+            if(inCheck(col)) {
+                if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+            }
+        }
+        else {
+            std::cout << "INVALID MOVE: Try a different move\n";
+            return false;
+        }
+        return true;
+    }
 }
 
 bool Board::noMoves() {return true;}
