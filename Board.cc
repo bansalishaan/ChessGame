@@ -155,10 +155,146 @@ bool Board::validInit() {
     return false;
 }
 
-bool Board::makeMove(vector<vector<int>> move, int col) {return true;}
+bool Board::makeMove(vector<int> move, int col) {
+    map<int,char> *ownPieces = nullptr;
+    map<int,char> *oppPieces = nullptr;
+
+    // Checking if there's a piece on that square
+    if(col == 0 && whitePieces.count(move.at(0)) == 1) {
+        ownPieces = &whitePieces;
+        oppPieces = &blackPieces;
+    }
+    else if(col == 1 && blackPieces.count(move.at(0)) == 1) {
+        ownPieces = &blackPieces;
+        oppPieces = &whitePieces;
+    }
+    else if(whitePieces.count(move.at(0)) == 1
+            || blackPieces.count(move.at(0)) == 1) {
+        char loc = 'a' + move.at(0) / 10;
+        std::cout << "Other side's piece on " << loc << move.at(0) % 10
+                  << ". Try a different move.\n";
+    }
+    else {
+        char loc = 'a' + move.at(0) / 10;
+        std::cout << "There is no piece at " << loc << move.at(0) % 10
+                  << ". Try a different move.\n";
+    }
+
+    int currLetter = move.at(0) / 10;
+    int currNum = move.at(0) % 10;
+    int moveLetter = move.at(1) / 10;
+    int moveNum = move.at(1) % 10;
+
+    if((*ownPieces)[move.at(0)] == 'P') {
+        if(currLetter == moveLetter && currNum == moveNum - 2
+           && currNum == 1 && ownPieces->count(move.at(1) - 1) == 0
+                               && ownPieces->count(move.at(1)) == 0
+                               && oppPieces->count(move.at(1) - 1) == 0
+                               && oppPieces->count(move.at(1)) == 0) {
+            ownPieces->erase(move.at(0));
+            (*ownPieces)[move.at(1)] = 'P';
+            if(inCheck(0)) {
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = 'P';
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+           }
+           if(currLetter != 0 && oppPieces->count(move.at(1) - 10) == 1
+              && (*oppPieces)[move.at(1) - 10] == 'p') {
+                enPassantPawns.emplace_back(move.at(1));
+              }
+            if(currLetter != 7 && oppPieces->count(move.at(1) + 10) == 1
+              && (*oppPieces)[move.at(1) + 10] == 'p') 
+              enPassantPawns.emplace_back(move.at(1));
+        }
+        else if(currLetter == moveLetter && currNum == moveNum - 1
+                && moveNum != 7 && ownPieces->count(move.at(1)) == 0
+                                && oppPieces->count(move.at(1)) == 0) {
+            ownPieces->erase(move.at(0));
+            (*ownPieces)[move.at(1)] = 'P';
+            if(inCheck(0)) {
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = 'P';
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+           }
+        }
+        else if(currLetter == moveLetter && currNum == moveNum - 1
+                                && ownPieces->count(move.at(1)) == 0
+                                && oppPieces->count(move.at(1)) == 0) {
+            ownPieces->erase(move.at(0));
+            (*ownPieces)[move.at(1)] = move.at(2);
+            if(inCheck(0)) {
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = 'P';
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+           }
+        }
+        else if((currLetter == moveLetter + 1 
+                 || currLetter == moveLetter - 1) 
+                                && moveNum != 7 && currNum == moveNum - 1 
+                                && oppPieces->count(move.at(1)) == 1) {
+            ownPieces->erase(move.at(0));
+            (*ownPieces)[move.at(1)] = 'P';
+            char oppPiece = (*oppPieces)[move.at(1)];
+            oppPieces->erase(move.at(1));
+            if(inCheck(0)) {
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = 'P';
+                (*oppPieces)[move.at(1)] = oppPiece;
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+           }
+        }
+        else if((currLetter == moveLetter + 1 
+                 || currLetter == moveLetter - 1) 
+                                && currNum == moveNum - 1 
+                                && oppPieces->count(move.at(1)) == 1) {
+            ownPieces->erase(move.at(0));
+            (*ownPieces)[move.at(1)] = move.at(2);
+            char oppPiece = (*oppPieces)[move.at(1)];
+            oppPieces->erase(move.at(1));
+            if(inCheck(0)) {
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = 'P';
+                (*oppPieces)[move.at(1)] = oppPiece;
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+           }
+        }
+        else if((currLetter == moveLetter + 1 
+                 || currLetter == moveLetter - 1) 
+                                && moveNum == 5 && currNum == moveNum - 1 
+                                && oppPieces->count(move.at(1)) == 0
+                                && enPassantPawns.at(0) == move.at(1) - 1) {
+            ownPieces->erase(move.at(0));
+            (*ownPieces)[move.at(1)] = 'P';
+            oppPieces->erase(enPassantPawns.at(0));
+            if(inCheck(0)) {
+                ownPieces->erase(move.at(1));
+                (*ownPieces)[move.at(0)] = 'P';
+                (*oppPieces)[move.at(1) - 1] = 'p';
+                std::cout << "INVALID MOVE: King is in check! "
+                          << "Try a different move.\n";
+                return false;
+           }
+        }
+        else {
+            std::cout << "INVALID MOVE: Try a different move\n";
+            return false;
+        }
+        return true;
+    }
+}
 
 bool Board::noMoves() {return true;}
 
-bool Board::inCheck() {return true;}
+bool Board::inCheck(int col) {return false;}
 
 void Board::display() {d->display();}
