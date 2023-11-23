@@ -173,11 +173,13 @@ bool Board::makeMove(vector<int> move, int col) {
         char loc = 'a' + move.at(0) / 10;
         std::cout << "Other side's piece on " << loc << move.at(0) % 10
                   << ". Try a different move.\n";
+        return false;
     }
     else {
         char loc = 'a' + move.at(0) / 10;
         std::cout << "There is no piece at " << loc << move.at(0) % 10
                   << ". Try a different move.\n";
+        return false;
     }
 
     int currLetter = move.at(0) / 10;
