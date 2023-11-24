@@ -21,7 +21,8 @@ void Board::TextDisplay::display() {
             else if(blackPieces->count(j*10 + i) != 0) std::cout << 
                                                        (*blackPieces)[j*10 + i];
             // Square is empty
-            else std::cout << "_";
+            else if((i + j) % 2 == 0) std::cout << "_";
+            else std::cout << " ";
         }
         std::cout << "\n";
     }
