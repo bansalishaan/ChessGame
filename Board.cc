@@ -459,8 +459,8 @@ bool Board::makeMove(vector<int> move, int col) {
             // Checks if moving rook puts King in check
             if(inCheck(col)) {
                 if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(1)];
                 ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
                 std::cout << "INVALID MOVE: King is in check! "
                           << "Try a different move.\n";
                 return false;
@@ -492,8 +492,8 @@ bool Board::makeMove(vector<int> move, int col) {
             // Checks if moving rook puts King in check
             if(inCheck(col)) {
                 if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(1)];
                 ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
                 std::cout << "INVALID MOVE: King is in check! "
                           << "Try a different move.\n";
                 return false;
@@ -522,8 +522,8 @@ bool Board::makeMove(vector<int> move, int col) {
             // Checks if moving rook puts King in check
             if(inCheck(col)) {
                 if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(1)];
                 ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
                 std::cout << "INVALID MOVE: King is in check! "
                           << "Try a different move.\n";
                 return false;
@@ -560,8 +560,8 @@ bool Board::makeMove(vector<int> move, int col) {
             // Checks if moving rook puts King in check
             if(inCheck(col)) {
                 if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(1)];
                 ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
                 std::cout << "INVALID MOVE: King is in check! "
                           << "Try a different move.\n";
                 return false;
@@ -590,8 +590,8 @@ bool Board::makeMove(vector<int> move, int col) {
             // Checks if moving rook puts King in check
             if(inCheck(col)) {
                 if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(1)];
                 ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
                 std::cout << "INVALID MOVE: King is in check! "
                           << "Try a different move.\n";
                 return false;
@@ -632,8 +632,8 @@ bool Board::makeMove(vector<int> move, int col) {
             // Checks if moving rook puts King in check
             if(inCheck(col)) {
                 if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(1)];
                 ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
                 std::cout << "INVALID MOVE: King is in check! "
                           << "Try a different move.\n";
                 return false;
@@ -665,8 +665,8 @@ bool Board::makeMove(vector<int> move, int col) {
             // Checks if moving rook puts King in check
             if(inCheck(col)) {
                 if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(1)];
                 ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
                 std::cout << "INVALID MOVE: King is in check! "
                           << "Try a different move.\n";
                 return false;
@@ -695,8 +695,8 @@ bool Board::makeMove(vector<int> move, int col) {
             // Checks if moving rook puts King in check
             if(inCheck(col)) {
                 if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(1)];
                 ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
                 std::cout << "INVALID MOVE: King is in check! "
                           << "Try a different move.\n";
                 return false;
@@ -725,8 +725,8 @@ bool Board::makeMove(vector<int> move, int col) {
             // Checks if moving rook puts King in check
             if(inCheck(col)) {
                 if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(1)];
                 ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
                 std::cout << "INVALID MOVE: King is in check! "
                           << "Try a different move.\n";
                 return false;
@@ -762,8 +762,8 @@ bool Board::makeMove(vector<int> move, int col) {
             // Checks if moving rook puts King in check
             if(inCheck(col)) {
                 if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
+                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(1)];
                 ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(0)];
                 std::cout << "INVALID MOVE: King is in check! "
                           << "Try a different move.\n";
                 return false;
@@ -779,6 +779,124 @@ bool Board::makeMove(vector<int> move, int col) {
 
 bool Board::noMoves() {return true;}
 
-bool Board::inCheck(int col) {return false;}
+bool Board::inCheck(int col) {
+    map<int, char> *ownPieces = col == 0? &whitePieces : &blackPieces;
+    map<int, char> *oppPieces = col == 0? &blackPieces : &whitePieces;
+
+    int kingLetter, kingNum, kingLoc;
+    for(auto &piece: *ownPieces) {
+        if(piece.second == 'K' || piece.second == 'k') {
+            kingLetter = piece.first / 10;
+            kingNum = piece.first % 10;
+            kingLoc = piece.first;
+        }
+    }
+
+    for(auto &piece: *oppPieces) {
+        int pieceLetter = piece.first / 10;
+        int pieceNum = piece.first % 10;
+        if(piece.second == 'p' && 
+           (piece.first == kingLoc + 11 || piece.first == kingLoc - 9)) 
+                return true;
+
+        else if(piece.second == 'P' && 
+                (piece.first == kingLoc + 9 || piece.first == kingLoc - 11))
+                return true;
+
+        else if(piece.second == 'r' || piece.second == 'R') {
+            if(kingLetter == pieceLetter) {
+                int i = kingNum > pieceNum ? piece.first + 1 : kingLoc + 1;
+                int j = kingNum > pieceNum ? kingLoc : piece.first;
+                for(i; i < j; ++i) {
+                    if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
+                        return false;
+                }
+            }
+            else if(kingNum == pieceNum) {
+                int i = kingLetter > pieceLetter ? piece.first + 10 : 
+                kingLoc + 10;
+                int j = kingLetter > pieceLetter ? kingLoc : piece.first;
+                for(i; i < j; i += 10) {
+                    if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
+                        return false;
+                }
+            }
+            return true;
+        }
+        else if(piece.second == 'b' || piece.second == 'B') {
+            if(kingNum - pieceNum == kingLetter - pieceLetter) {
+                int i = kingNum < pieceNum ? kingLoc + 11 : piece.first + 11;
+                int j = kingNum < pieceNum ? piece.first : kingLoc;
+
+                for(i; i < j; i += 11) {
+                    if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
+                        return false;
+                }
+            }
+            else if(kingNum - pieceNum == pieceLetter - kingLetter) {
+                int i = kingNum < pieceNum ? piece.first + 9 : kingLoc + 9;
+                int j = kingNum < pieceNum ? kingLoc : piece.first;
+                for(i; i < j; i += 9) {
+                    if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
+                        return false;
+                }
+            }
+            return true;
+        }
+        else if(piece.second == 'q' || piece.second == 'Q') {
+            if(kingLetter == pieceLetter) {
+                int i = kingNum > pieceNum ? piece.first + 1 : kingLoc + 1;
+                int j = kingNum > pieceNum ? kingLoc : piece.first;
+                for(i; i < j; ++i) {
+                    if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
+                        return false;
+                }
+            }
+            else if(kingNum == pieceNum) {
+                int i = kingLetter > pieceLetter ? piece.first + 10 : 
+                kingLoc + 10;
+                int j = kingLetter > pieceLetter ? kingLoc : piece.first;
+                for(i; i < j; i += 10) {
+                    if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1)
+                        return false;
+                }
+            }
+            else if(kingNum - pieceNum == kingLetter - pieceLetter) {
+                int i = kingNum < pieceNum ? kingLoc + 11 : piece.first + 11;
+                int j = kingNum < pieceNum ? piece.first : kingLoc;
+
+                for(i; i < j; i += 11) {
+                    if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
+                        return false;
+                }
+            }
+            else if(kingNum - pieceNum == pieceLetter - kingLetter) {
+                int i = kingNum < pieceNum ? piece.first + 9 : kingLoc + 9;
+                int j = kingNum < pieceNum ? kingLoc : piece.first;
+                for(i; i < j; i += 9) {
+                    if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
+                        return false;
+                }
+            }
+            return true;
+        }
+        else if((piece.second == 'n' || piece.second == 'N') &&
+                (kingLoc == piece.first - 21 || kingLoc == piece.first - 19 ||
+                kingLoc == piece.first - 8 || kingLoc == piece.first - 12 ||
+                kingLoc == piece.first - 8 || kingLoc == piece.first - 12 ||
+                kingLoc == piece.first + 19 || kingLoc == piece.first + 21)) 
+                return true;
+
+        else if((piece.second == 'k' || piece.second == 'K') &&
+                (kingLoc == piece.first + 1 || kingLoc == piece.first - 1 ||
+                kingLoc == piece.first + 10 || kingLoc == piece.first - 10 ||
+                kingLoc == piece.first + 11 || kingLoc == piece.first - 11 ||
+                kingLoc == piece.first + 9 || kingLoc == piece.first - 9)) {
+                    std::cout << kingLoc << " " << piece.first << std::endl;
+                return true;
+                }
+    }
+    return false;
+}
 
 void Board::display() {d->display();}
