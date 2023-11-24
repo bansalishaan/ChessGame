@@ -777,7 +777,754 @@ bool Board::makeMove(vector<int> move, int col) {
     }
 }
 
-bool Board::noMoves() {return true;}
+bool Board::noMoves(int col) {
+    map<int, char> *ownPieces = col == 0? &whitePieces : &blackPieces;
+    map<int, char> *oppPieces = col == 0? &blackPieces : &whitePieces;
+
+    int kingLetter, kingNum, kingLoc;
+    for(auto &piece: *ownPieces) {
+        if(piece.second == 'K' || piece.second == 'k') {
+            kingLetter = piece.first / 10;
+            kingNum = piece.first % 10;
+            kingLoc = piece.first;
+        }
+    }
+
+    map<int, char> ownPiecesCopy = *ownPieces;
+    for(auto piece: ownPiecesCopy) {
+        int pieceLetter = piece.first / 10;
+        int pieceNum = piece.first % 10;
+
+        if(piece.second == 'P') {
+            // Pawn moves forward 1 square
+            if(ownPieces->count(piece.first + 1) == 0 &&
+               oppPieces->count(piece.first + 1) == 0) {
+
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first + 1] = 'P';
+                bool check = inCheck(0);
+                ownPieces->erase(piece.first + 1);
+                (*ownPieces)[piece.first] = 'P';
+                if(!check) return false;
+            }
+            // Pawn moves forward 2 squares
+            if(ownPieces->count(piece.first + 1) == 0 &&
+                    oppPieces->count(piece.first + 1) == 0 &&
+                    ownPieces->count(piece.first + 2) == 0 &&
+                    oppPieces->count(piece.first + 2) == 0 &&
+                    pieceNum == 1) {
+
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first + 2] = 'P';
+                bool check = inCheck(0);
+                ownPieces->erase(piece.first + 2);
+                (*ownPieces)[piece.first] = 'P';
+                if(!check) return false;
+            }
+            // Pawn takes diagonally left and doesn't perform en passant
+            if(oppPieces->count(piece.first - 9) == 1) {
+                char oppPiece = (*oppPieces)[piece.first - 9];
+                ownPieces->erase(piece.first);
+                oppPieces->erase(piece.first - 9);
+                (*ownPieces)[piece.first - 9] = 'P';
+                bool check = inCheck(0);
+                ownPieces->erase(piece.first - 9);
+                (*ownPieces)[piece.first] = 'P';
+                (*oppPieces)[piece.first - 9] = oppPiece;
+                if(!check) return false;
+            }
+            // Pawn takes diagonally right and doesn't perform en passant
+            if(oppPieces->count(piece.first + 11) == 1) {
+                char oppPiece = (*oppPieces)[piece.first + 11];
+                ownPieces->erase(piece.first);
+                oppPieces->erase(piece.first + 11);
+                (*ownPieces)[piece.first + 11] = 'P';
+                bool check = inCheck(0);
+                ownPieces->erase(piece.first + 11);
+                (*ownPieces)[piece.first] = 'P';
+                (*oppPieces)[piece.first + 11] = oppPiece;
+                if(!check) return false;
+            }
+            // Pawn takes diagonally left and performs en passant
+            if(enPassantPawns.size() == 1 &&
+                    enPassantPawns.at(0) == piece.first - 10) {
+                ownPieces->erase(piece.first);
+                oppPieces->erase(piece.first - 10);
+                (*ownPieces)[piece.first - 9] = 'P';
+                bool check = inCheck(0);
+                ownPieces->erase(piece.first - 9);
+                (*ownPieces)[piece.first] = 'P';
+                (*oppPieces)[piece.first - 10] = 'p';
+                if(!check) return false;
+            }
+            // Pawn takes diagonally right and performs en passant
+            if(enPassantPawns.size() == 1 &&
+                    enPassantPawns.at(0) == piece.first + 10) {
+                ownPieces->erase(piece.first);
+                oppPieces->erase(piece.first + 10);
+                (*ownPieces)[piece.first + 11] = 'P';
+                bool check = inCheck(0);
+                ownPieces->erase(piece.first + 11);
+                (*ownPieces)[piece.first] = 'P';
+                (*oppPieces)[piece.first + 10] = 'p';
+                if(!check) return false;
+            }
+        }
+
+        else if(piece.second == 'p') {
+            // Pawn moves forward 1 square
+            if(ownPieces->count(piece.first - 1) == 0 &&
+               oppPieces->count(piece.first - 1) == 0) {
+
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first - 1] = 'p';
+                bool check = inCheck(0);
+                ownPieces->erase(piece.first - 1);
+                (*ownPieces)[piece.first] = 'p';
+                if(!check) return false;
+            }
+            // Pawn moves forward 2 squares
+            if(ownPieces->count(piece.first - 1) == 0 &&
+                    oppPieces->count(piece.first - 1) == 0 &&
+                    ownPieces->count(piece.first - 2) == 0 &&
+                    oppPieces->count(piece.first - 2) == 0 &&
+                    pieceNum == 6) {
+
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first - 2] = 'p';
+                bool check = inCheck(0);
+                ownPieces->erase(piece.first - 2);
+                (*ownPieces)[piece.first] = 'p';
+                if(!check) return false;
+            }
+            // Pawn takes diagonally left and doesn't perform en passant
+            if(oppPieces->count(piece.first - 11) == 1) {
+                char oppPiece = (*oppPieces)[piece.first - 11];
+                ownPieces->erase(piece.first);
+                oppPieces->erase(piece.first - 11);
+                (*ownPieces)[piece.first - 11] = 'p';
+                bool check = inCheck(0);
+                ownPieces->erase(piece.first - 11);
+                (*ownPieces)[piece.first] = 'p';
+                (*oppPieces)[piece.first - 11] = oppPiece;
+                if(!check) return false;
+            }
+            // Pawn takes diagonally right and doesn't perform en passant
+            if(oppPieces->count(piece.first + 9) == 1) {
+                char oppPiece = (*oppPieces)[piece.first + 9];
+                ownPieces->erase(piece.first);
+                oppPieces->erase(piece.first + 9);
+                (*ownPieces)[piece.first + 9] = 'p';
+                bool check = inCheck(0);
+                ownPieces->erase(piece.first + 9);
+                (*ownPieces)[piece.first] = 'p';
+                (*oppPieces)[piece.first + 9] = oppPiece;
+                if(!check) return false;
+            }
+            // Pawn takes diagonally left and performs en passant
+            if(enPassantPawns.size() == 1 &&
+                    enPassantPawns.at(0) == piece.first - 10) {
+                ownPieces->erase(piece.first);
+                oppPieces->erase(piece.first - 10);
+                (*ownPieces)[piece.first - 11] = 'p';
+                bool check = inCheck(0);
+                ownPieces->erase(piece.first - 11);
+                (*ownPieces)[piece.first] = 'p';
+                (*oppPieces)[piece.first - 10] = 'P';
+                if(!check) return false;
+            }
+            // Pawn takes diagonally right and performs en passant
+            if(enPassantPawns.size() == 1 &&
+                    enPassantPawns.at(0) == piece.first + 10) {
+                ownPieces->erase(piece.first);
+                oppPieces->erase(piece.first + 10);
+                (*ownPieces)[piece.first + 9] = 'p';
+                bool check = inCheck(0);
+                ownPieces->erase(piece.first + 9);
+                (*ownPieces)[piece.first] = 'p';
+                (*oppPieces)[piece.first + 10] = 'P';
+                if(!check) return false;
+            }
+        }
+        else if(piece.second == 'n' || piece.second == 'N') {
+            if(ownPieces->count(piece.first - 21) == 0 && 
+               piece.first - 21 >= 0) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first - 21) == 1) {
+                    oppPiece = (*oppPieces)[piece.first - 21];
+                    oppPieces->erase(piece.first - 21);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first - 21] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first - 21);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first - 21] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first - 19) == 0 && 
+               piece.first - 19 >= 0) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first - 19) == 1) {
+                    oppPiece = (*oppPieces)[piece.first - 19];
+                    oppPieces->erase(piece.first - 19);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first - 19] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first - 19);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first - 19] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first - 8) == 0 && 
+               piece.first - 8 >= 0) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first - 8) == 1) {
+                    oppPiece = (*oppPieces)[piece.first - 8];
+                    oppPieces->erase(piece.first - 8);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first - 8] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first - 8);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first - 8] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first - 12) == 0 && 
+               piece.first - 12 >= 0) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first - 12) == 1) {
+                    oppPiece = (*oppPieces)[piece.first - 12];
+                    oppPieces->erase(piece.first - 12);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first - 12] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first - 12);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first - 12] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first + 8) == 0 && 
+               piece.first + 8 <= 78) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first + 8) == 1) {
+                    oppPiece = (*oppPieces)[piece.first + 8];
+                    oppPieces->erase(piece.first + 8);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first + 8] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first + 8);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first + 8] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first + 12) == 0 && 
+               piece.first + 12 <= 78) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first + 12) == 1) {
+                    oppPiece = (*oppPieces)[piece.first + 12];
+                    oppPieces->erase(piece.first + 12);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first + 12] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first + 12);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first + 12] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first + 19) == 0 && 
+               piece.first + 19 <= 78) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first + 19) == 1) {
+                    oppPiece = (*oppPieces)[piece.first + 19];
+                    oppPieces->erase(piece.first + 19);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first + 19] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first + 19);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first + 19] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first + 21) == 0 && 
+               piece.first + 21 <= 78) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first + 21) == 1) {
+                    oppPiece = (*oppPieces)[piece.first + 21];
+                    oppPieces->erase(piece.first + 21);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first + 21] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first + 21);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first + 21] = oppPiece;
+                if(!check) return false;
+            }
+        }
+        else if(piece.second == 'r' || piece.second == 'R') {
+            ownPieces->erase(piece.first);
+            for(int i = piece.first + 1; i < pieceLetter * 10 + 8; ++i) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first - 1; i < pieceLetter * 10; -i) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first + 10; i <= 78; i += 10) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first - 10; i >= 0; i -= 10) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            (*ownPieces)[piece.first] == piece.second;
+        }
+        else if(piece.second == 'b' || piece.second == 'B') {
+            ownPieces->erase(piece.first);
+            for(int i = piece.first + 11; i <= 78; i += 11) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first - 11; i >= 0; i -= 11) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first + 9; i <= 78; i += 9) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first - 9; i >= 0; i -= 9) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            (*ownPieces)[piece.first] == piece.second;
+        }
+        else if(piece.second == 'Q' || piece.second == 'q') {
+            ownPieces->erase(piece.first);
+            for(int i = piece.first + 1; i < pieceLetter * 10 + 8; ++i) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first - 1; i < pieceLetter * 10; -i) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first + 10; i <= 78; i += 10) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first - 10; i >= 0; i -= 10) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first + 11; i <= 78; i += 11) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first - 11; i >= 0; i -= 11) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first + 9; i <= 78; i += 9) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            for(int i = piece.first - 9; i >= 0; i -= 9) {
+                char oppPiece = '\0';
+                if(ownPieces->count(i) == 1) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    break;
+                }
+                if(oppPieces->count(i) == 1) {
+                    oppPiece = (*oppPieces)[i];
+                    oppPieces->erase(i);
+                }
+                (*ownPieces)[i] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(i);
+                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(!check) {
+                    (*ownPieces)[piece.first] == piece.second;
+                    return false;
+                }
+                if(oppPiece != '\0') break;
+            }
+            (*ownPieces)[piece.first] == piece.second;
+        }
+        else if(piece.second == 'K' || piece.second == 'k') {
+            if(ownPieces->count(piece.first + 1) == 0 && 
+               piece.first + 1 <= 78) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first + 1) == 1) {
+                    oppPiece = (*oppPieces)[piece.first + 1];
+                    oppPieces->erase(piece.first + 1);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first + 1] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first + 1);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first + 1] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first - 1) == 0 && 
+               piece.first - 1 >= 0) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first - 1) == 1) {
+                    oppPiece = (*oppPieces)[piece.first - 1];
+                    oppPieces->erase(piece.first - 1);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first - 1] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first - 1);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first - 1] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first + 10) == 0 && 
+               piece.first + 10 <= 78) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first + 10) == 1) {
+                    oppPiece = (*oppPieces)[piece.first + 10];
+                    oppPieces->erase(piece.first + 10);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first + 10] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first + 10);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first + 10] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first - 10) == 0 && 
+               piece.first - 10 >= 0) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first - 10) == 1) {
+                    oppPiece = (*oppPieces)[piece.first - 10];
+                    oppPieces->erase(piece.first - 10);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first - 10] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first - 10);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first - 10] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first + 11) == 0 && 
+               piece.first + 11 <= 78) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first + 11) == 1) {
+                    oppPiece = (*oppPieces)[piece.first + 11];
+                    oppPieces->erase(piece.first + 11);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first + 11] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first + 11);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first + 11] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first + 9) == 0 && 
+               piece.first + 9 <= 78) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first + 9) == 1) {
+                    oppPiece = (*oppPieces)[piece.first + 9];
+                    oppPieces->erase(piece.first + 9);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first + 9] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first + 9);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first + 9] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first - 11) == 0 && 
+               piece.first - 11 >= 0) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first - 11) == 1) {
+                    oppPiece = (*oppPieces)[piece.first - 11];
+                    oppPieces->erase(piece.first - 11);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first - 11] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first - 11);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first - 11] = oppPiece;
+                if(!check) return false;
+            }
+            if(ownPieces->count(piece.first - 9) == 0 && 
+               piece.first - 9 >= 0) {
+                char oppPiece = '\0';
+                if(oppPieces->count(piece.first - 9) == 1) {
+                    oppPiece = (*oppPieces)[piece.first - 9];
+                    oppPieces->erase(piece.first - 9);
+                }
+                ownPieces->erase(piece.first);
+                (*ownPieces)[piece.first - 9] = piece.second;
+                bool check = inCheck(col);
+                ownPieces->erase(piece.first - 9);
+                (*ownPieces)[piece.first] = piece.second;
+                if(oppPiece != '\0') (*oppPieces)[piece.first - 9] = oppPiece;
+                if(!check) return false;
+            }
+        }
+    }
+    return true;
+}
 
 bool Board::inCheck(int col) {
     map<int, char> *ownPieces = col == 0? &whitePieces : &blackPieces;
@@ -795,6 +1542,7 @@ bool Board::inCheck(int col) {
     for(auto &piece: *oppPieces) {
         int pieceLetter = piece.first / 10;
         int pieceNum = piece.first % 10;
+        
         if(piece.second == 'p' && 
            (piece.first == kingLoc + 11 || piece.first == kingLoc - 9)) 
                 return true;
@@ -809,7 +1557,7 @@ bool Board::inCheck(int col) {
                 int j = kingNum > pieceNum ? kingLoc : piece.first;
                 for(i; i < j; ++i) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
-                        return false;
+                        break;
                 }
             }
             else if(kingNum == pieceNum) {
@@ -818,7 +1566,7 @@ bool Board::inCheck(int col) {
                 int j = kingLetter > pieceLetter ? kingLoc : piece.first;
                 for(i; i < j; i += 10) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
-                        return false;
+                        break;
                 }
             }
             return true;
@@ -830,7 +1578,7 @@ bool Board::inCheck(int col) {
 
                 for(i; i < j; i += 11) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
-                        return false;
+                        break;
                 }
             }
             else if(kingNum - pieceNum == pieceLetter - kingLetter) {
@@ -838,7 +1586,7 @@ bool Board::inCheck(int col) {
                 int j = kingNum < pieceNum ? kingLoc : piece.first;
                 for(i; i < j; i += 9) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
-                        return false;
+                        break;
                 }
             }
             return true;
@@ -849,7 +1597,7 @@ bool Board::inCheck(int col) {
                 int j = kingNum > pieceNum ? kingLoc : piece.first;
                 for(i; i < j; ++i) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
-                        return false;
+                        break;
                 }
             }
             else if(kingNum == pieceNum) {
@@ -858,7 +1606,7 @@ bool Board::inCheck(int col) {
                 int j = kingLetter > pieceLetter ? kingLoc : piece.first;
                 for(i; i < j; i += 10) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1)
-                        return false;
+                        break;
                 }
             }
             else if(kingNum - pieceNum == kingLetter - pieceLetter) {
@@ -867,7 +1615,7 @@ bool Board::inCheck(int col) {
 
                 for(i; i < j; i += 11) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
-                        return false;
+                        break;
                 }
             }
             else if(kingNum - pieceNum == pieceLetter - kingLetter) {
@@ -875,7 +1623,7 @@ bool Board::inCheck(int col) {
                 int j = kingNum < pieceNum ? kingLoc : piece.first;
                 for(i; i < j; i += 9) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
-                        return false;
+                        break;
                 }
             }
             return true;
@@ -883,7 +1631,7 @@ bool Board::inCheck(int col) {
         else if((piece.second == 'n' || piece.second == 'N') &&
                 (kingLoc == piece.first - 21 || kingLoc == piece.first - 19 ||
                 kingLoc == piece.first - 8 || kingLoc == piece.first - 12 ||
-                kingLoc == piece.first - 8 || kingLoc == piece.first - 12 ||
+                kingLoc == piece.first + 8 || kingLoc == piece.first + 12 ||
                 kingLoc == piece.first + 19 || kingLoc == piece.first + 21)) 
                 return true;
 
@@ -891,10 +1639,8 @@ bool Board::inCheck(int col) {
                 (kingLoc == piece.first + 1 || kingLoc == piece.first - 1 ||
                 kingLoc == piece.first + 10 || kingLoc == piece.first - 10 ||
                 kingLoc == piece.first + 11 || kingLoc == piece.first - 11 ||
-                kingLoc == piece.first + 9 || kingLoc == piece.first - 9)) {
-                    std::cout << kingLoc << " " << piece.first << std::endl;
+                kingLoc == piece.first + 9 || kingLoc == piece.first - 9))
                 return true;
-                }
     }
     return false;
 }
