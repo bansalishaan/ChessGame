@@ -39,7 +39,7 @@ class Board {
             bool remove = false);
         bool validInit();
         bool makeMove(vector<int> move, int col);
-        bool noMoves();
+        bool noMoves(int col);
         bool inCheck(int col);
         void display();
 };
