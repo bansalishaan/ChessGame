@@ -2,8 +2,6 @@
 
 Board::Display::Display(map<int, char> *whitePieces, map<int, char> *blackPieces): whitePieces{whitePieces}, blackPieces{blackPieces} {}
 
-Board::Display::~Display() {}
-
 Board::TextDisplay::TextDisplay(map<int, char> *whitePieces, map<int, char> *blackPieces): Display{whitePieces, blackPieces} {}
 
 Board::GraphicsDisplay::GraphicsDisplay(map<int, char> *whitePieces, map<int, char> *blackPieces): Display{whitePieces, blackPieces} {}
@@ -466,6 +464,10 @@ bool Board::makeMove(vector<int> move, int col) {
                           << "Try a different move.\n";
                 return false;
             }
+            if(move.at(0) == 0) whiteLRookMoved = true;
+            else if(move.at(0) == 70) whiteRRookMoved = true;
+            else if(move.at(0) == 7) blackLRookMoved = true;
+            else if(move.at(0) == 77) blackRRookMoved = true;
         }
         // Rook is moving vertically
         else if(currLetter == moveLetter) {
@@ -520,7 +522,7 @@ bool Board::makeMove(vector<int> move, int col) {
             }
             (*ownPieces)[move.at(1)] = (*ownPieces)[move.at(0)];
             ownPieces->erase(move.at(0));
-            // Checks if moving rook puts King in check
+            // Checks if moving knight puts King in check
             if(inCheck(col)) {
                 if(oppPiece != '\0') (*oppPieces)[move.at(1)] = oppPiece;
                 (*ownPieces)[move.at(0)] = (*ownPieces)[move.at(1)];
@@ -769,6 +771,97 @@ bool Board::makeMove(vector<int> move, int col) {
                           << "Try a different move.\n";
                 return false;
             }
+            if(move.at(0) == 'K') whiteKingMoved = true;
+            else blackKingMoved = true;
+        } else if(col == 0 && !inCheck(0) && move.at(0) == 40 && 
+                  ((move.at(1) == 60 && !whiteKingMoved && !whiteRRookMoved && (*ownPieces).count(70) == 1 && (*ownPieces)[70] == 'R') ||
+                  (move.at(1) == 20 && !whiteKingMoved && !whiteLRookMoved &&
+                  (*ownPieces).count(0) == 1 && (*ownPieces)[0] == 'R'))) {
+                    int i = move.at(1) > move.at(0) ? 50 : 10;
+                    int j = move.at(1) > move.at(0) ? 70 : 40;
+                    for(i; i < j; i += 10) {
+                        if((*ownPieces).count(i) == 1 || 
+                           (*oppPieces).count(i) == 1) return false;
+                    }
+
+                    ownPieces->erase(40);
+                    (*ownPieces)[40 + (move.at(1) - move.at(0)) / 2] = 'K';
+                    if(inCheck(0)) {
+                        ownPieces->erase(40 + (move.at(1) - move.at(0)) / 2);
+                        (*ownPieces)[40] = 'K';
+                        std::cout << "INVALID MOVE: Crossing invalid square";
+                        return false;
+                    }
+                    ownPieces->erase(40 + (move.at(1) - move.at(0)) / 2);
+                    (*ownPieces)[move.at(1)] = 'K';
+                    if(move.at(1) == 60) {
+                        ownPieces->erase(70);
+                        (*ownPieces)[50] = 'R';
+                    }
+                    else {
+                        ownPieces->erase(0);
+                        (*ownPieces)[30] = 'R';
+                    }
+                    if(inCheck(0)) {
+                        ownPieces->erase(move.at(1));
+                        (*ownPieces)[40] = 'K';
+                        if(move.at(1) == 60) {
+                            ownPieces->erase(50);
+                            (*ownPieces)[70] = 'R';
+                        }
+                        else {
+                            ownPieces->erase(30);
+                            (*ownPieces)[0] = 'R';
+                        }
+                        std::cout << "INVALID MOVE: King in Check";
+                        return false;
+                    }
+                    whiteKingMoved = true;
+        }
+        else if(col == 1 && !inCheck(1) && move.at(0) == 47 && 
+                  ((move.at(1) == 67 && !blackKingMoved && !blackRRookMoved && (*ownPieces).count(77) == 1 && (*ownPieces)[77] == 'r') ||
+                  (move.at(1) == 27 && !blackKingMoved && !blackLRookMoved &&
+                  (*ownPieces).count(7) == 1 && (*ownPieces)[7] == 'r'))) {
+                    int i = move.at(1) > move.at(0) ? 57 : 17;
+                    int j = move.at(1) > move.at(0) ? 77 : 47;
+                    for(i; i < j; i += 10) {
+                        if((*ownPieces).count(i) == 1 || 
+                           (*oppPieces).count(i) == 1) return false;
+                    }
+
+                    ownPieces->erase(47);
+                    (*ownPieces)[47 + (move.at(1) - move.at(0)) / 2] = 'k';
+                    if(inCheck(1)) {
+                        ownPieces->erase(47 + (move.at(1) - move.at(0)) / 2);
+                        (*ownPieces)[47] = 'k';
+                        std::cout << "INVALID MOVE: Crossing invalid square";
+                        return false;
+                    }
+                    ownPieces->erase(47 + (move.at(1) - move.at(0)) / 2);
+                    (*ownPieces)[move.at(1)] = 'k';
+                    if(move.at(1) == 67) {
+                        ownPieces->erase(77);
+                        (*ownPieces)[57] = 'r';
+                    }
+                    else {
+                        ownPieces->erase(7);
+                        (*ownPieces)[37] = 'r';
+                    }
+                    if(inCheck(1)) {
+                        ownPieces->erase(move.at(1));
+                        (*ownPieces)[47] = 'K';
+                        if(move.at(1) == 67) {
+                            ownPieces->erase(57);
+                            (*ownPieces)[77] = 'r';
+                        }
+                        else {
+                            ownPieces->erase(37);
+                            (*ownPieces)[7] = 'r';
+                        }
+                        std::cout << "INVALID MOVE: King in Check";
+                        return false;
+                    }
+                    blackKingMoved = true;
         }
         else {
             std::cout << "INVALID MOVE: Try a different move\n";

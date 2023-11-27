@@ -11,7 +11,7 @@ class Board {
             map<int, char> *blackPieces;
             Display(map<int, char> *whitePieces, map<int, char> *blackPieces);
         public:
-            virtual ~Display();
+            virtual ~Display() = default;
             virtual void display() = 0;
     };
     
@@ -30,6 +30,12 @@ class Board {
 
     map<int, char> whitePieces;
     map<int, char> blackPieces;
+    bool whiteKingMoved = false;
+    bool blackKingMoved = false;
+    bool whiteLRookMoved = false;
+    bool whiteRRookMoved = false;
+    bool blackLRookMoved = false;
+    bool blackRRookMoved = false;
     vector<int> enPassantPawns;
     unique_ptr<Display> d;
 
