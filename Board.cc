@@ -1560,6 +1560,7 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
+                if(i == j) continue;
             }
             else if(kingNum == pieceNum) {
                 int i = kingLetter > pieceLetter ? piece.first + 10 : 
@@ -1569,7 +1570,9 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
+                if(i == j) continue;
             }
+            else continue;
             return true;
         }
         else if(piece.second == 'b' || piece.second == 'B') {
@@ -1581,6 +1584,7 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
+                if(i == j) continue;
             }
             else if(kingNum - pieceNum == pieceLetter - kingLetter) {
                 int i = kingNum < pieceNum ? piece.first + 9 : kingLoc + 9;
@@ -1589,7 +1593,9 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
+                if(i == j) continue;
             }
+            else continue;
             return true;
         }
         else if(piece.second == 'q' || piece.second == 'Q') {
@@ -1600,6 +1606,7 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
+                if(i == j) continue;
             }
             else if(kingNum == pieceNum) {
                 int i = kingLetter > pieceLetter ? piece.first + 10 : 
@@ -1609,6 +1616,7 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1)
                         break;
                 }
+                if(i == j) continue;
             }
             else if(kingNum - pieceNum == kingLetter - pieceLetter) {
                 int i = kingNum < pieceNum ? kingLoc + 11 : piece.first + 11;
@@ -1618,6 +1626,7 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
+                if(i == j) continue;
             }
             else if(kingNum - pieceNum == pieceLetter - kingLetter) {
                 int i = kingNum < pieceNum ? piece.first + 9 : kingLoc + 9;
@@ -1626,7 +1635,9 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
+                if(i == j) continue;
             }
+            else continue;
             return true;
         }
         else if((piece.second == 'n' || piece.second == 'N') &&
