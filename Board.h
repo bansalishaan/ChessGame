@@ -1,3 +1,5 @@
+#ifndef BOARD
+#define BOARD
 #include <iostream>
 #include <map>
 #include <vector>
@@ -49,3 +51,5 @@ class Board {
         bool inCheck(int col);
         void display();
 };
+
+#endif
