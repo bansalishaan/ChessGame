@@ -1,4 +1,8 @@
+#ifndef PLAYER
+#define PLAYER
+
 #include <vector>
+#include "Board.h"
 using namespace std;
 
 class Player {
@@ -13,4 +17,35 @@ class Human: public Player {
         vector<int> getMove() override;
 };
 
-// class Bot: public
+// class Bot: public Player {
+//     protected:
+//         Board *board;
+//     public:
+//         Bot();
+// };
+
+// class Bot1: public Bot {
+//     public:
+//         Bot1();
+//         vector<int> getMove() override;
+// };
+
+// class Bot2: public Bot {
+//     public:
+//         Bot2();
+//         vector<int> getMove() override;
+// };
+
+// class Bot3: public Bot {
+//     public:
+//         Bot3();
+//         vector<int> getMove() override;
+// };
+
+// class Bot4: public Bot {
+//     public:
+//         Bot4();
+//         vector<int> getMove() override;
+// };
+
+#endif

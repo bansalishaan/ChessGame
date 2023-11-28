@@ -1,3 +1,5 @@
+#ifndef BOARD
+#define BOARD
 #include <iostream>
 #include <map>
 #include <vector>
@@ -39,6 +41,9 @@ class Board {
     vector<int> enPassantPawns;
     unique_ptr<Display> d;
 
+    bool movePutsKingInCheck(int pieceLoc, int moveLoc, int col,
+        map<int, char> *ownPieces, map<int, char> *oppPieces);
+
     public:
         Board(int boardType);
         bool init(bool normal = true, char piece='\0', int location = 0, 
@@ -49,3 +54,5 @@ class Board {
         bool inCheck(int col);
         void display();
 };
+
+#endif
