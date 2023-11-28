@@ -57,17 +57,17 @@ int main() {
                 }
             }
             if (game.inCheck(0) && game.noMoves(0) && setupFlag){
-                cout << "Here 1" << endl;
+                cout << "Checkmate for White. Black Wins!" << endl;
                 gameRunning = false;
                 blackWins++;
                 break;
             } else if (game.inCheck(1) && game.noMoves(1) && setupFlag) {
-                cout << "Here 2" << endl;
+                cout << "Checkmate for Black. White Wins!" << endl;
                 gameRunning = false;
                 whiteWins++;
                 break;
             } else if ((game.noMoves(0) || game.noMoves(1)) && setupFlag) {
-
+                cout << "Draw!" << endl;
                 gameRunning = false;
                 whiteDraws++;
                 blackDraws++;
