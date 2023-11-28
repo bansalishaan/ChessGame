@@ -15,11 +15,13 @@ int charToInt(char num) {
 }
 
 Human::Human(): Player{} {}
+/*
 vector<int> Human::getMove() {
     vector<int> move;
 
     string commandLine;
     getline(cin, commandLine);
+    cout << commandLine << endl; // REMOVE
     istringstream input {commandLine};
     string piece, moveLoc, promotion;
 
@@ -39,5 +41,22 @@ vector<int> Human::getMove() {
         move.emplace_back();
     }
 
+    return move;
+} */
+
+
+vector<int> Human::getMove() {
+    string start, end;
+    cin >> start >> end;
+    if(start.length() != 2 || end.length() != 2 || start[0] < 'a' || start[0] > 'h' || start[1] < '1' || start[1] > '8' || end[0] < 'a' || end[0] > 'h' || end[1] < '1' || end[1] > '8') {
+       cout << "Enter a valid location." << endl;
+    }
+    int first_start = start[0] - 'a';
+    int second_start = start[1] - '1';
+    int first_end = end[0] - 'a';
+    int second_end = end[1] - '1';
+    int start_location_int = first_start * 10 + second_start;
+    int end_location_int = first_end * 10 + second_end;
+    vector<int> move = {start_location_int, end_location_int};
     return move;
 }
