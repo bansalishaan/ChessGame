@@ -8,6 +8,12 @@ using namespace std;
 int main() {
     int whiteWins = 0;
     int blackWins = 0;
+    int whiteDraws = 0;
+    int blackDraws = 0;
+    int whiteScore = 0;
+    int blackScore = 0;
+    string whiteScoreString = "";
+    string blackScoreString = "";
     bool gameRunning = false;
     bool setupFlag = false;
     bool whiteMove = true;
@@ -24,9 +30,24 @@ int main() {
         while (true) {
             if (!(cin >> command)) {
                 if (cin.eof()) {
+                    if ((blackDraws % 2) == 0) {
+                        blackScore = blackWins + (blackDraws / 2);
+                        blackScoreString = to_string(blackScore);
+                    } else if ((blackDraws % 2) == 1) {
+                        blackScore = blackWins + (blackDraws / 2);
+                        blackScoreString = to_string(blackScore) + ".5";
+                    } 
+                    
+                    if ((whiteDraws % 2) == 0) {
+                        whiteScore = whiteWins + (whiteDraws / 2);
+                        whiteScoreString = to_string(whiteScore);
+                    } else if ((whiteDraws % 2) == 1) {
+                        whiteScore = whiteWins + (whiteDraws / 2);
+                        whiteScoreString = to_string(whiteScore) + ".5";
+                    }
                     cout << "Final Score:" << endl;
-                    cout << "White: " << whiteWins << endl;
-                    cout << "Black: " << blackWins << endl;
+                    cout << "White: " << whiteScoreString << endl;
+                    cout << "Black: " << blackScoreString << endl;
                     return 0;
                 } else {
                     cin.clear();
@@ -122,12 +143,44 @@ int main() {
                     }
                 }
             } else if (command == "quit") {
-                cout << "Final Score:" << endl;
-                cout << "White: " << whiteWins << endl;
-                cout << "Black: " << blackWins << endl;
-                return 0;
+                if ((blackDraws % 2) == 0) {
+                        blackScore = blackWins + (blackDraws / 2);
+                        blackScoreString = to_string(blackScore);
+                    } else if ((blackDraws % 2) == 1) {
+                        blackScore = blackWins + (blackDraws / 2);
+                        blackScoreString = to_string(blackScore) + ".5";
+                    } 
+                    if ((whiteDraws % 2) == 0) {
+                        whiteScore = whiteWins + (whiteDraws / 2);
+                        whiteScoreString = to_string(whiteScore);
+                    } else if ((whiteDraws % 2) == 1) {
+                        whiteScore = whiteWins + (whiteDraws / 2);
+                        whiteScoreString = to_string(whiteScore) + ".5";
+                    }
+                    cout << "Final Score:" << endl;
+                    cout << "White: " << whiteScoreString << endl;
+                    cout << "Black: " << blackScoreString << endl;
+                    return 0;
             } else {
                 cout << "Invalid command." << endl;
+            }
+
+            if (game.inCheck(0) && game.noMoves(0)){
+                cout << "Here 1" << endl;
+                gameRunning = false;
+                blackWins++;
+                break;
+            } else if (game.inCheck(1) && game.noMoves(1)) {
+                cout << "Here 2" << endl;
+                gameRunning = false;
+                whiteWins++;
+                break;
+            } else if (game.noMoves(0) && game.noMoves(1)) {
+                cout << "Here 3" << endl;
+                gameRunning = false;
+                whiteDraws++;
+                blackDraws++;
+                break;
             }
         }
     }
