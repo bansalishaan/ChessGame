@@ -56,6 +56,23 @@ int main() {
                     continue;
                 }
             }
+            if (game.inCheck(0) && game.noMoves(0) && setupFlag){
+                cout << "Here 1" << endl;
+                gameRunning = false;
+                blackWins++;
+                break;
+            } else if (game.inCheck(1) && game.noMoves(1) && setupFlag) {
+                cout << "Here 2" << endl;
+                gameRunning = false;
+                whiteWins++;
+                break;
+            } else if ((game.noMoves(0) || game.noMoves(1)) && setupFlag) {
+
+                gameRunning = false;
+                whiteDraws++;
+                blackDraws++;
+                break;
+            }
             if (command == "game") {
                 if (gameRunning) {
                     gameRunning = false;
@@ -74,6 +91,7 @@ int main() {
                 gameRunning = true;
                 if (!setupFlag) {
                     game.init(true);
+                    setupFlag = true;
                 }
                 game.display();
             } else if (command == "resign") {
@@ -163,24 +181,6 @@ int main() {
                     return 0;
             } else {
                 cout << "Invalid command." << endl;
-            }
-
-            if (game.inCheck(0) && game.noMoves(0)){
-                cout << "Here 1" << endl;
-                gameRunning = false;
-                blackWins++;
-                break;
-            } else if (game.inCheck(1) && game.noMoves(1)) {
-                cout << "Here 2" << endl;
-                gameRunning = false;
-                whiteWins++;
-                break;
-            } else if (game.noMoves(0) && game.noMoves(1)) {
-                cout << "Here 3" << endl;
-                gameRunning = false;
-                whiteDraws++;
-                blackDraws++;
-                break;
             }
         }
     }
