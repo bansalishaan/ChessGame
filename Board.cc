@@ -931,7 +931,7 @@ bool Board::noMoves(int col) {
         }
         else if(piece.second == 'n' || piece.second == 'N') {
             if(ownPieces->count(piece.first - 21) == 0 && 
-               piece.first - 21 >= 0) {
+               piece.first - 21 >= 0 && piece.first % 10 != 0) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first - 21) == 1) {
                     oppPiece = (*oppPieces)[piece.first - 21];
@@ -946,7 +946,7 @@ bool Board::noMoves(int col) {
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first - 19) == 0 && 
-               piece.first - 19 >= 0) {
+               piece.first - 19 >= 0 && piece.first % 10 != 8) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first - 19) == 1) {
                     oppPiece = (*oppPieces)[piece.first - 19];
@@ -961,7 +961,8 @@ bool Board::noMoves(int col) {
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first - 8) == 0 && 
-               piece.first - 8 >= 0) {
+               piece.first - 8 >= 0 && piece.first % 10 != 7
+               && piece.first % 10 != 6) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first - 8) == 1) {
                     oppPiece = (*oppPieces)[piece.first - 8];
@@ -976,7 +977,8 @@ bool Board::noMoves(int col) {
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first - 12) == 0 && 
-               piece.first - 12 >= 0) {
+               piece.first - 12 >= 0 && piece.first % 10 != 0
+               && piece.first % 10 != 1) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first - 12) == 1) {
                     oppPiece = (*oppPieces)[piece.first - 12];
@@ -991,7 +993,8 @@ bool Board::noMoves(int col) {
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first + 8) == 0 && 
-               piece.first + 8 <= 78) {
+               piece.first + 8 < 78 && piece.first % 10 != 0
+               && piece.first % 10 != 1) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first + 8) == 1) {
                     oppPiece = (*oppPieces)[piece.first + 8];
@@ -1006,7 +1009,8 @@ bool Board::noMoves(int col) {
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first + 12) == 0 && 
-               piece.first + 12 <= 78) {
+               piece.first + 12 < 78 && piece.first % 10 != 6
+               && piece.first % 10 != 7) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first + 12) == 1) {
                     oppPiece = (*oppPieces)[piece.first + 12];
@@ -1021,7 +1025,8 @@ bool Board::noMoves(int col) {
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first + 19) == 0 && 
-               piece.first + 19 <= 78) {
+               piece.first + 19 < 78 && piece.first % 10 != 9
+               && piece.first % 10 != 0) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first + 19) == 1) {
                     oppPiece = (*oppPieces)[piece.first + 19];
@@ -1036,7 +1041,7 @@ bool Board::noMoves(int col) {
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first + 21) == 0 && 
-               piece.first + 21 <= 78) {
+               piece.first + 21 < 78 && piece.first % 10 != 7) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first + 21) == 1) {
                     oppPiece = (*oppPieces)[piece.first + 21];
@@ -1129,7 +1134,7 @@ bool Board::noMoves(int col) {
         }
         else if(piece.second == 'b' || piece.second == 'B') {
             ownPieces->erase(piece.first);
-            for(int i = piece.first + 11; i < 78; i += 11) {
+            for(int i = piece.first + 11; i < 78 && i % 10 != 8; i += 11) {
                 char oppPiece = '\0';
                 if(ownPieces->count(i) == 1) break;
                 
@@ -1147,7 +1152,7 @@ bool Board::noMoves(int col) {
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first - 11; i >= 0; i -= 11) {
+            for(int i = piece.first - 11; i >= 0 && i % 10 != 9; i -= 11) {
                 char oppPiece = '\0';
                 if(ownPieces->count(i) == 1) break;
 
@@ -1165,7 +1170,7 @@ bool Board::noMoves(int col) {
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first + 9; i < 78; i += 9) {
+            for(int i = piece.first + 9; i < 78 && i % 10 != 9; i += 9) {
                 char oppPiece = '\0';
                 if(ownPieces->count(i) == 1) break;
                 
@@ -1183,7 +1188,7 @@ bool Board::noMoves(int col) {
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first - 9; i >= 0; i -= 9) {
+            for(int i = piece.first - 9; i >= 0 && i % 10 != 8; i -= 9) {
                 char oppPiece = '\0';
                 if(ownPieces->count(i) == 1) break;
                     
@@ -1277,7 +1282,7 @@ bool Board::noMoves(int col) {
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first + 11; i < 78; i += 11) {
+            for(int i = piece.first + 11; i < 78 && i % 10 != 8; i += 11) {
                 char oppPiece = '\0';
                 if(ownPieces->count(i) == 1) break;
 
@@ -1295,7 +1300,7 @@ bool Board::noMoves(int col) {
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first - 11; i >= 0; i -= 11) {
+            for(int i = piece.first - 11; i >= 0 && i % 10 != 9; i -= 11) {
                 char oppPiece = '\0';
                 if(ownPieces->count(i) == 1) break;
 
@@ -1313,7 +1318,7 @@ bool Board::noMoves(int col) {
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first + 9; i < 78; i += 9) {
+            for(int i = piece.first + 9; i < 78 && i % 10 != 9; i += 9) {
                 char oppPiece = '\0';
                 if(ownPieces->count(i) == 1) break;
 
@@ -1331,7 +1336,7 @@ bool Board::noMoves(int col) {
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first - 9; i >= 0; i -= 9) {
+            for(int i = piece.first - 9; i >= 0 && i % 10 != 8; i -= 9) {
                 char oppPiece = '\0';
                 if(ownPieces->count(i) == 1) break;
                     
@@ -1353,7 +1358,7 @@ bool Board::noMoves(int col) {
         }
         else if(piece.second == 'K' || piece.second == 'k') {
             if(ownPieces->count(piece.first + 1) == 0 && 
-               piece.first + 1 <= 78) {
+               piece.first + 1 < 78 && piece.first % 10 != 7) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first + 1) == 1) {
                     oppPiece = (*oppPieces)[piece.first + 1];
@@ -1365,11 +1370,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 1);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 1] = oppPiece;
-                std::cout << "HERE1" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first - 1) == 0 && 
-               piece.first - 1 >= 0) {
+               piece.first - 1 >= 0 && piece.first % 10 != 0) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first - 1) == 1) {
                     oppPiece = (*oppPieces)[piece.first - 1];
@@ -1381,11 +1385,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 1);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 1] = oppPiece;
-                std::cout << "HERE2" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first + 10) == 0 && 
-               piece.first + 10 <= 78) {
+               piece.first + 10 < 78) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first + 10) == 1) {
                     oppPiece = (*oppPieces)[piece.first + 10];
@@ -1397,7 +1400,6 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 10);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 10] = oppPiece;
-                std::cout << "HERE3" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first - 10) == 0 && 
@@ -1413,11 +1415,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 10);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 10] = oppPiece;
-                std::cout << "HERE4" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first + 11) == 0 && 
-               piece.first + 11 <= 78) {
+               piece.first + 11 < 78 && piece.first % 10 != 7) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first + 11) == 1) {
                     oppPiece = (*oppPieces)[piece.first + 11];
@@ -1429,11 +1430,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 11);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 11] = oppPiece;
-                std::cout << "HERE5" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first + 9) == 0 && 
-               piece.first + 9 <= 78) {
+               piece.first + 9 < 78 && piece.first % 10 != 0) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first + 9) == 1) {
                     oppPiece = (*oppPieces)[piece.first + 9];
@@ -1445,11 +1445,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 9);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 9] = oppPiece;
-                std::cout << "HERE6" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first - 11) == 0 && 
-               piece.first - 11 >= 0) {
+               piece.first - 11 >= 0 && piece.first % 10 != 0) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first - 11) == 1) {
                     oppPiece = (*oppPieces)[piece.first - 11];
@@ -1461,11 +1460,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 11);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 11] = oppPiece;
-                std::cout << "HERE7" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first - 9) == 0 && 
-               piece.first - 9 >= 0) {
+               piece.first - 9 >= 0 && piece.first % 10 != 7) {
                 char oppPiece = '\0';
                 if(oppPieces->count(piece.first - 9) == 1) {
                     oppPiece = (*oppPieces)[piece.first - 9];
@@ -1477,7 +1475,6 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 9);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 9] = oppPiece;
-                std::cout << "HERE8" << std::endl;
                 if(!check) return false;
             }
         }
