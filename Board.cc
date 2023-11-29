@@ -1055,10 +1055,8 @@ bool Board::noMoves(int col) {
             ownPieces->erase(piece.first);
             for(int i = piece.first + 1; i < pieceLetter * 10 + 8; ++i) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1066,19 +1064,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first - 1; i < pieceLetter * 10; -i) {
+            for(int i = piece.first - 1; i >= pieceLetter * 10; --i) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1086,19 +1082,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first + 10; i <= 78; i += 10) {
+            for(int i = piece.first + 10; i < 78; i += 10) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1106,19 +1100,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
             for(int i = piece.first - 10; i >= 0; i -= 10) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+                    
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1126,23 +1118,21 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
-            (*ownPieces)[piece.first] == piece.second;
+            (*ownPieces)[piece.first] = piece.second;
         }
         else if(piece.second == 'b' || piece.second == 'B') {
             ownPieces->erase(piece.first);
-            for(int i = piece.first + 11; i <= 78; i += 11) {
+            for(int i = piece.first + 11; i < 78; i += 11) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+                
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1150,19 +1140,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
             for(int i = piece.first - 11; i >= 0; i -= 11) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1170,19 +1158,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first + 9; i <= 78; i += 9) {
+            for(int i = piece.first + 9; i < 78; i += 9) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+                
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1190,19 +1176,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
             for(int i = piece.first - 9; i >= 0; i -= 9) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+                    
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1210,23 +1194,21 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
-            (*ownPieces)[piece.first] == piece.second;
+            (*ownPieces)[piece.first] = piece.second;
         }
         else if(piece.second == 'Q' || piece.second == 'q') {
             ownPieces->erase(piece.first);
             for(int i = piece.first + 1; i < pieceLetter * 10 + 8; ++i) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+                    
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1234,19 +1216,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first - 1; i < pieceLetter * 10; -i) {
+            for(int i = piece.first - 1; i >= pieceLetter * 10; --i) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1254,19 +1234,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first + 10; i <= 78; i += 10) {
+            for(int i = piece.first + 10; i < 78; i += 10) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+                
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1274,19 +1252,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
             for(int i = piece.first - 10; i >= 0; i -= 10) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+ 
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1294,19 +1270,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first + 11; i <= 78; i += 11) {
+            for(int i = piece.first + 11; i < 78; i += 11) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1314,19 +1288,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
             for(int i = piece.first - 11; i >= 0; i -= 11) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1334,19 +1306,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
-            for(int i = piece.first + 9; i <= 78; i += 9) {
+            for(int i = piece.first + 9; i < 78; i += 9) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1354,19 +1324,17 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
             for(int i = piece.first - 9; i >= 0; i -= 9) {
                 char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) {
-                    (*ownPieces)[piece.first] == piece.second;
-                    break;
-                }
+                if(ownPieces->count(i) == 1) break;
+                    
                 if(oppPieces->count(i) == 1) {
                     oppPiece = (*oppPieces)[i];
                     oppPieces->erase(i);
@@ -1374,14 +1342,14 @@ bool Board::noMoves(int col) {
                 (*ownPieces)[i] = piece.second;
                 bool check = inCheck(col);
                 ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] == oppPiece;
+                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
-                    (*ownPieces)[piece.first] == piece.second;
+                    (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
                 if(oppPiece != '\0') break;
             }
-            (*ownPieces)[piece.first] == piece.second;
+            (*ownPieces)[piece.first] = piece.second;
         }
         else if(piece.second == 'K' || piece.second == 'k') {
             if(ownPieces->count(piece.first + 1) == 0 && 
@@ -1397,6 +1365,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 1);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 1] = oppPiece;
+                std::cout << "HERE1" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first - 1) == 0 && 
@@ -1412,6 +1381,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 1);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 1] = oppPiece;
+                std::cout << "HERE2" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first + 10) == 0 && 
@@ -1427,6 +1397,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 10);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 10] = oppPiece;
+                std::cout << "HERE3" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first - 10) == 0 && 
@@ -1442,6 +1413,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 10);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 10] = oppPiece;
+                std::cout << "HERE4" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first + 11) == 0 && 
@@ -1457,6 +1429,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 11);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 11] = oppPiece;
+                std::cout << "HERE5" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first + 9) == 0 && 
@@ -1472,6 +1445,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 9);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 9] = oppPiece;
+                std::cout << "HERE6" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first - 11) == 0 && 
@@ -1487,6 +1461,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 11);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 11] = oppPiece;
+                std::cout << "HERE7" << std::endl;
                 if(!check) return false;
             }
             if(ownPieces->count(piece.first - 9) == 0 && 
@@ -1502,6 +1477,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 9);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 9] = oppPiece;
+                std::cout << "HERE8" << std::endl;
                 if(!check) return false;
             }
         }
@@ -1542,7 +1518,7 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
-                if(i == j) continue;
+                if(i == j) return true;
             }
             else if(kingNum == pieceNum) {
                 int i = kingLetter > pieceLetter ? piece.first + 10 : 
@@ -1552,10 +1528,9 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
-                if(i == j) continue;
+                if(i == j) return true;
             }
             else continue;
-            return true;
         }
         else if(piece.second == 'b' || piece.second == 'B') {
             if(kingNum - pieceNum == kingLetter - pieceLetter) {
@@ -1566,7 +1541,7 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
-                if(i == j) continue;
+                if(i == j) return true;
             }
             else if(kingNum - pieceNum == pieceLetter - kingLetter) {
                 int i = kingNum < pieceNum ? piece.first + 9 : kingLoc + 9;
@@ -1575,10 +1550,9 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
-                if(i == j) continue;
+                if(i == j) return true;
             }
             else continue;
-            return true;
         }
         else if(piece.second == 'q' || piece.second == 'Q') {
             if(kingLetter == pieceLetter) {
@@ -1588,7 +1562,7 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
-                if(i == j) continue;
+                if(i == j) return true;
             }
             else if(kingNum == pieceNum) {
                 int i = kingLetter > pieceLetter ? piece.first + 10 : 
@@ -1598,7 +1572,7 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1)
                         break;
                 }
-                if(i == j) continue;
+                if(i == j) return true;
             }
             else if(kingNum - pieceNum == kingLetter - pieceLetter) {
                 int i = kingNum < pieceNum ? kingLoc + 11 : piece.first + 11;
@@ -1608,7 +1582,7 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
-                if(i == j) continue;
+                if(i == j) return true;
             }
             else if(kingNum - pieceNum == pieceLetter - kingLetter) {
                 int i = kingNum < pieceNum ? piece.first + 9 : kingLoc + 9;
@@ -1617,10 +1591,9 @@ bool Board::inCheck(int col) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
-                if(i == j) continue;
+                if(i == j) return true;
             }
             else continue;
-            return true;
         }
         else if((piece.second == 'n' || piece.second == 'N') &&
                 (kingLoc == piece.first - 21 || kingLoc == piece.first - 19 ||
