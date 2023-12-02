@@ -43,6 +43,8 @@ class Board {
     vector<int> enPassantPawns;
     unique_ptr<Display> d;
     friend class Bot1;
+    friend class Bot2;
+    friend class Bot3;
 
     bool movePutsKingInCheck(int pieceLoc, int moveLoc, int col,
         map<int, char> *ownPieces, map<int, char> *oppPieces, 
@@ -55,7 +57,7 @@ class Board {
         bool validInit();
         bool makeMove(vector<int> move, int col);
         bool noMoves(int col);
-        bool inCheck(int col);
+        bool inCheck(int col, int move = -1);
         void display();
 };
 
