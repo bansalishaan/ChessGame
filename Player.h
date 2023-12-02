@@ -7,14 +7,14 @@ using namespace std;
 
 class Player {
     public:
-        virtual vector<int> getMove() = 0;
+        virtual vector<int> getMove(string start, string end) = 0;
         virtual ~Player() = default;
 };
 
 class Human: public Player {
     public:
         Human();
-        vector<int> getMove() override;
+        vector<int> getMove(string start, string end) override;
 };
 
 // class Bot: public Player {

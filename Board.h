@@ -1,5 +1,6 @@
 #ifndef BOARD
 #define BOARD
+#include "window.h"
 #include <iostream>
 #include <map>
 #include <vector>
@@ -24,6 +25,7 @@ class Board {
     };
 
     class GraphicsDisplay: public Display {
+        Xwindow window;
         public:
             GraphicsDisplay(map<int, char> *whitePieces, map<int, char> *blackPieces);
             void display() override;

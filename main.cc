@@ -1,17 +1,21 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <sstream>
+#include <fstream>
 #include "Player.h"
 #include "Board.h"
 using namespace std;
 
-int main() {
+int main()
+{
     int whiteWins = 0;
     int blackWins = 0;
     int whiteDraws = 0;
     int blackDraws = 0;
     int whiteScore = 0;
     int blackScore = 0;
+    int gameCount = 0;
     string whiteScoreString = "";
     string blackScoreString = "";
     bool gameRunning = false;
@@ -20,167 +24,266 @@ int main() {
 
     cout << "Welcome to Chess! Please enter a command: " << endl;
 
-    while (true) {
+    while (true)
+    {
         Board game{0};
         vector<unique_ptr<Player>> players;
         gameRunning = false;
         setupFlag = false;
         whiteMove = true;
-        string command;
-        while (true) {
-            if (!(cin >> command)) {
-                if (cin.eof()) {
-                    if ((blackDraws % 2) == 0) {
-                        blackScore = blackWins + (blackDraws / 2);
-                        blackScoreString = to_string(blackScore);
-                    } else if ((blackDraws % 2) == 1) {
-                        blackScore = blackWins + (blackDraws / 2);
-                        blackScoreString = to_string(blackScore) + ".5";
-                    } 
-                    
-                    if ((whiteDraws % 2) == 0) {
-                        whiteScore = whiteWins + (whiteDraws / 2);
-                        whiteScoreString = to_string(whiteScore);
-                    } else if ((whiteDraws % 2) == 1) {
-                        whiteScore = whiteWins + (whiteDraws / 2);
-                        whiteScoreString = to_string(whiteScore) + ".5";
-                    }
-                    cout << "Final Score:" << endl;
-                    cout << "White: " << whiteScoreString << endl;
-                    cout << "Black: " << blackScoreString << endl;
-                    return 0;
-                } else {
-                    cin.clear();
-                    cin.ignore();
-                    cout << "Invalid command." << endl;
-                    continue;
+        string commandLine;
+        string filepath = "game_log.txt";
+        ofstream out(filepath, std::ios::app);
+        while (true)
+        {
+            getline(cin, commandLine);
+
+            if (cin.eof())
+            {
+                if ((blackDraws % 2) == 0)
+                {
+                    blackScore = blackWins + (blackDraws / 2);
+                    blackScoreString = to_string(blackScore);
                 }
+                else if ((blackDraws % 2) == 1)
+                {
+                    blackScore = blackWins + (blackDraws / 2);
+                    blackScoreString = to_string(blackScore) + ".5";
+                }
+
+                if ((whiteDraws % 2) == 0)
+                {
+                    whiteScore = whiteWins + (whiteDraws / 2);
+                    whiteScoreString = to_string(whiteScore);
+                }
+                else if ((whiteDraws % 2) == 1)
+                {
+                    whiteScore = whiteWins + (whiteDraws / 2);
+                    whiteScoreString = to_string(whiteScore) + ".5";
+                }
+                cout << "Final Score:" << endl;
+                out << "Final Score:" << endl;
+                cout << "White: " << whiteScoreString << endl;
+                out << "White: " << whiteScoreString << endl;
+                cout << "Black: " << blackScoreString << endl;
+                out << "Black: " << blackScoreString << endl;
+                return 0;
             }
-            if (game.inCheck(0) && game.noMoves(0) && setupFlag){
+
+            if (game.inCheck(0) && game.noMoves(0) && setupFlag)
+            {
                 cout << "Checkmate for White. Black Wins!" << endl;
+                out << "Checkmate for White. Black Wins!" << endl;
                 gameRunning = false;
                 blackWins++;
                 break;
-            } else if (game.inCheck(1) && game.noMoves(1) && setupFlag) {
+            }
+            else if (game.inCheck(1) && game.noMoves(1) && setupFlag)
+            {
                 cout << "Checkmate for Black. White Wins!" << endl;
+                out << "Checkmate for Black. White Wins!" << endl;
                 gameRunning = false;
                 whiteWins++;
                 break;
-            } else if ((game.noMoves(0) || game.noMoves(1)) && setupFlag) {
+            }
+            else if ((game.noMoves(0) || game.noMoves(1)) && setupFlag)
+            {
                 cout << "Draw!" << endl;
+                out << "Draw!" << endl;
                 gameRunning = false;
                 whiteDraws++;
                 blackDraws++;
                 break;
             }
-            if (command == "game") {
-                if (gameRunning) {
+
+            if (game.inCheck(0))
+            {
+                cout << "White is in Check!" << endl;
+                out << "White is in Check!" << endl;
+            }
+            else if (game.inCheck(1))
+            {
+                cout << "Black is in Check!" << endl;
+                out << "Black is in Check!" << endl;
+            }
+
+            string command;
+            istringstream iss(commandLine);
+            iss >> command;
+
+            if (command == "game")
+            {
+                if (gameRunning)
+                {
                     gameRunning = false;
                     setupFlag = false;
                     break;
                 }
+                gameCount++;
+                out << "Game " << gameCount << ":" << endl;
                 string whitePlayerType, blackPlayerType;
-                cin >> whitePlayerType >> blackPlayerType;
+                iss >> whitePlayerType >> blackPlayerType;
                 players.clear();
-                if (whitePlayerType == "human") {
+                if (whitePlayerType == "human")
+                {
                     players.emplace_back(make_unique<Human>());
                 }
-                if (blackPlayerType == "human") {
+                if (blackPlayerType == "human")
+                {
                     players.emplace_back(make_unique<Human>());
-                } 
+                }
                 gameRunning = true;
-                if (!setupFlag) {
+                if (!setupFlag)
+                {
                     game.init(true);
                     setupFlag = true;
                 }
                 game.display();
-            } else if (command == "resign") {
-                if (gameRunning) {
+            }
+            else if (command == "resign")
+            {
+                if (gameRunning)
+                {
                     gameRunning = false;
-                    if (whiteMove) {
+                    if (whiteMove)
+                    {
                         blackWins++;
-                    } else {
+                        out << "White Resigns." << endl;
+                    }
+                    else
+                    {
                         whiteWins++;
+                        out << "Black Resigns." << endl;
                     }
                     break;
                 }
-            } else if (command == "move") {
-                if (gameRunning) {
+            }
+            else if (command == "move")
+            {
+                if (gameRunning)
+                {
                     vector<int> move;
-                    if (whiteMove) {
-                        move = players.at(0)->getMove();
-                    } else {
-                        move = players.at(1)->getMove();
+                    string start, end;
+                    if (iss >> start >> end)
+                    {
+                        string promotion;
+                        if (iss >> promotion)
+                        {
+                            // Handle pawn promotion
+                        }
+                        if (whiteMove)
+                        {
+                            move = players.at(0)->getMove(start, end);
+                            out << "White moves from: " << start << " to " << end << "." << endl;
+                        }
+                        else
+                        {
+                            move = players.at(1)->getMove(start, end);
+                            out << "Black moves from: " << start << " to " << end << "." << endl;
+                        }
+                    }
+                    else
+                    {
+                        // for Bot classes
                     }
                     int col = whiteMove ? 0 : 1;
                     bool success = game.makeMove(move, col);
-                    if (success) {
+                    if (success)
+                    {
                         whiteMove = !whiteMove;
                     }
                     game.display();
                 }
-            } else if (command == "setup") {
-                if (!gameRunning) {
+            }
+            else if (command == "setup")
+            {
+                if (!gameRunning)
+                {
                     setupFlag = true;
                     string setupCommand;
-                    while (cin >> setupCommand && setupCommand != "done") {
-                        if (setupCommand == "+" || setupCommand == "-") {
+                    while (cin >> setupCommand && setupCommand != "done")
+                    {
+                        if (setupCommand == "+" || setupCommand == "-")
+                        {
                             string piece, spot;
                             bool validPiece = true;
-                            if (setupCommand == "+") {
+                            if (setupCommand == "+")
+                            {
                                 cin >> piece;
-                                if (piece.find_first_not_of("RBNQKPrbnqkp") != string::npos) {
+                                if (piece.find_first_not_of("RBNQKPrbnqkp") != string::npos)
+                                {
                                     cout << "Enter a valid piece" << endl;
                                     validPiece = false;
                                     continue;
                                 }
                             }
-                            if (validPiece) {
+                            if (validPiece)
+                            {
                                 cin >> spot;
-                                if (spot.length() != 2 || spot[0] < 'a' || spot[0] > 'h' || spot[1] < '1' || spot[1] > '8') {
+                                if (spot.length() != 2 || spot[0] < 'a' || spot[0] > 'h' || spot[1] < '1' || spot[1] > '8')
+                                {
                                     cout << "Enter a valid location." << endl;
                                     continue;
                                 }
                                 int location = (spot[0] - 'a') * 10 + (spot[1] - '1');
-                                if (setupCommand == "+") {
+                                if (setupCommand == "+")
+                                {
                                     game.init(false, piece[0], location);
-                                } else {
+                                }
+                                else
+                                {
                                     game.init(false, '\0', location, true);
                                 }
                                 game.display();
                             }
                         }
-                        else if (setupCommand == "=") {
+                        else if (setupCommand == "=")
+                        {
                             string colour;
                             cin >> colour;
                             whiteMove = (colour == "white");
                         }
-                        else {
+                        else
+                        {
                             cout << "Enter a valid setup command." << endl;
                         }
                     }
                 }
-            } else if (command == "quit") {
-                if ((blackDraws % 2) == 0) {
-                        blackScore = blackWins + (blackDraws / 2);
-                        blackScoreString = to_string(blackScore);
-                    } else if ((blackDraws % 2) == 1) {
-                        blackScore = blackWins + (blackDraws / 2);
-                        blackScoreString = to_string(blackScore) + ".5";
-                    } 
-                    if ((whiteDraws % 2) == 0) {
-                        whiteScore = whiteWins + (whiteDraws / 2);
-                        whiteScoreString = to_string(whiteScore);
-                    } else if ((whiteDraws % 2) == 1) {
-                        whiteScore = whiteWins + (whiteDraws / 2);
-                        whiteScoreString = to_string(whiteScore) + ".5";
-                    }
-                    cout << "Final Score:" << endl;
-                    cout << "White: " << whiteScoreString << endl;
-                    cout << "Black: " << blackScoreString << endl;
-                    return 0;
-            } else {
-                cout << "Invalid command." << endl;
+            }
+            else if (command == "quit")
+            {
+                if ((blackDraws % 2) == 0)
+                {
+                    blackScore = blackWins + (blackDraws / 2);
+                    blackScoreString = to_string(blackScore);
+                }
+                else if ((blackDraws % 2) == 1)
+                {
+                    blackScore = blackWins + (blackDraws / 2);
+                    blackScoreString = to_string(blackScore) + ".5";
+                }
+                if ((whiteDraws % 2) == 0)
+                {
+                    whiteScore = whiteWins + (whiteDraws / 2);
+                    whiteScoreString = to_string(whiteScore);
+                }
+                else if ((whiteDraws % 2) == 1)
+                {
+                    whiteScore = whiteWins + (whiteDraws / 2);
+                    whiteScoreString = to_string(whiteScore) + ".5";
+                }
+                cout << "Final Score:" << endl;
+                out << "Final Score:" << endl;
+                cout << "White: " << whiteScoreString << endl;
+                out << "White: " << whiteScoreString << endl;
+                cout << "Black: " << blackScoreString << endl;
+                out << "Black: " << blackScoreString << endl;
+                return 0;
+            }
+            else
+            {
+                if (command != "")
+                    cout << "Invalid command." << endl;
             }
         }
     }

@@ -45,9 +45,7 @@ vector<int> Human::getMove() {
 } */
 
 
-vector<int> Human::getMove() {
-    string start, end;
-    cin >> start >> end;
+vector<int> Human::getMove(string start, string end) {
     if(start.length() != 2 || end.length() != 2 || start[0] < 'a' || start[0] > 'h' || start[1] < '1' || start[1] > '8' || end[0] < 'a' || end[0] > 'h' || end[1] < '1' || end[1] > '8') {
        cout << "Enter a valid location." << endl;
     }
