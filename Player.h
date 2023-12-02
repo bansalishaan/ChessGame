@@ -21,30 +21,31 @@ class Bot: public Player {
     protected:
         Board *board;
         int col;
+        template<typename T>
+            void randNumGenerator(T *list);
     public:
         Bot(Board *b, int col);
         virtual ~Bot() = default;
 };
 
 class Bot1: public Bot {
-    template<typename T>
-        void randNumGenerator(T *list);
     public:
         Bot1(Board *b, int col);
-        vector<int> getMove() override;
+        vector<int> getMove(string start, string end) override;
 };
 
-// class Bot2: public Bot {
-//     public:
-//         Bot2();
-//         vector<int> getMove() override;
-// };
+class Bot2: public Bot1 {
+    public:
+        Bot2(Board *b, int col);
+        vector<int> getMove2(string start, string end);
+};
 
-// class Bot3: public Bot {
-//     public:
-//         Bot3();
-//         vector<int> getMove() override;
-// };
+class Bot3: public Bot1 {
+    bool avoidsCapture(int loc, int move);
+    public:
+        Bot3(Board *b, int col);
+        vector<int> getMove3(string start, string end);
+};
 
 // class Bot4: public Bot {
 //     public:
