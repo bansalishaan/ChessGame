@@ -1,5 +1,6 @@
-CXX = g++-13 -std=c++20
-CXXFLAGS = -Wall -g  -ld_classic
+CXX = g++-11 -std=c++20
+CXXFLAGS = -Wall -g -O -MMD
+LIBFLAGS = -lX11
 SOURCES = $(wildcard *.cc)   # list of all .cc files in the current directory
 OBJECTS = ${SOURCES:.cc=.o}  # .o files depend upon .cc files with same names
 DEPENDS = ${OBJECTS:.o=.d}   # .d file is list of dependencies for corresponding .cc file
