@@ -615,8 +615,8 @@ vector<int> Bot1::getMove(string start, string end)
 
 Bot2::Bot2(Board *b, int col) : Bot1{b, col} {}
 
-vector<int> Bot2::getMove2(string start, string end)
-{
+vector<int> Bot2::getMove2(string start, string end) {
+
     map<int, char> *ownPieces = (col == 0 ? &board->whitePieces : 
                                             &board->blackPieces);
     map<int, char> *oppPieces = (col == 0 ? &board->blackPieces : 
@@ -627,9 +627,6 @@ vector<int> Bot2::getMove2(string start, string end)
     randNumGenerator(&mapLoc);
 
     vector<vector<int>> movesList;
-    // vector<vector<int>> captureAndCheck;
-    // vector<vector<int>> capture;
-    // vector<vector<int>> check;
 
     for (auto pieceLoc = mapLoc.begin(); pieceLoc != mapLoc.end(); ++pieceLoc) {
         std::cout << *pieceLoc << " DONE\n";
@@ -1260,6 +1257,849 @@ vector<int> Bot2::getMove2(string start, string end)
                                                col == 0 ? 1 : 0, ownPieces, 
                                                oppPieces, true) ||
                     oppPieces->count(*pieceLoc + 8) == 1)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 8});
+            }
+        }
+
+        else if (pieceType == 'k' || pieceType == 'K') {
+
+            if (*pieceLoc % 10 != 7 && ownPieces->count(*pieceLoc + 1) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 1,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 1,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc + 1) == 1)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 1});
+            }
+
+            if (*pieceLoc % 10 != 0 && ownPieces->count(*pieceLoc - 1) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 1,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 1,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc - 1) == 1)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 1});
+            }
+
+            if (*pieceLoc / 10 != 7 && ownPieces->count(*pieceLoc + 10) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 10,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 10,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc + 10) == 1)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 10});
+            }
+
+            if (*pieceLoc / 10 != 0 && ownPieces->count(*pieceLoc - 10) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 10,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 10,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc - 10) == 1)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 10});
+            }
+
+            if (*pieceLoc / 10 != 7 && *pieceLoc % 10 != 7 &&
+                ownPieces->count(*pieceLoc + 11) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 11,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 11,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc + 11) == 1)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 11});
+            }
+
+            if (*pieceLoc / 10 != 0 && *pieceLoc % 10 != 0 &&
+                ownPieces->count(*pieceLoc - 11) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 11,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 11,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc - 11) == 1)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 11});
+            }
+
+            if (*pieceLoc / 10 != 7 && *pieceLoc % 10 != 0 &&
+                ownPieces->count(*pieceLoc + 9) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 9,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 9,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc + 9) == 1)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 9});
+            }
+
+            if (*pieceLoc / 10 != 0 && *pieceLoc % 10 != 7 &&
+                ownPieces->count(*pieceLoc - 9) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 9,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 9,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc - 9) == 1)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 9});
+            }
+        }
+    }
+    std::cout << "FORLOOPENDS\n";
+    if (movesList.size() != 0) {
+        randNumGenerator(&movesList);
+        std::cout << movesList.at(0).at(0) << " " << movesList.at(0).at(1) << "\n";
+        return movesList.at(0);
+    } else {
+        std::cout << "BOT!\n";
+        return getMove(start, end);
+    }
+}
+
+Bot3::Bot3(Board *b, int col) : Bot1{b, col} {}
+
+bool Bot3::avoidsCapture(int loc, int move) {
+    map<int, char> *ownPieces = (col == 0 ? &board->whitePieces : 
+                                            &board->blackPieces);
+    map<int, char> *oppPieces = (col == 0 ? &board->blackPieces : 
+                                            &board->whitePieces);
+    char oppPiece = '\0';
+    if(oppPieces->count(move) == 1) {
+        oppPiece = (*oppPieces)[move];
+        oppPieces->erase(move);
+    }
+    (*ownPieces)[move] = (*ownPieces)[loc];
+    ownPieces->erase(loc);
+    bool captured = board->inCheck(col, move);
+    if(oppPiece != '\0') (*oppPieces)[move] = oppPiece;
+    (*ownPieces)[loc] = (*ownPieces)[move];
+    ownPieces->erase(move);
+
+    if(captured) return false;
+    return true;
+}
+
+vector<int> Bot3::getMove3(string start, string end) {
+    
+    map<int, char> *ownPieces = (col == 0 ? &board->whitePieces : 
+                                            &board->blackPieces);
+    map<int, char> *oppPieces = (col == 0 ? &board->blackPieces : 
+                                            &board->whitePieces);
+    vector<int> mapLoc;
+    for (auto i = ownPieces->begin(); i != ownPieces->end(); ++i)
+        mapLoc.emplace_back(i->first);
+    randNumGenerator(&mapLoc);
+
+    vector<vector<int>> movesList;
+
+    for (auto pieceLoc = mapLoc.begin(); pieceLoc != mapLoc.end(); ++pieceLoc) {
+        std::cout << *pieceLoc << " DONE\n";
+        char pieceType = (*ownPieces)[*pieceLoc];
+
+        if (pieceType == 'P') {
+            if (*pieceLoc / 10 == 1 &&
+                ownPieces->count(*pieceLoc + 1) == 0 &&
+                ownPieces->count(*pieceLoc + 2) == 0 &&
+                oppPieces->count(*pieceLoc + 1) == 0 &&
+                oppPieces->count(*pieceLoc + 2) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 2, col,
+                                            ownPieces, oppPieces, true)) {
+
+                if(board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 2, 1,
+                                           ownPieces, oppPieces, true))
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 2});
+                else if(oppPieces->count(*pieceLoc + 12) == 0 &&
+                        oppPieces->count(*pieceLoc - 8) == 0 &&
+                        avoidsCapture(*pieceLoc, *pieceLoc + 2))
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 2});
+            } 
+
+            if (ownPieces->count(*pieceLoc + 1) == 0 &&
+                oppPieces->count(*pieceLoc + 1) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 1, col,
+                                            ownPieces, oppPieces, true)) {
+
+                if (*pieceLoc / 10 == 6) {
+
+                    vector<int> promotion{'Q', 'B', 'N', 'R'};
+                    for (auto i = promotion.begin(); i != promotion.end(); ++i) 
+                    {
+                        if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 
+                        1, 1, ownPieces, oppPieces, true) ||
+                        avoidsCapture(*pieceLoc, *pieceLoc + 1))
+                            movesList.emplace_back(vector<int>{*pieceLoc, 
+                                                           *pieceLoc + 1, *i});
+                    }
+                }
+                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 1, 
+                1, ownPieces, oppPieces, true) || 
+                avoidsCapture(*pieceLoc, *pieceLoc + 1))
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 1});
+            }
+
+            if (oppPieces->count(*pieceLoc + 11) == 1 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 11,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (*pieceLoc / 10 == 6) {
+                    vector<int> promotion{'Q', 'B', 'N', 'R'};
+                    for (auto i = promotion.begin(); i != promotion.end(); ++i)
+                        movesList.emplace_back(
+                                vector<int>{*pieceLoc, *pieceLoc + 11, *i});
+                } else
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 11});
+            }
+
+            if (oppPieces->count(*pieceLoc - 9) == 1 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 9, col,
+                                            ownPieces, oppPieces, true)) {
+
+                if (*pieceLoc / 10 == 6) {
+                    
+                    vector<int> promotion{'Q', 'B', 'N', 'R'};
+                    for (auto i = promotion.begin(); i != promotion.end(); ++i)
+                        movesList.emplace_back(
+                            vector<int>{*pieceLoc, *pieceLoc - 9, *i});
+                } else 
+                    movesList.emplace_back(vector<int>{*pieceLoc, 
+                                                     *pieceLoc - 9});
+            }
+
+            if (*pieceLoc / 10 == 4 &&
+                board->enPassantPawns.size() == 1 &&
+                board->enPassantPawns.at(0) == *pieceLoc + 10) {
+                
+                oppPieces->erase(*pieceLoc + 10);
+                bool whiteInCheck = board->movePutsKingInCheck(*pieceLoc,
+                                                               *pieceLoc + 11, 
+                                                               col, ownPieces, 
+                                                               oppPieces, true);
+                (*oppPieces)[*pieceLoc + 10] = 'p';
+                if(!whiteInCheck)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 11});
+            }
+
+            if (*pieceLoc / 10 == 4 &&
+                board->enPassantPawns.size() == 1 &&
+                board->enPassantPawns.at(0) == *pieceLoc - 10) {
+                
+                oppPieces->erase(*pieceLoc - 10);
+                bool whiteInCheck = board->movePutsKingInCheck(*pieceLoc,
+                                                               *pieceLoc - 9, 
+                                                               col, ownPieces, 
+                                                               oppPieces, true);
+                (*oppPieces)[*pieceLoc - 10] = 'p';
+                if(!whiteInCheck)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 9});
+            }
+        }
+
+        else if (pieceType == 'p')
+        {
+            if (*pieceLoc / 10 == 6 &&
+                ownPieces->count(*pieceLoc - 1) == 0 &&
+                ownPieces->count(*pieceLoc - 2) == 0 &&
+                oppPieces->count(*pieceLoc - 1) == 0 &&
+                oppPieces->count(*pieceLoc - 2) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 2, col,
+                                            ownPieces, oppPieces, true)) {
+                if(board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 2, 0,
+                                           ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, 
+                                                       *pieceLoc - 2});
+                else if(oppPieces->count(*pieceLoc - 12) == 0 &&
+                        oppPieces->count(*pieceLoc + 8) == 0 &&
+                        avoidsCapture(*pieceLoc, *pieceLoc - 2))
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 2});
+            }
+
+            if (ownPieces->count(*pieceLoc - 1) == 0 &&
+                oppPieces->count(*pieceLoc - 1) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 1, col,
+                                            ownPieces, oppPieces, true)) {
+
+                if (*pieceLoc / 10 == 1) {
+                    vector<int> promotion{'Q', 'B', 'N', 'R'};
+                    for (auto i = promotion.begin(); i != promotion.end(); ++i) 
+                    {
+                        if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 
+                        1, 0, ownPieces, oppPieces, true) ||
+                        avoidsCapture(*pieceLoc, *pieceLoc - 1))
+                            movesList.emplace_back(
+                                vector<int>{*pieceLoc, *pieceLoc - 1, *i});
+                    }
+                }
+                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 1, 
+                0, ownPieces, oppPieces, true) ||
+                avoidsCapture(*pieceLoc, *pieceLoc - 1))
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 1});
+            }
+
+            if (oppPieces->count(*pieceLoc - 11) == 1 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 11,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (*pieceLoc / 10 == 1) {
+                    vector<int> promotion{'q', 'b', 'n', 'r'};
+                    for (auto i = promotion.begin(); i != promotion.end(); ++i)
+                            movesList.emplace_back(
+                                vector<int>{*pieceLoc, *pieceLoc - 11, *i});
+                } else movesList.emplace_back(
+                    vector<int>{*pieceLoc, *pieceLoc - 11});
+            }
+
+            if (oppPieces->count(*pieceLoc + 9) == 1 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 9, col,
+                                            ownPieces, oppPieces, true)) {
+
+                if (*pieceLoc / 10 == 1) {
+                    vector<int> promotion{'q', 'b', 'n', 'r'};
+                    for (auto i = promotion.begin(); i != promotion.end(); ++i)
+                        movesList.emplace_back(
+                            vector<int>{*pieceLoc, *pieceLoc + 9, *i});
+                } else movesList.emplace_back(
+                    vector<int>{*pieceLoc, *pieceLoc + 9});
+            }
+
+            if (*pieceLoc / 10 == 3 &&
+                board->enPassantPawns.size() == 1 &&
+                board->enPassantPawns.at(0) == *pieceLoc + 10) {
+
+                oppPieces->erase(*pieceLoc + 10);
+                bool blackInCheck = board->movePutsKingInCheck(*pieceLoc,
+                                                               *pieceLoc + 9, 
+                                                               col, ownPieces, 
+                                                               oppPieces, true);
+                (*oppPieces)[*pieceLoc - 10] = 'P';
+                if (!blackInCheck)
+                    movesList.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 9});
+            }
+
+            if (*pieceLoc / 10 == 3 &&
+                board->enPassantPawns.size() == 1 &&
+                board->enPassantPawns.at(0) == *pieceLoc - 10) {
+
+                oppPieces->erase(*pieceLoc - 10);
+                bool blackInCheck = board->movePutsKingInCheck(*pieceLoc,
+                                                               *pieceLoc - 11, 
+                                                               col, ownPieces, 
+                                                               oppPieces, true);
+                (*oppPieces)[*pieceLoc - 10] = 'P';
+                if (!blackInCheck)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 11});
+            }
+        }
+
+        else if (pieceType == 'r' || pieceType == 'R') {
+            for (int i = *pieceLoc + 1; i % 10 != 8 &&
+                                        ownPieces->count(i) == 0; ++i) {
+
+                std::cout << "HERE1" << std::endl;
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, 
+                                                    true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc + 10; i < 78 &&
+                                         ownPieces->count(i) == 0; i += 10) {
+
+                std::cout << "HERE2" << std::endl;
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc - 1; i >= *pieceLoc / 10 * 10 &&
+                                        ownPieces->count(i) == 0; --i) {
+
+                std::cout << "HERE3" << i % 10 << std::endl;
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc - 10; i >= 0 &&
+                                         ownPieces->count(i) == 0; i -= 10) {
+
+                std::cout << "HERE4" << std::endl;
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+        }
+
+        else if (pieceType == 'b' || pieceType == 'B') {
+
+            for (int i = *pieceLoc + 11; i < 78 && i % 10 != 8 &&
+                                         ownPieces->count(i) == 0; i += 11) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc + 9; i < 78 && i % 10 != 9 &&
+                                        ownPieces->count(i) == 0; i += 9) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc - 11; i >= 0 && i % 10 != 9 &&
+                                         ownPieces->count(i) == 0; i -= 11) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc - 9; i >= 0 && i % 10 != 8 &&
+                                        ownPieces->count(i) == 0; i -= 9) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+        }
+
+        else if (pieceType == 'q' || pieceType == 'Q') {
+
+            for (int i = *pieceLoc + 1; i % 10 != 8 &&
+                                        ownPieces->count(i) == 0; ++i) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, 
+                                                    true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc + 10; i < 78 &&
+                                         ownPieces->count(i) == 0; i += 10) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc - 1; i >= *pieceLoc / 10 * 10 &&
+                                        ownPieces->count(i) == 0; --i) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc - 10; i >= 0 &&
+                                         ownPieces->count(i) == 0; i -= 10) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc + 11; i < 78 && i % 10 != 8 &&
+                                         ownPieces->count(i) == 0; i += 11) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc + 9; i < 78 && i % 10 != 9 &&
+                                        ownPieces->count(i) == 0; i += 9) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc - 11; i >= 0 && i % 10 != 9 &&
+                                         ownPieces->count(i) == 0; i -= 11) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+            for (int i = *pieceLoc - 9; i >= 0 && i % 10 != 8 &&
+                                        ownPieces->count(i) == 0; i -= 9) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true) &&
+                    oppPieces->count(i) == 1)
+                    break;
+                if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
+                                               oppPieces, true))
+                    continue;
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
+                                                    col == 0 ? 1 : 0,
+                                                    ownPieces, oppPieces, true))
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if(avoidsCapture(*pieceLoc, i)) 
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                else if (oppPieces->count(i) == 1) {
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
+                    break;
+                }
+            }
+        }
+
+        else if (pieceType == 'n' || pieceType == 'N') {
+
+            if (*pieceLoc / 10 >= 2 && *pieceLoc % 10 != 0 &&
+                ownPieces->count(*pieceLoc - 21) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 21,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 21,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc - 21) == 1 ||
+                    avoidsCapture(*pieceLoc, *pieceLoc - 21))
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 21});
+            }
+
+            if (*pieceLoc / 10 >= 2 && *pieceLoc % 10 != 7 &&
+                ownPieces->count(*pieceLoc - 19) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 19,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 19,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc - 19) == 1 ||
+                    avoidsCapture(*pieceLoc, *pieceLoc - 19))
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 19});
+            }
+
+            if (*pieceLoc / 10 != 0 && *pieceLoc % 10 >= 2 &&
+                ownPieces->count(*pieceLoc - 12) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 12,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 12,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc - 12) == 1 ||
+                    avoidsCapture(*pieceLoc, *pieceLoc - 12))
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 12});
+
+            }
+
+            if (*pieceLoc / 10 != 0 && *pieceLoc % 10 <= 5 &&
+                ownPieces->count(*pieceLoc - 8) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 8,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 8,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc - 8) == 1 ||
+                    avoidsCapture(*pieceLoc, *pieceLoc - 8))
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 8});
+            }
+
+            if (*pieceLoc / 10 <= 5 && *pieceLoc % 10 != 7 &&
+                ownPieces->count(*pieceLoc + 21) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 21,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 21,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc + 21) == 1 ||
+                    avoidsCapture(*pieceLoc, *pieceLoc + 21))
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 21});
+            }
+
+            if (*pieceLoc / 10 <= 5 && *pieceLoc % 10 != 0 &&
+                ownPieces->count(*pieceLoc + 19) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 19,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 19,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc + 19) == 1 ||
+                    avoidsCapture(*pieceLoc, *pieceLoc + 19))
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 19});
+            }
+
+            if (*pieceLoc / 10 != 7 && *pieceLoc % 10 <= 5 &&
+                ownPieces->count(*pieceLoc + 12) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 12,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 12,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc + 12) == 1 ||
+                    avoidsCapture(*pieceLoc, *pieceLoc + 12))
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 12});
+            }
+
+            if (*pieceLoc / 10 != 7 && *pieceLoc % 10 >= 2 &&
+                ownPieces->count(*pieceLoc + 8) == 0 &&
+                !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 8,
+                                            col, ownPieces, oppPieces, true)) {
+
+                if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 8,
+                                               col == 0 ? 1 : 0, ownPieces, 
+                                               oppPieces, true) ||
+                    oppPieces->count(*pieceLoc + 8) == 1 ||
+                    avoidsCapture(*pieceLoc, *pieceLoc + 8))
                     movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc + 8});
             }
