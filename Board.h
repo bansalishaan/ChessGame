@@ -42,9 +42,11 @@ class Board {
     bool blackRRookMoved = false;
     vector<int> enPassantPawns;
     unique_ptr<Display> d;
+    friend class Bot1;
 
     bool movePutsKingInCheck(int pieceLoc, int moveLoc, int col,
-        map<int, char> *ownPieces, map<int, char> *oppPieces);
+        map<int, char> *ownPieces, map<int, char> *oppPieces, 
+        bool dontMove = false);
 
     public:
         Board(int boardType);

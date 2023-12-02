@@ -132,6 +132,9 @@ int main()
                 {
                     players.emplace_back(make_unique<Human>());
                 }
+                else if (blackPlayerType == "computer1") {
+                    players.emplace_back(make_unique<Bot1>(&game, 1));
+                }
                 gameRunning = true;
                 if (!setupFlag)
                 {

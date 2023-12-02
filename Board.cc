@@ -176,7 +176,7 @@ bool Board::validInit() {
 }
 
 bool Board::movePutsKingInCheck(int pieceLoc, int moveLoc, int col,
-        map<int, char> *ownPieces, map<int, char> *oppPieces) {
+        map<int, char> *ownPieces, map<int, char> *oppPieces, bool dontMove) {
 
     char oppPiece = '\0';
     if(oppPieces->count(moveLoc) == 1) {
@@ -193,6 +193,11 @@ bool Board::movePutsKingInCheck(int pieceLoc, int moveLoc, int col,
         std::cout << "INVALID MOVE: King is in check! "
                     << "Try a different move.\n";
         return true;
+    }
+    if(dontMove) {
+        if(oppPiece != '\0') (*oppPieces)[moveLoc] = oppPiece;
+        (*ownPieces)[pieceLoc] = (*ownPieces)[moveLoc];
+        ownPieces->erase(moveLoc);
     }
     return false;
 }

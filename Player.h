@@ -17,18 +17,22 @@ class Human: public Player {
         vector<int> getMove(string start, string end) override;
 };
 
-// class Bot: public Player {
-//     protected:
-//         Board *board;
-//     public:
-//         Bot();
-// };
+class Bot: public Player {
+    protected:
+        Board *board;
+        int col;
+    public:
+        Bot(Board *b, int col);
+        virtual ~Bot() = default;
+};
 
-// class Bot1: public Bot {
-//     public:
-//         Bot1();
-//         vector<int> getMove() override;
-// };
+class Bot1: public Bot {
+    template<typename T>
+        void randNumGenerator(T *list);
+    public:
+        Bot1(Board *b, int col);
+        vector<int> getMove() override;
+};
 
 // class Bot2: public Bot {
 //     public:
