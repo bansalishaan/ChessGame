@@ -190,8 +190,8 @@ bool Board::movePutsKingInCheck(int pieceLoc, int moveLoc, int col,
         if(oppPiece != '\0') (*oppPieces)[moveLoc] = oppPiece;
         (*ownPieces)[pieceLoc] = (*ownPieces)[moveLoc];
         ownPieces->erase(moveLoc);
-        std::cout << "INVALID MOVE: King is in check! "
-                    << "Try a different move.\n";
+        // std::cout << "INVALID MOVE: King is in check! "
+        //             << "Try a different move.\n";
         return true;
     }
     if(dontMove) {
@@ -481,15 +481,16 @@ bool Board::makeMove(vector<int> move, int col) {
         if(currNum == moveNum) {
             int i = currLetter > moveLetter ? move.at(1) + 10 : move.at(0) + 10;
             int j = currLetter > moveLetter ? move.at(0) : move.at(1);
-            for(int i; i < j; i += 10) {
+            for(i; i < j; i += 10) {
                 if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
-                    std::cout << "INVALID MOVE: There's a piece in between. ";
+                    std::cout << "rh1INVALID MOVE: There's a piece in between. ";
                     std::cout << "Try a different move.\n";
                     return false;
                 }
             }
             if(ownPieces->count(move.at(1)) == 1) {
-                std::cout << "INVALID MOVE: There's a piece in between. ";
+                std::cout << move.at(0) << " " << move.at(1) << "\n";
+                std::cout << "rh2INVALID MOVE: There's a piece in between. ";
                 std::cout << "Try a different move.\n";
                 return false;
             }
@@ -512,7 +513,7 @@ bool Board::makeMove(vector<int> move, int col) {
                 }
             }
             if(ownPieces->count(move.at(1)) == 1) {
-                std::cout << "INVALID MOVE: There's a piece in between. ";
+                std::cout << "rvINVALID MOVE: There's a piece in between. ";
                 std::cout << "Try a different move.\n";
                 return false;
             }
@@ -591,15 +592,15 @@ bool Board::makeMove(vector<int> move, int col) {
         if(currNum == moveNum) {
             int i = currLetter > moveLetter ? move.at(1) + 10 : move.at(0) + 10;
             int j = currLetter > moveLetter ? move.at(0) : move.at(1);
-            for(int i; i < j; i += 10) {
+            for(i; i < j; i += 10) {
                 if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
-                    std::cout << "INVALID MOVE: There's a piece in between. ";
+                    std::cout << "qh1INVALID MOVE: There's a piece in between. ";
                     std::cout << "Try a different move.\n";
                     return false;
                 }
             }
             if(ownPieces->count(move.at(1)) == 1) {
-                std::cout << "INVALID MOVE: There's a piece in between. ";
+                std::cout << "qh2INVALID MOVE: There's a piece in between. ";
                 std::cout << "Try a different move.\n";
                 return false;
             }
@@ -618,7 +619,7 @@ bool Board::makeMove(vector<int> move, int col) {
                 }
             }
             if(ownPieces->count(move.at(1)) == 1) {
-                std::cout << "INVALID MOVE: There's a piece in between. ";
+                std::cout << "qvINVALID MOVE: There's a piece in between. ";
                 std::cout << "Try a different move.\n";
                 return false;
             }
@@ -813,7 +814,10 @@ bool Board::noMoves(int col) {
                 bool check = inCheck(0);
                 ownPieces->erase(piece.first + 1);
                 (*ownPieces)[piece.first] = 'P';
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE1\n";
+                    return false;
+                }
             }
             // Pawn moves forward 2 squares
             if(ownPieces->count(piece.first + 1) == 0 &&
@@ -827,7 +831,10 @@ bool Board::noMoves(int col) {
                 bool check = inCheck(0);
                 ownPieces->erase(piece.first + 2);
                 (*ownPieces)[piece.first] = 'P';
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE2\n";
+                    return false;
+                }
             }
             // Pawn takes diagonally left and doesn't perform en passant
             if(oppPieces->count(piece.first - 9) == 1) {
@@ -839,7 +846,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 9);
                 (*ownPieces)[piece.first] = 'P';
                 (*oppPieces)[piece.first - 9] = oppPiece;
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE3\n";
+                    return false;
+                }
             }
             // Pawn takes diagonally right and doesn't perform en passant
             if(oppPieces->count(piece.first + 11) == 1) {
@@ -851,7 +861,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 11);
                 (*ownPieces)[piece.first] = 'P';
                 (*oppPieces)[piece.first + 11] = oppPiece;
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE4\n";
+                    return false;
+                }
             }
             // Pawn takes diagonally left and performs en passant
             if(enPassantPawns.size() == 1 &&
@@ -863,7 +876,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 9);
                 (*ownPieces)[piece.first] = 'P';
                 (*oppPieces)[piece.first - 10] = 'p';
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE5\n";
+                    return false;
+                }
             }
             // Pawn takes diagonally right and performs en passant
             if(enPassantPawns.size() == 1 &&
@@ -875,7 +891,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 11);
                 (*ownPieces)[piece.first] = 'P';
                 (*oppPieces)[piece.first + 10] = 'p';
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE6\n";
+                    return false;
+                }
             }
         }
 
@@ -886,10 +905,13 @@ bool Board::noMoves(int col) {
 
                 ownPieces->erase(piece.first);
                 (*ownPieces)[piece.first - 1] = 'p';
-                bool check = inCheck(0);
+                bool check = inCheck(1);
                 ownPieces->erase(piece.first - 1);
                 (*ownPieces)[piece.first] = 'p';
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE7 " << piece.first << "\n";
+                    return false;
+                }
             }
             // Pawn moves forward 2 squares
             if(ownPieces->count(piece.first - 1) == 0 &&
@@ -900,10 +922,13 @@ bool Board::noMoves(int col) {
 
                 ownPieces->erase(piece.first);
                 (*ownPieces)[piece.first - 2] = 'p';
-                bool check = inCheck(0);
+                bool check = inCheck(1);
                 ownPieces->erase(piece.first - 2);
                 (*ownPieces)[piece.first] = 'p';
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE8\n";
+                    return false;
+                }
             }
             // Pawn takes diagonally left and doesn't perform en passant
             if(oppPieces->count(piece.first - 11) == 1) {
@@ -911,48 +936,56 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first);
                 oppPieces->erase(piece.first - 11);
                 (*ownPieces)[piece.first - 11] = 'p';
-                bool check = inCheck(0);
+                bool check = inCheck(1);
                 ownPieces->erase(piece.first - 11);
                 (*ownPieces)[piece.first] = 'p';
                 (*oppPieces)[piece.first - 11] = oppPiece;
-                if(!check) return false;
-            }
+                if(!check) {
+                    std::cout << "HERE9\n";
+                    return false;
+                }            }
             // Pawn takes diagonally right and doesn't perform en passant
             if(oppPieces->count(piece.first + 9) == 1) {
                 char oppPiece = (*oppPieces)[piece.first + 9];
                 ownPieces->erase(piece.first);
                 oppPieces->erase(piece.first + 9);
                 (*ownPieces)[piece.first + 9] = 'p';
-                bool check = inCheck(0);
+                bool check = inCheck(1);
                 ownPieces->erase(piece.first + 9);
                 (*ownPieces)[piece.first] = 'p';
                 (*oppPieces)[piece.first + 9] = oppPiece;
-                if(!check) return false;
-            }
+                if(!check) {
+                    std::cout << "HERE10\n";
+                    return false;
+                }            }
             // Pawn takes diagonally left and performs en passant
             if(enPassantPawns.size() == 1 &&
                     enPassantPawns.at(0) == piece.first - 10) {
                 ownPieces->erase(piece.first);
                 oppPieces->erase(piece.first - 10);
                 (*ownPieces)[piece.first - 11] = 'p';
-                bool check = inCheck(0);
+                bool check = inCheck(1);
                 ownPieces->erase(piece.first - 11);
                 (*ownPieces)[piece.first] = 'p';
                 (*oppPieces)[piece.first - 10] = 'P';
-                if(!check) return false;
-            }
+                if(!check) {
+                    std::cout << "HERE11\n";
+                    return false;
+                }            }
             // Pawn takes diagonally right and performs en passant
             if(enPassantPawns.size() == 1 &&
                     enPassantPawns.at(0) == piece.first + 10) {
                 ownPieces->erase(piece.first);
                 oppPieces->erase(piece.first + 10);
                 (*ownPieces)[piece.first + 9] = 'p';
-                bool check = inCheck(0);
+                bool check = inCheck(1);
                 ownPieces->erase(piece.first + 9);
                 (*ownPieces)[piece.first] = 'p';
                 (*oppPieces)[piece.first + 10] = 'P';
-                if(!check) return false;
-            }
+                if(!check) {
+                    std::cout << "HERE12\n";
+                    return false;
+                }            }
         }
         else if(piece.second == 'n' || piece.second == 'N') {
             if(ownPieces->count(piece.first - 21) == 0 && 
@@ -968,8 +1001,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 21);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 21] = oppPiece;
-                if(!check) return false;
-            }
+                if(!check) {
+                    std::cout << "HERE13\n";
+                    return false;
+                }            }
             if(ownPieces->count(piece.first - 19) == 0 && 
                piece.first - 19 >= 0 && piece.first % 10 != 8) {
                 char oppPiece = '\0';
@@ -983,8 +1018,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 19);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 19] = oppPiece;
-                if(!check) return false;
-            }
+                if(!check) {
+                    std::cout << "HERE14\n";
+                    return false;
+                }            }
             if(ownPieces->count(piece.first - 8) == 0 && 
                piece.first - 8 >= 0 && piece.first % 10 != 7
                && piece.first % 10 != 6) {
@@ -999,8 +1036,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 8);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 8] = oppPiece;
-                if(!check) return false;
-            }
+                if(!check) {
+                    std::cout << "HERE15\n";
+                    return false;
+                }            }
             if(ownPieces->count(piece.first - 12) == 0 && 
                piece.first - 12 >= 0 && piece.first % 10 != 0
                && piece.first % 10 != 1) {
@@ -1015,8 +1054,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 12);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 12] = oppPiece;
-                if(!check) return false;
-            }
+                if(!check) {
+                    std::cout << "HERE16\n";
+                    return false;
+                }            }
             if(ownPieces->count(piece.first + 8) == 0 && 
                piece.first + 8 < 78 && piece.first % 10 != 0
                && piece.first % 10 != 1) {
@@ -1031,8 +1072,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 8);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 8] = oppPiece;
-                if(!check) return false;
-            }
+                if(!check) {
+                    std::cout << "HERE17\n";
+                    return false;
+                }            }
             if(ownPieces->count(piece.first + 12) == 0 && 
                piece.first + 12 < 78 && piece.first % 10 != 6
                && piece.first % 10 != 7) {
@@ -1047,8 +1090,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 12);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 12] = oppPiece;
-                if(!check) return false;
-            }
+                if(!check) {
+                    std::cout << "HERE18\n";
+                    return false;
+                }            }
             if(ownPieces->count(piece.first + 19) == 0 && 
                piece.first + 19 < 78 && piece.first % 10 != 9
                && piece.first % 10 != 0) {
@@ -1063,8 +1108,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 19);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 19] = oppPiece;
-                if(!check) return false;
-            }
+                if(!check) {
+                    std::cout << "HERE19\n";
+                    return false;
+                }            }
             if(ownPieces->count(piece.first + 21) == 0 && 
                piece.first + 21 < 78 && piece.first % 10 != 7) {
                 char oppPiece = '\0';
@@ -1078,8 +1125,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 21);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 21] = oppPiece;
-                if(!check) return false;
-            }
+                if(!check) {
+                    std::cout << "HERE20\n";
+                    return false;
+                }            }
         }
         else if(piece.second == 'r' || piece.second == 'R') {
             ownPieces->erase(piece.first);
@@ -1097,6 +1146,7 @@ bool Board::noMoves(int col) {
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
                     (*ownPieces)[piece.first] = piece.second;
+                    std::cout << "HERE21\n";
                     return false;
                 }
                 if(oppPiece != '\0') break;
@@ -1114,6 +1164,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE22\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1132,6 +1183,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE23\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1150,6 +1202,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE24\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1172,6 +1225,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE25\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1190,6 +1244,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE26\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1208,6 +1263,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE27\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1226,6 +1282,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE28\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1248,6 +1305,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE29\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1266,6 +1324,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE30\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1284,6 +1343,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE31\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1302,6 +1362,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE32\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1320,6 +1381,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE33\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1338,6 +1400,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE34\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1356,6 +1419,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE35\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1374,6 +1438,7 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(i);
                 if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
                 if(!check) {
+                    std::cout << "HERE36\n";
                     (*ownPieces)[piece.first] = piece.second;
                     return false;
                 }
@@ -1395,7 +1460,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 1);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 1] = oppPiece;
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE37\n";
+                    return false;
+                }
             }
             if(ownPieces->count(piece.first - 1) == 0 && 
                piece.first - 1 >= 0 && piece.first % 10 != 0) {
@@ -1410,7 +1478,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 1);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 1] = oppPiece;
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE38\n";
+                    return false;
+                }
             }
             if(ownPieces->count(piece.first + 10) == 0 && 
                piece.first + 10 < 78) {
@@ -1425,7 +1496,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 10);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 10] = oppPiece;
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE39\n";
+                    return false;
+                }
             }
             if(ownPieces->count(piece.first - 10) == 0 && 
                piece.first - 10 >= 0) {
@@ -1440,7 +1514,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 10);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 10] = oppPiece;
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE40\n";
+                    return false;
+                }
             }
             if(ownPieces->count(piece.first + 11) == 0 && 
                piece.first + 11 < 78 && piece.first % 10 != 7) {
@@ -1455,7 +1532,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 11);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 11] = oppPiece;
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE41\n";
+                    return false;
+                }
             }
             if(ownPieces->count(piece.first + 9) == 0 && 
                piece.first + 9 < 78 && piece.first % 10 != 0) {
@@ -1470,7 +1550,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first + 9);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first + 9] = oppPiece;
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE42\n";
+                    return false;
+                }
             }
             if(ownPieces->count(piece.first - 11) == 0 && 
                piece.first - 11 >= 0 && piece.first % 10 != 0) {
@@ -1485,7 +1568,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 11);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 11] = oppPiece;
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE43\n";
+                    return false;
+                }
             }
             if(ownPieces->count(piece.first - 9) == 0 && 
                piece.first - 9 >= 0 && piece.first % 10 != 7) {
@@ -1500,7 +1586,10 @@ bool Board::noMoves(int col) {
                 ownPieces->erase(piece.first - 9);
                 (*ownPieces)[piece.first] = piece.second;
                 if(oppPiece != '\0') (*oppPieces)[piece.first - 9] = oppPiece;
-                if(!check) return false;
+                if(!check) {
+                    std::cout << "HERE44\n";
+                    return false;
+                }
             }
         }
     }
@@ -1525,7 +1614,7 @@ bool Board::inCheck(int col) {
         int pieceNum = piece.first % 10;
         
         if(piece.second == 'p' && 
-           (piece.first == kingLoc + 11 || piece.first == kingLoc - 9)) 
+           (piece.first == kingLoc + 11 || piece.first == kingLoc - 9))  
                 return true;
 
         else if(piece.second == 'P' && 
