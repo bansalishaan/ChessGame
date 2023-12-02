@@ -626,9 +626,10 @@ vector<int> Bot2::getMove2(string start, string end)
         mapLoc.emplace_back(i->first);
     randNumGenerator(&mapLoc);
 
-    vector<vector<int>> captureAndCheck;
-    vector<vector<int>> capture;
-    vector<vector<int>> check;
+    vector<vector<int>> movesList;
+    // vector<vector<int>> captureAndCheck;
+    // vector<vector<int>> capture;
+    // vector<vector<int>> check;
 
     for (auto pieceLoc = mapLoc.begin(); pieceLoc != mapLoc.end(); ++pieceLoc) {
         std::cout << *pieceLoc << " DONE\n";
@@ -644,7 +645,7 @@ vector<int> Bot2::getMove2(string start, string end)
                                             ownPieces, oppPieces, true) &&
                 board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 2, 1,
                                            ownPieces, oppPieces, true))
-                check.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 2});
+                movesList.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 2});
 
             if (ownPieces->count(*pieceLoc + 1) == 0 &&
                 oppPieces->count(*pieceLoc + 1) == 0 &&
@@ -658,13 +659,14 @@ vector<int> Bot2::getMove2(string start, string end)
                     {
                         if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 
                         1, 1, ownPieces, oppPieces, true))
-                            check.emplace_back(vector<int>{*pieceLoc, 
+                            movesList.emplace_back(vector<int>{*pieceLoc, 
                                                            *pieceLoc + 1, *i});
                     }
                 }
                 else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 1, 
                 1, ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 1});
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 1});
             }
 
             if (oppPieces->count(*pieceLoc + 11) == 1 &&
@@ -672,27 +674,13 @@ vector<int> Bot2::getMove2(string start, string end)
                                             col, ownPieces, oppPieces, true)) {
 
                 if (*pieceLoc / 10 == 6) {
-                    
                     vector<int> promotion{'Q', 'B', 'N', 'R'};
                     for (auto i = promotion.begin(); i != promotion.end(); ++i)
-                    {
-                        if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 
-                        11, 1, ownPieces, oppPieces, true))
-                            captureAndCheck.emplace_back(
+                        movesList.emplace_back(
                                 vector<int>{*pieceLoc, *pieceLoc + 11, *i});
-                        else
-                            capture.emplace_back(
-                                vector<int>{*pieceLoc, *pieceLoc + 11, *i});
-                    }
-                }
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 11,
-                                                    1, ownPieces, oppPieces, 
-                                                    true))
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, 
-                                                             *pieceLoc + 11});
-                else
-                    capture.emplace_back(vector<int>{*pieceLoc, 
-                                                     *pieceLoc + 11});
+                } else
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 11});
             }
 
             if (oppPieces->count(*pieceLoc - 9) == 1 &&
@@ -703,67 +691,41 @@ vector<int> Bot2::getMove2(string start, string end)
                     
                     vector<int> promotion{'Q', 'B', 'N', 'R'};
                     for (auto i = promotion.begin(); i != promotion.end(); ++i)
-                    {
-                        if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 9,
-                        1, ownPieces, oppPieces, true))
-                            captureAndCheck.emplace_back(
-                                vector<int>{*pieceLoc, *pieceLoc - 9, *i});
-                        else
-                            capture.emplace_back(
-                                vector<int>{*pieceLoc, *pieceLoc - 9, *i});
-                    }
-                }
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 9,
-                                                    1, ownPieces, oppPieces, 
-                                                    true))
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, 
-                                                             *pieceLoc - 9});
-                else
-                    capture.emplace_back(vector<int>{*pieceLoc, 
+                        movesList.emplace_back(
+                            vector<int>{*pieceLoc, *pieceLoc - 9, *i});
+                } else 
+                    movesList.emplace_back(vector<int>{*pieceLoc, 
                                                      *pieceLoc - 9});
             }
 
             if (*pieceLoc / 10 == 4 &&
                 board->enPassantPawns.size() == 1 &&
                 board->enPassantPawns.at(0) == *pieceLoc + 10) {
-
+                
                 oppPieces->erase(*pieceLoc + 10);
                 bool whiteInCheck = board->movePutsKingInCheck(*pieceLoc,
                                                                *pieceLoc + 11, 
                                                                col, ownPieces, 
                                                                oppPieces, true);
-                bool blackInCheck = board->movePutsKingInCheck(*pieceLoc,
-                                                               *pieceLoc + 11, 
-                                                               1, ownPieces, 
-                                                               oppPieces, true);
                 (*oppPieces)[*pieceLoc + 10] = 'p';
-                if (!whiteInCheck && blackInCheck)
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, 
-                                                             *pieceLoc + 11});
-                else if (!whiteInCheck)
-                    capture.emplace_back(vector<int>{*pieceLoc, 
-                                                     *pieceLoc + 11});
+                if(!whiteInCheck)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc + 11});
             }
 
             if (*pieceLoc / 10 == 4 &&
                 board->enPassantPawns.size() == 1 &&
                 board->enPassantPawns.at(0) == *pieceLoc - 10) {
-
+                
                 oppPieces->erase(*pieceLoc - 10);
                 bool whiteInCheck = board->movePutsKingInCheck(*pieceLoc,
                                                                *pieceLoc - 9, 
                                                                col, ownPieces, 
                                                                oppPieces, true);
-                bool blackInCheck = board->movePutsKingInCheck(*pieceLoc,
-                                                               *pieceLoc - 9, 
-                                                               1, ownPieces, 
-                                                               oppPieces, true);
                 (*oppPieces)[*pieceLoc - 10] = 'p';
-                if (!whiteInCheck && blackInCheck)
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, 
-                                                             *pieceLoc - 9});
-                else if (!whiteInCheck)
-                    capture.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 9});
+                if(!whiteInCheck)
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 9});
             }
         }
 
@@ -778,7 +740,7 @@ vector<int> Bot2::getMove2(string start, string end)
                                             ownPieces, oppPieces, true) &&
                 board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 2, 0,
                                            ownPieces, oppPieces, true))
-                check.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 2});
+                movesList.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 2});
 
             if (ownPieces->count(*pieceLoc - 1) == 0 &&
                 oppPieces->count(*pieceLoc - 1) == 0 &&
@@ -791,13 +753,14 @@ vector<int> Bot2::getMove2(string start, string end)
                     {
                         if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 
                         1, 0, ownPieces, oppPieces, true))
-                            check.emplace_back(
+                            movesList.emplace_back(
                                 vector<int>{*pieceLoc, *pieceLoc - 1, *i});
                     }
                 }
                 else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 1, 
                 0, ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 1});
+                    movesList.emplace_back(
+                        vector<int>{*pieceLoc, *pieceLoc - 1});
             }
 
             if (oppPieces->count(*pieceLoc - 11) == 1 &&
@@ -805,27 +768,12 @@ vector<int> Bot2::getMove2(string start, string end)
                                             col, ownPieces, oppPieces, true)) {
 
                 if (*pieceLoc / 10 == 1) {
-                    
                     vector<int> promotion{'q', 'b', 'n', 'r'};
                     for (auto i = promotion.begin(); i != promotion.end(); ++i)
-                    {
-                        if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 
-                        11, 0, ownPieces, oppPieces, true))
-                            captureAndCheck.emplace_back(
+                            movesList.emplace_back(
                                 vector<int>{*pieceLoc, *pieceLoc - 11, *i});
-                        else
-                            capture.emplace_back(
-                                vector<int>{*pieceLoc, *pieceLoc - 11, *i});
-                    }
-                }
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 11,
-                                                    0, ownPieces, oppPieces, 
-                                                    true))
-                    captureAndCheck.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc - 11});
-                else
-                    capture.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc - 11});
+                } else movesList.emplace_back(
+                    vector<int>{*pieceLoc, *pieceLoc - 11});
             }
 
             if (oppPieces->count(*pieceLoc + 9) == 1 &&
@@ -833,27 +781,12 @@ vector<int> Bot2::getMove2(string start, string end)
                                             ownPieces, oppPieces, true)) {
 
                 if (*pieceLoc / 10 == 1) {
-
                     vector<int> promotion{'q', 'b', 'n', 'r'};
                     for (auto i = promotion.begin(); i != promotion.end(); ++i)
-                    {
-                        if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 
-                        9, 0, ownPieces, oppPieces, true))
-                            captureAndCheck.emplace_back(
-                                vector<int>{*pieceLoc, *pieceLoc + 9, *i});
-                        else
-                            capture.emplace_back(
-                                vector<int>{*pieceLoc, *pieceLoc + 9, *i});
-                    }
-                }
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 9,
-                                                    0, ownPieces, oppPieces, 
-                                                    true))
-                    captureAndCheck.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc + 9});
-                else
-                    capture.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc + 9});
+                        movesList.emplace_back(
+                            vector<int>{*pieceLoc, *pieceLoc + 9, *i});
+                } else movesList.emplace_back(
+                    vector<int>{*pieceLoc, *pieceLoc + 9});
             }
 
             if (*pieceLoc / 10 == 3 &&
@@ -865,16 +798,9 @@ vector<int> Bot2::getMove2(string start, string end)
                                                                *pieceLoc + 9, 
                                                                col, ownPieces, 
                                                                oppPieces, true);
-                bool whiteInCheck = board->movePutsKingInCheck(*pieceLoc,
-                                                               *pieceLoc + 9, 
-                                                               0, ownPieces, 
-                                                               oppPieces, true);
                 (*oppPieces)[*pieceLoc - 10] = 'P';
-                if (!blackInCheck && whiteInCheck)
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, 
-                    *pieceLoc + 9});
-                else if (!blackInCheck)
-                    capture.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 9});
+                if (!blackInCheck)
+                    movesList.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 9});
             }
 
             if (*pieceLoc / 10 == 3 &&
@@ -886,16 +812,9 @@ vector<int> Bot2::getMove2(string start, string end)
                                                                *pieceLoc - 11, 
                                                                col, ownPieces, 
                                                                oppPieces, true);
-                bool whiteInCheck = board->movePutsKingInCheck(*pieceLoc,
-                                                               *pieceLoc - 11, 
-                                                               0, ownPieces, 
-                                                               oppPieces, true);
                 (*oppPieces)[*pieceLoc - 10] = 'P';
-                if (!blackInCheck && whiteInCheck)
-                    captureAndCheck.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc - 11});
-                else if (!blackInCheck)
-                    capture.emplace_back(
+                if (!blackInCheck)
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc - 11});
             }
         }
@@ -913,18 +832,14 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, 
                                                     true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -940,17 +855,12 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -966,17 +876,13 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -992,17 +898,13 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1020,17 +922,12 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1044,18 +941,12 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1)
-                {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1069,17 +960,13 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1093,17 +980,13 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1121,18 +1004,14 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, 
                                                     true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1146,17 +1025,13 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1170,17 +1045,13 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1194,17 +1065,13 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1218,17 +1085,13 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1242,18 +1105,13 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1)
-                {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1267,17 +1125,13 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1291,17 +1145,13 @@ vector<int> Bot2::getMove2(string start, string end)
                 if (board->movePutsKingInCheck(*pieceLoc, i, col, ownPieces,
                                                oppPieces, true))
                     continue;
-                if (board->movePutsKingInCheck(*pieceLoc, i, col == 0 ? 1 : 0,
-                                               ownPieces, oppPieces, true) &&
-                    oppPieces->count(i) == 1) {
-                    captureAndCheck.emplace_back(vector<int>{*pieceLoc, i});
-                    break;
-                } else if (board->movePutsKingInCheck(*pieceLoc, i, 
+                
+                if (board->movePutsKingInCheck(*pieceLoc, i, 
                                                     col == 0 ? 1 : 0,
                                                     ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                 else if (oppPieces->count(i) == 1) {
-                    capture.emplace_back(vector<int>{*pieceLoc, i});
+                    movesList.emplace_back(vector<int>{*pieceLoc, i});
                     break;
                 }
             }
@@ -1316,18 +1166,9 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 21,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc - 21) == 1)
-                    captureAndCheck.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc - 21});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 21,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 21});
-
-                else if (oppPieces->count(*pieceLoc - 21) == 1)
-                    capture.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc - 21});
             }
 
@@ -1338,18 +1179,9 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 19,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc - 19) == 1)
-                    captureAndCheck.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc - 19});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 19,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 19});
-
-                else if (oppPieces->count(*pieceLoc - 19) == 1)
-                    capture.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc - 19});
             }
 
@@ -1360,19 +1192,11 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 12,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc - 12) == 1)
-                    captureAndCheck.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc - 12});
 
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 12,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 12});
-
-                else if (oppPieces->count(*pieceLoc - 12) == 1)
-                    capture.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc - 12});
             }
 
             if (*pieceLoc / 10 != 0 && *pieceLoc % 10 <= 5 &&
@@ -1382,18 +1206,10 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 8,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc - 8) == 1)
-                    captureAndCheck.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc - 8});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 8,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 8});
-
-                else if (oppPieces->count(*pieceLoc - 8) == 1)
-                    capture.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 8});
             }
 
             if (*pieceLoc / 10 <= 5 && *pieceLoc % 10 != 7 &&
@@ -1403,18 +1219,9 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 21,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc + 21) == 1)
-                    captureAndCheck.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc + 21});
-                    
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 21,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 21});
-
-                else if (oppPieces->count(*pieceLoc + 21) == 1)
-                    capture.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc + 21});
             }
 
@@ -1425,18 +1232,9 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 19,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc + 19) == 1)
-                    captureAndCheck.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc + 19});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 19,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 19});
-
-                else if (oppPieces->count(*pieceLoc + 19) == 1)
-                    capture.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc + 19});
             }
 
@@ -1447,18 +1245,9 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 12,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc + 12) == 1)
-                    captureAndCheck.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc + 12});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 12,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 12});
-
-                else if (oppPieces->count(*pieceLoc + 12) == 1)
-                    capture.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc + 12});
             }
 
@@ -1469,18 +1258,10 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 8,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc + 8) == 1)
-                    captureAndCheck.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc + 8});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 8,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 8});
-
-                else if (oppPieces->count(*pieceLoc + 8) == 1)
-                    capture.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 8});
             }
         }
 
@@ -1492,18 +1273,10 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 1,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc + 1) == 1)
-                    captureAndCheck.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc + 1});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 1,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 1});
-
-                else if (oppPieces->count(*pieceLoc + 1) == 1)
-                    capture.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 1});
             }
 
             if (*pieceLoc % 10 != 0 && ownPieces->count(*pieceLoc - 1) == 0 &&
@@ -1512,18 +1285,10 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 1,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc - 1) == 1)
-                    captureAndCheck.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc - 1});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 1,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 1});
-
-                else if (oppPieces->count(*pieceLoc - 1) == 1)
-                    capture.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 1});
             }
 
             if (*pieceLoc / 10 != 7 && ownPieces->count(*pieceLoc + 10) == 0 &&
@@ -1532,18 +1297,9 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 10,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc + 10) == 1)
-                    captureAndCheck.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc + 10});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 10,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 10});
-
-                else if (oppPieces->count(*pieceLoc + 10) == 1)
-                    capture.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc + 10});
             }
 
@@ -1553,18 +1309,9 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 10,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc - 10) == 1)
-                    captureAndCheck.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc - 10});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 10,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 10});
-
-                else if (oppPieces->count(*pieceLoc - 10) == 1)
-                    capture.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc - 10});
             }
 
@@ -1575,18 +1322,9 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 11,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc + 11) == 1)
-                    captureAndCheck.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc + 11});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 11,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 11});
-
-                else if (oppPieces->count(*pieceLoc + 11) == 1)
-                    capture.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc + 11});
             }
 
@@ -1597,18 +1335,9 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 11,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc - 11) == 1)
-                    captureAndCheck.emplace_back(
-                        vector<int>{*pieceLoc, *pieceLoc - 11});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 11,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 11});
-
-                else if (oppPieces->count(*pieceLoc - 11) == 1)
-                    capture.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc - 11});
             }
 
@@ -1619,18 +1348,10 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 9,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc + 9) == 1)
-                    captureAndCheck.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc + 9});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 9,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 9});
-
-                else if (oppPieces->count(*pieceLoc + 9) == 1)
-                    capture.emplace_back(vector<int>{*pieceLoc, *pieceLoc + 9});
             }
 
             if (*pieceLoc / 10 != 0 && *pieceLoc % 10 != 7 &&
@@ -1640,45 +1361,19 @@ vector<int> Bot2::getMove2(string start, string end)
 
                 if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 9,
                                                col == 0 ? 1 : 0, ownPieces, 
-                                               oppPieces, true) &&
+                                               oppPieces, true) ||
                     oppPieces->count(*pieceLoc - 9) == 1)
-                    captureAndCheck.emplace_back(
+                    movesList.emplace_back(
                         vector<int>{*pieceLoc, *pieceLoc - 9});
-
-                else if (board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 9,
-                                                    col == 0 ? 1 : 0, 
-                                                    ownPieces, oppPieces, true))
-                    check.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 9});
-                    
-                else if (oppPieces->count(*pieceLoc - 9) == 1)
-                    capture.emplace_back(vector<int>{*pieceLoc, *pieceLoc - 9});
             }
         }
     }
     std::cout << "FORLOOPENDS\n";
-    if (captureAndCheck.size() != 0)
-    {
-        std::cout << "CAPTUREANDCHECK\n";
-        randNumGenerator(&captureAndCheck);
-        std::cout << captureAndCheck.at(0).at(0) << " " << captureAndCheck.at(0).at(1) << "\n";
-        return captureAndCheck.at(0);
-    }
-    else if (check.size() != 0)
-    {
-        std::cout << "CHECK\n";
-        randNumGenerator(&check);
-        std::cout << check.at(0).at(0) << " " << check.at(0).at(1) << "\n";
-        return check.at(0);
-    }
-    else if (capture.size() != 0)
-    {
-        std::cout << "CAPTURE\n";
-        randNumGenerator(&capture);
-        std::cout << capture.at(0).at(0) << " " << capture.at(0).at(1) << "\n";
-        return capture.at(0);
-    }
-    else
-    {
+    if (movesList.size() != 0) {
+        randNumGenerator(&movesList);
+        std::cout << movesList.at(0).at(0) << " " << movesList.at(0).at(1) << "\n";
+        return movesList.at(0);
+    } else {
         std::cout << "BOT!\n";
         return getMove(start, end);
     }
