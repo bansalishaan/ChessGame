@@ -1596,16 +1596,22 @@ bool Board::noMoves(int col) {
     return true;
 }
 
-bool Board::inCheck(int col) {
+bool Board::inCheck(int col, int move) {
     map<int, char> *ownPieces = col == 0? &whitePieces : &blackPieces;
     map<int, char> *oppPieces = col == 0? &blackPieces : &whitePieces;
 
     int kingLetter, kingNum, kingLoc;
-    for(auto &piece: *ownPieces) {
-        if(piece.second == 'K' || piece.second == 'k') {
-            kingLetter = piece.first / 10;
-            kingNum = piece.first % 10;
-            kingLoc = piece.first;
+    if(move != -1) {
+        kingLetter = move / 10;
+        kingNum = move % 10;
+        kingLoc = move;
+    } else {
+        for(auto &piece: *ownPieces) {
+            if(piece.second == 'K' || piece.second == 'k') {
+                kingLetter = piece.first / 10;
+                kingNum = piece.first % 10;
+                kingLoc = piece.first;
+            }
         }
     }
 
