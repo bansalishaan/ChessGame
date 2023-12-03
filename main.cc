@@ -128,12 +128,41 @@ int main()
                 {
                     players.emplace_back(make_unique<Human>());
                 }
+                else if (whitePlayerType == "computer1")
+                {
+                    players.emplace_back(make_unique<Bot1>(&game, 0));
+                }
+                else if (whitePlayerType == "computer2")
+                {
+                    players.emplace_back(make_unique<Bot2>(&game, 0));
+                }
+                else if (whitePlayerType == "computer3")
+                {
+                    players.emplace_back(make_unique<Bot3>(&game, 0));
+                }
+                else if (whitePlayerType == "computer4")
+                {
+                    // players.emplace_back(make_unique<Bot4>(&game, 0));
+                }
                 if (blackPlayerType == "human")
                 {
                     players.emplace_back(make_unique<Human>());
                 }
-                else if (blackPlayerType == "computer1") {
+                else if (blackPlayerType == "computer1")
+                {
                     players.emplace_back(make_unique<Bot1>(&game, 1));
+                }
+                else if (blackPlayerType == "computer2")
+                {
+                    players.emplace_back(make_unique<Bot2>(&game, 1));
+                }
+                else if (blackPlayerType == "computer3")
+                {
+                    players.emplace_back(make_unique<Bot3>(&game, 1));
+                }
+                else if (blackPlayerType == "computer4")
+                {
+                    // players.emplace_back(make_unique<Bot4>(&game, 1));
                 }
                 gameRunning = true;
                 if (!setupFlag)
@@ -177,17 +206,38 @@ int main()
                         if (whiteMove)
                         {
                             move = players.at(0)->getMove(start, end);
-                            out << "White moves from: " << start << " to " << end << "." << endl;
+                            out << "White moves from " << start << " to " << end << "." << endl;
                         }
                         else
                         {
                             move = players.at(1)->getMove(start, end);
-                            out << "Black moves from: " << start << " to " << end << "." << endl;
+                            out << "Black moves from " << start << " to " << end << "." << endl;
                         }
                     }
                     else
                     {
-                        // for Bot classes
+                        if (whiteMove)
+                        {
+                            move = players.at(0)->getMove("", "");
+                            int second = (move[0] % 10) + 1;
+                            char first = (move[0] / 10) + 'a'; 
+                            string move_start = first + to_string(second);
+                            int second1 = (move[1] % 10) + 1;
+                            char first1 = (move[1] / 10) + 'a'; 
+                            string move_end = first1 + to_string(second1);
+                            out << "White moves from " << move_start << " to " << move_end << "." << endl;
+                        }
+                        else
+                        {
+                            move = players.at(1)->getMove("", "");
+                            int second = (move[0] % 10) + 1;
+                            char first = (move[0] / 10) + 'a'; 
+                            string move_start = first + to_string(second);
+                            int second1 = (move[1] % 10) + 1;
+                            char first1 = (move[1] / 10) + 'a'; 
+                            string move_end = first1 + to_string(second1);
+                            out << "Black moves from " << move_start << " to " << move_end << "." << endl;
+                        }
                     }
                     int col = whiteMove ? 0 : 1;
                     bool success = game.makeMove(move, col);
