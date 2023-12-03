@@ -607,7 +607,7 @@ vector<int> Bot1::getMove(string start, string end)
             
             if(col == 0 && !board->whiteKingMoved && !board->whiteLRookMoved) {
                 int i = *pieceLoc - 10;
-                for(i; i >= 10 && ownPieces->count(i) == 0 &&
+                for( ; i >= 10 && ownPieces->count(i) == 0 &&
                        oppPieces->count(i) == 0 && (i == 10 || 
                        !board->movePutsKingInCheck(40, i, 0, 
                        ownPieces, oppPieces, true)); i -= 10);
@@ -616,7 +616,7 @@ vector<int> Bot1::getMove(string start, string end)
 
             if(col == 0 && !board->whiteKingMoved && !board->whiteRRookMoved) {
                 int i = *pieceLoc + 10;
-                for(i; i <= 60 && ownPieces->count(i) == 0 &&
+                for( ; i <= 60 && ownPieces->count(i) == 0 &&
                        oppPieces->count(i) == 0 && !board->movePutsKingInCheck(
                        40, i, 0, ownPieces, oppPieces, true); i += 10);
                 if(i == 70) movesList.emplace_back(vector<int> {*pieceLoc, 60});
@@ -624,7 +624,7 @@ vector<int> Bot1::getMove(string start, string end)
 
             if(col == 1 && !board->blackKingMoved && !board->blackLRookMoved) {
                 int i = *pieceLoc - 10;
-                for(i; i >= 17 && ownPieces->count(i) == 0 &&
+                for( ; i >= 17 && ownPieces->count(i) == 0 &&
                        oppPieces->count(i) == 0 && (i == 17 || !board->movePutsKingInCheck(47, i, 1, 
                        ownPieces, oppPieces, true)); i -= 10);
                 if(i == 7) movesList.emplace_back(vector<int> {*pieceLoc, 27});
@@ -632,7 +632,7 @@ vector<int> Bot1::getMove(string start, string end)
 
             if(col == 1 && !board->blackKingMoved && !board->blackRRookMoved) {
                 int i = *pieceLoc + 10;
-                for(i; i <= 67 && ownPieces->count(i) == 0 &&
+                for( ; i <= 67 && ownPieces->count(i) == 0 &&
                        oppPieces->count(i) == 0 && !board->movePutsKingInCheck(
                        47, i, 1, ownPieces, oppPieces, true); i += 10);
                 if(i == 77) movesList.emplace_back(vector<int> {*pieceLoc, 67});
