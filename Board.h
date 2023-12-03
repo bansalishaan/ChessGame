@@ -1,6 +1,6 @@
 #ifndef BOARD
 #define BOARD
-#include "window.h"
+#include "Display.h"
 #include <iostream>
 #include <map>
 #include <vector>
@@ -8,40 +8,20 @@
 using namespace std;
 
 class Board {
-    class Display {
-        protected:
-            map<int, char> *whitePieces;
-            map<int, char> *blackPieces;
-            Display(map<int, char> *whitePieces, map<int, char> *blackPieces);
-        public:
-            virtual ~Display() = default;
-            virtual void display() = 0;
-    };
-    
-    class TextDisplay: public Display {
-        public:
-            TextDisplay(map<int, char> *whitePieces, map<int, char> *blackPieces);
-            void display() override;
-    };
 
-    class GraphicsDisplay: public Display {
-        Xwindow window;
-        public:
-            GraphicsDisplay(map<int, char> *whitePieces, map<int, char> *blackPieces);
-            void display() override;
-    };
-
-
-    map<int, char> whitePieces;
-    map<int, char> blackPieces;
     bool whiteKingMoved = false;
     bool blackKingMoved = false;
     bool whiteLRookMoved = false;
     bool whiteRRookMoved = false;
     bool blackLRookMoved = false;
     bool blackRRookMoved = false;
+
+    map<int, char> whitePieces;
+    map<int, char> blackPieces;
     vector<int> enPassantPawns;
-    unique_ptr<Display> d;
+
+    unique_ptr<TextDisplay> tDisplay;
+    unique_ptr<GraphicsDisplay> gDisplay;
     friend class Bot1;
     friend class Bot2;
     friend class Bot3;
