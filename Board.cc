@@ -6,6 +6,7 @@ tDisplay{make_unique<TextDisplay> (&whitePieces, &blackPieces)},
 gDisplay{make_unique<GraphicsDisplay> (&whitePieces, &blackPieces)} {}
 
 bool Board::init(bool normal, char piece, int location, bool remove) {
+    // Normal board setup
     if(normal) {
         for(int i = 0; i < 8; ++i) {
             whitePieces[i*10 + 1] = 'P';
@@ -33,10 +34,12 @@ bool Board::init(bool normal, char piece, int location, bool remove) {
             }
         }
     }
+    // Player wants to remove a piece
     else if(remove) {
         whitePieces.erase(location);
         blackPieces.erase(location);
     }
+    // Adding a piece to the board
     else {
         if(piece == 'p' || piece == 'r' || piece == 'n' || piece == 'b' || 
            piece == 'q' || piece == 'k') {
@@ -61,18 +64,23 @@ bool Board::validInit() {
     for(auto &piece : blackPieces) {
         if(piece.second == 'p' && (piece.first % 10 == 0 || 
                                    piece.first % 10 == 7))
-            invalidPawns.emplace_back(piece.first);
+            invalidPawns.emplace_back(piece.first); // Pawn on invalid row
         else if (piece.second == 'k') blackKings.emplace_back(piece.first);
+        // Tracking location of black king(s) on the board
     }
     for(auto &piece : whitePieces) {
         if(piece.second == 'P' && (piece.first % 10 == 7 ||
                                    piece.first % 10 == 0)) 
-            invalidPawns.emplace_back(piece.first);
+            invalidPawns.emplace_back(piece.first); // Pawn on invalid row
         else if (piece.second == 'K') whiteKings.emplace_back(piece.first);
+        // Tracking location of white king(s) on the board
     }
+    // Valid board setup
     if(invalidPawns.size() == 0 && whiteKings.size() == 1 &&
        blackKings.size() == 1 && !inCheck(0) && !inCheck(1)) return true;
 
+
+    // Invalid pawns and outputting which ones
     if(invalidPawns.size() == 1) std::cout << "ERROR: Pawn ";
     else if(invalidPawns.size() > 1) std::cout << "ERROR: Pawns ";
     
@@ -85,11 +93,13 @@ bool Board::validInit() {
         }
     }
 
-    if(invalidPawns.size() == 1) std::cout << " is on a last row!"
+    if(invalidPawns.size() == 1) std::cout << " is on an invalid row!"
         << " Fix this problem to continue.\n";
-    else if(invalidPawns.size() >= 1) std::cout << " are on a last row!"
+    else if(invalidPawns.size() >= 1) std::cout << " are on an invalid row!"
         << " Fix this problem to continue.\n";
-    
+
+
+    // Invalid number of white kings
     if(whiteKings.size() == 0) std::cout << "ERROR: There are no white kings!"
         << " Fix this problem to continue.\n";
     else if(whiteKings.size() > 1) {
@@ -104,7 +114,7 @@ bool Board::validInit() {
         std::cout << ". Fix this problem to continue.\n";
     }
 
-
+    // Invalid number of black kings
     if(blackKings.size() == 0) std::cout << "ERROR: There are no black kings!"
         << " Fix this problem to continue.\n";
     else if(blackKings.size() > 1) {
@@ -119,9 +129,12 @@ bool Board::validInit() {
         std::cout << ". Fix this problem to continue.\n";
     }
 
+
+    // White king is in check
     if(inCheck(0)) std::cout << "ERROR: White King is in check!"
         << " Fix this problem to continue.\n";
     
+    // Black king is in check
     if(inCheck(1)) std::cout << "ERROR: Black King is in check!"
         << " Fix this problem to continue.\n";
 
@@ -138,7 +151,7 @@ bool Board::movePutsKingInCheck(int pieceLoc, int moveLoc, int col,
     }
     (*ownPieces)[moveLoc] = (*ownPieces)[pieceLoc];
     ownPieces->erase(pieceLoc);
-    // Checks if moving rook puts King in check
+    // Checks if moving the piece puts King in check
     if(inCheck(col)) {
         if(oppPiece != '\0') (*oppPieces)[moveLoc] = oppPiece;
         (*ownPieces)[pieceLoc] = (*ownPieces)[moveLoc];
