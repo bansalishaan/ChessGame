@@ -184,13 +184,13 @@ bool Board::makeMove(vector<int> move, int col) {
     else if(whitePieces.count(move.at(0)) == 1
             || blackPieces.count(move.at(0)) == 1) {
         char loc = 'a' + move.at(0) / 10;
-        std::cout << "Other side's piece on " << loc << move.at(0) % 10
+        std::cout << "Other side's piece on " << loc << move.at(0) % 10 + 1
                   << ". Try a different move.\n";
         return false;
     }
     else {
         char loc = 'a' + move.at(0) / 10;
-        std::cout << "There is no piece at " << loc << move.at(0) % 10
+        std::cout << "There is no piece at " << loc << move.at(0) % 10 + 1
                   << ". Try a different move.\n";
         return false;
     }
@@ -205,115 +205,63 @@ bool Board::makeMove(vector<int> move, int col) {
         // Pawn moves 2 squares forward
         if(currLetter == moveLetter && currNum == moveNum - 2
            && currNum == 1 && ownPieces->count(move.at(1) - 1) == 0
-                               && ownPieces->count(move.at(1)) == 0
-                               && oppPieces->count(move.at(1) - 1) == 0
-                               && oppPieces->count(move.at(1)) == 0) {
-            ownPieces->erase(move.at(0));
-            (*ownPieces)[move.at(1)] = 'P';
-            // Checks if moving pawn puts King in check
-            if(inCheck(0)) {
-                ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = 'P';
-                std::cout << "INVALID MOVE: King is in check! "
-                          << "Try a different move.\n";
-                return false;
-           }
-           if(currLetter != 0 && oppPieces->count(move.at(1) - 10) == 1
-              && (*oppPieces)[move.at(1) - 10] == 'p') {
+                           && ownPieces->count(move.at(1)) == 0
+                           && oppPieces->count(move.at(1) - 1) == 0
+                           && oppPieces->count(move.at(1)) == 0) {
+            
+            if(movePutsKingInCheck(move.at(0), move.at(1), 0, ownPieces, 
+            oppPieces)) return false;
+    
+            if(currLetter != 0 && oppPieces->count(move.at(1) - 10) == 1
+              && (*oppPieces)[move.at(1) - 10] == 'p')
                 enPassantPawns.emplace_back(move.at(1));
-              }
+
             if(currLetter != 7 && oppPieces->count(move.at(1) + 10) == 1
               && (*oppPieces)[move.at(1) + 10] == 'p') 
               enPassantPawns.emplace_back(move.at(1));
         }
-        // Pawn moves 1 square forward and isn't going to be promoted
+        
+        // Pawn moves 1 square forward
         else if(currLetter == moveLetter && currNum == moveNum - 1
-                && moveNum != 7 && ownPieces->count(move.at(1)) == 0
-                                && oppPieces->count(move.at(1)) == 0) {
-            ownPieces->erase(move.at(0));
-            (*ownPieces)[move.at(1)] = 'P';
-            // Checks if moving pawn puts King in check
-            if(inCheck(0)) {
-                ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = 'P';
-                std::cout << "INVALID MOVE: King is in check! "
-                          << "Try a different move.\n";
+                && ownPieces->count(move.at(1)) == 0
+                && oppPieces->count(move.at(1)) == 0) {
+            
+            if(moveNum == 7) (*ownPieces)[move.at(0)] = move.at(2);
+            if(movePutsKingInCheck(move.at(0), move.at(1), 0, ownPieces, 
+            oppPieces)) {
+                if(moveNum == 7) (*ownPieces)[move.at(0)] = 'P';
                 return false;
-           }
+            }
         }
-        // Pawn moves 1 square forward to be promoted
-        else if(currLetter == moveLetter && currNum == moveNum - 1
-                                && ownPieces->count(move.at(1)) == 0
-                                && oppPieces->count(move.at(1)) == 0) {
-            ownPieces->erase(move.at(0));
-            (*ownPieces)[move.at(1)] = move.at(2);
-            // Checks if moving pawn puts King in check
-            if(inCheck(0)) {
-                ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = 'P';
-                std::cout << "INVALID MOVE: King is in check! "
-                          << "Try a different move.\n";
+
+        // Pawn moves diagonally 1 square
+        else if((currLetter == moveLetter + 1 || 
+                 currLetter == moveLetter - 1) && currNum == moveNum - 1
+                && oppPieces->count(move.at(1)) == 1) {
+            
+            if(moveNum == 7) (*ownPieces)[move.at(0)] = move.at(2);
+            if(movePutsKingInCheck(move.at(0), move.at(1), 0, ownPieces, 
+            oppPieces)) {
+                if(moveNum == 7) (*ownPieces)[move.at(0)] = 'P';
                 return false;
-           }
+            }
         }
-        // Pawn moves diagonally one square and takes a piece and doesn't
-        // get promoted
-        else if((currLetter == moveLetter + 1 
-                 || currLetter == moveLetter - 1) 
-                                && moveNum != 7 && currNum == moveNum - 1 
-                                && oppPieces->count(move.at(1)) == 1) {
-            ownPieces->erase(move.at(0));
-            (*ownPieces)[move.at(1)] = 'P';
-            char oppPiece = (*oppPieces)[move.at(1)];
-            oppPieces->erase(move.at(1));
-            // Checks if moving pawn puts King in check
-            if(inCheck(0)) {
-                ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = 'P';
-                (*oppPieces)[move.at(1)] = oppPiece;
-                std::cout << "INVALID MOVE: King is in check! "
-                          << "Try a different move.\n";
-                return false;
-           }
-        }
-        // Pawn moves diagonally one square and takes a piece and gets promoted
-        else if((currLetter == moveLetter + 1 
-                 || currLetter == moveLetter - 1) 
-                                && currNum == moveNum - 1 
-                                && oppPieces->count(move.at(1)) == 1) {
-            ownPieces->erase(move.at(0));
-            (*ownPieces)[move.at(1)] = move.at(2);
-            char oppPiece = (*oppPieces)[move.at(1)];
-            oppPieces->erase(move.at(1));
-            // Checks if moving pawn puts King in check
-            if(inCheck(0)) {
-                ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = 'P';
-                (*oppPieces)[move.at(1)] = oppPiece;
-                std::cout << "INVALID MOVE: King is in check! "
-                          << "Try a different move.\n";
-                return false;
-           }
-        }
+
         // Pawn performs en passant
-        else if((currLetter == moveLetter + 1 
-                 || currLetter == moveLetter - 1) 
-                                && moveNum == 5 && currNum == moveNum - 1 
-                                && enPassantPawns.size() == 1
-                                && enPassantPawns.at(0) == move.at(1) - 1) {
-            ownPieces->erase(move.at(0));
-            (*ownPieces)[move.at(1)] = 'P';
+        else if((currLetter == moveLetter + 1 || 
+                 currLetter == moveLetter - 1) && moveNum == 5 
+                && currNum == moveNum - 1 
+                && enPassantPawns.size() == 1
+                && enPassantPawns.at(0) == move.at(1) - 1) {
+
             oppPieces->erase(enPassantPawns.at(0));
-            // Checks if moving pawn puts King in check
-            if(inCheck(0)) {
-                ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = 'P';
+            if(movePutsKingInCheck(move.at(0), move.at(1), 0, ownPieces, 
+            oppPieces)) {
                 (*oppPieces)[move.at(1) - 1] = 'p';
-                std::cout << "INVALID MOVE: King is in check! "
-                          << "Try a different move.\n";
                 return false;
-           }
+            }
         }
+
         // There is no more valid moves
         else {
             std::cout << "INVALID MOVE: Try a different move\n";
@@ -328,112 +276,60 @@ bool Board::makeMove(vector<int> move, int col) {
                                && ownPieces->count(move.at(1)) == 0
                                && oppPieces->count(move.at(1) + 1) == 0
                                && oppPieces->count(move.at(1)) == 0) {
-            ownPieces->erase(move.at(0));
-            (*ownPieces)[move.at(1)] = 'p';
-            // Checks if moving pawn puts King in check
-            if(inCheck(1)) {
-                ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = 'p';
-                std::cout << "INVALID MOVE: King is in check! "
-                          << "Try a different move.\n";
-                return false;
-           }
+                                
+            if(movePutsKingInCheck(move.at(0), move.at(1), 1, ownPieces, 
+            oppPieces)) return false;
+
            if(currLetter != 0 && oppPieces->count(move.at(1) - 10) == 1
-              && (*oppPieces)[move.at(1) - 10] == 'P') {
+              && (*oppPieces)[move.at(1) - 10] == 'P')
                 enPassantPawns.emplace_back(move.at(1));
-              }
+
             if(currLetter != 7 && oppPieces->count(move.at(1) + 10) == 1
               && (*oppPieces)[move.at(1) + 10] == 'P') 
               enPassantPawns.emplace_back(move.at(1));
         }
-        // Pawn moves 1 square forward and isn't going to be promoted
+
+        // Pawn moves 1 square forward
         else if(currLetter == moveLetter && currNum == moveNum + 1
-                && moveNum != 0 && ownPieces->count(move.at(1)) == 0
-                                && oppPieces->count(move.at(1)) == 0) {
-            ownPieces->erase(move.at(0));
-            (*ownPieces)[move.at(1)] = 'p';
-            // Checks if moving pawn puts King in check
-            if(inCheck(1)) {
-                ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = 'p';
-                std::cout << "INVALID MOVE: King is in check! "
-                          << "Try a different move.\n";
+                && ownPieces->count(move.at(1)) == 0
+                && oppPieces->count(move.at(1)) == 0) {
+            
+            if(moveNum == 0) (*ownPieces)[move.at(0)] = move.at(2);
+            if(movePutsKingInCheck(move.at(0), move.at(1), 1, ownPieces, 
+            oppPieces)) {
+                if(moveNum == 0) (*ownPieces)[move.at(0)] = 'p';
                 return false;
-           }
+            }
         }
-        // Pawn moves 1 square forward to be promoted
-        else if(currLetter == moveLetter && currNum == moveNum + 1
-                                && ownPieces->count(move.at(1)) == 0
-                                && oppPieces->count(move.at(1)) == 0) {
-            ownPieces->erase(move.at(0));
-            (*ownPieces)[move.at(1)] = move.at(2);
-            // Checks if moving pawn puts King in check
-            if(inCheck(1)) {
-                ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = 'p';
-                std::cout << "INVALID MOVE: King is in check! "
-                          << "Try a different move.\n";
+
+        // Pawn moves diagonally 1 square
+        else if((currLetter == moveLetter + 1 ||
+                 currLetter == moveLetter - 1) && currNum == moveNum + 1
+                && oppPieces->count(move.at(1)) == 1) {
+            
+            if(moveNum == 0) (*ownPieces)[move.at(0)] = move.at(2);
+            if(movePutsKingInCheck(move.at(0), move.at(1), 1, ownPieces, 
+            oppPieces)) {
+                if(moveNum == 0) (*ownPieces)[move.at(0)] = 'P';
                 return false;
-           }
+            }
         }
-        // Pawn moves diagonally one square and takes a piece and doesn't
-        // get promoted
-        else if((currLetter == moveLetter + 1 
-                 || currLetter == moveLetter - 1) 
-                                && moveNum != 0 && currNum == moveNum + 1
-                                && oppPieces->count(move.at(1)) == 1) {
-            ownPieces->erase(move.at(0));
-            (*ownPieces)[move.at(1)] = 'p';
-            char oppPiece = (*oppPieces)[move.at(1)];
-            oppPieces->erase(move.at(1));
-            // Checks if moving pawn puts King in check
-            if(inCheck(1)) {
-                ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = 'p';
-                (*oppPieces)[move.at(1)] = oppPiece;
-                std::cout << "INVALID MOVE: King is in check! "
-                          << "Try a different move.\n";
-                return false;
-           }
-        }
-        // Pawn moves diagonally one square and takes a piece and gets promoted
-        else if((currLetter == moveLetter + 1 
-                 || currLetter == moveLetter - 1) 
-                                && currNum == moveNum + 1 
-                                && oppPieces->count(move.at(1)) == 1) {
-            ownPieces->erase(move.at(0));
-            (*ownPieces)[move.at(1)] = move.at(2);
-            char oppPiece = (*oppPieces)[move.at(1)];
-            oppPieces->erase(move.at(1));
-            // Checks if moving pawn puts King in check
-            if(inCheck(1)) {
-                ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = 'p';
-                (*oppPieces)[move.at(1)] = oppPiece;
-                std::cout << "INVALID MOVE: King is in check! "
-                          << "Try a different move.\n";
-                return false;
-           }
-        }
+        
         // Pawn performs en passant
         else if((currLetter == moveLetter + 1 
-                 || currLetter == moveLetter - 1) 
-                                && moveNum == 2 && currNum == moveNum + 1 
-                                && enPassantPawns.size() == 1
-                                && enPassantPawns.at(0) == move.at(1) + 1) {
-            ownPieces->erase(move.at(0));
-            (*ownPieces)[move.at(1)] = 'p';
+                 || currLetter == moveLetter - 1) && moveNum == 2 
+                && currNum == moveNum + 1 
+                && enPassantPawns.size() == 1
+                && enPassantPawns.at(0) == move.at(1) + 1) {
+
             oppPieces->erase(enPassantPawns.at(0));
-            // Checks if moving pawn puts King in check
-            if(inCheck(1)) {
-                ownPieces->erase(move.at(1));
-                (*ownPieces)[move.at(0)] = 'p';
-                (*oppPieces)[move.at(1) - 1] = 'P';
-                std::cout << "INVALID MOVE: King is in check! "
-                          << "Try a different move.\n";
+            if(movePutsKingInCheck(move.at(0), move.at(1), 0, ownPieces, 
+            oppPieces)) {
+                (*oppPieces)[move.at(1) + 1] = 'P';
                 return false;
-           }
+            }
         }
+        
         // There is no more valid moves
         else {
             std::cout << "INVALID MOVE: Try a different move\n";
