@@ -200,6 +200,16 @@ bool Board::makeMove(vector<int> move, int col) {
     int moveLetter = move.at(1) / 10;
     int moveNum = move.at(1) % 10;
 
+    bool *possibleRookDeath = nullptr;
+    if(move.at(1) == 0 && col == 1 && !whiteLRookMoved) 
+        possibleRookDeath = &whiteLRookMoved;
+    else if(move.at(1) == 70 && col == 1 && !whiteRRookMoved) 
+        possibleRookDeath = &whiteRRookMoved;
+    else if(move.at(1) == 7 && col == 0 && !blackLRookMoved) 
+        possibleRookDeath = &blackLRookMoved;
+    else if(move.at(1) == 77 && col == 0 && !blackRRookMoved) 
+        possibleRookDeath = &blackRRookMoved;
+
     // Piece is a white pawn
     if((*ownPieces)[move.at(0)] == 'P') {
         // Pawn moves 2 squares forward
@@ -329,21 +339,22 @@ bool Board::makeMove(vector<int> move, int col) {
                 return false;
             }
         }
-        
+
         // There is no more valid moves
         else {
             std::cout << "INVALID MOVE: Try a different move\n";
             return false;
         }
     }
+
     // Piece is white or black rook
-    else if((*ownPieces)[move.at(0)] == 'R' 
-             || (*ownPieces)[move.at(0)] == 'r') {
+    else if((*ownPieces)[move.at(0)] == 'R' ||
+            (*ownPieces)[move.at(0)] == 'r') {
         // Rook is moving horizontally
         if(currNum == moveNum) {
             int i = currLetter > moveLetter ? move.at(1) + 10 : move.at(0) + 10;
             int j = currLetter > moveLetter ? move.at(0) : move.at(1);
-            for(i; i < j; i += 10) {
+            for( ; i < j; i += 10) {
                 if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
                     std::cout << "rh1INVALID MOVE: There's a piece in between. ";
                     std::cout << "Try a different move.\n";
@@ -364,11 +375,12 @@ bool Board::makeMove(vector<int> move, int col) {
             else if(move.at(0) == 7) blackLRookMoved = true;
             else if(move.at(0) == 77) blackRRookMoved = true;
         }
+
         // Rook is moving vertically
         else if(currLetter == moveLetter) {
             int i = currNum > moveNum ? move.at(1) + 1 : move.at(0) + 1;
             int j = currNum > moveNum ? move.at(0) : move.at(1);
-            for(i; i < j; ++i) {
+            for( ; i < j; ++i) {
                 if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
                     std::cout << "INVALID MOVE: Try a different move.\n";
                     return false;
@@ -393,8 +405,9 @@ bool Board::makeMove(vector<int> move, int col) {
             return false;
         }
     }
-    else if((*ownPieces)[move.at(0)] == 'N'
-             || (*ownPieces)[move.at(0)] == 'n') {
+    else if((*ownPieces)[move.at(0)] == 'N' || 
+            (*ownPieces)[move.at(0)] == 'n') {
+        // Checks every possible knight move
         if((((currNum == moveNum + 1 || currNum == moveNum - 1) && 
             (currLetter == moveLetter + 2 || currLetter == moveLetter - 2)) 
             || ((currNum == moveNum + 2 || currNum == moveNum - 2) && 
@@ -409,12 +422,13 @@ bool Board::makeMove(vector<int> move, int col) {
             return false;
         }
     }
-    else if((*ownPieces)[move.at(0)] == 'B'
-             || (*ownPieces)[move.at(0)] == 'b') {
-        if(moveNum - currNum == moveLetter - currLetter) { // right diagonal
-            int i = moveNum - currNum < 0 ? move.at(1) + 11 : move.at(0) + 11;
-            int j = moveNum - currNum < 0 ? move.at(0) : move.at(1);
-            for(i; i < j; i += 11) {
+    else if((*ownPieces)[move.at(0)] == 'B' ||
+            (*ownPieces)[move.at(0)] == 'b') {
+        // Bishop is moving on the right diagonal
+        if(moveNum - currNum == moveLetter - currLetter) {
+            int i = moveNum < currNum ? move.at(1) + 11 : move.at(0) + 11;
+            int j = moveNum < currNum ? move.at(0) : move.at(1);
+            for( ; i < j; i += 11) {
                 if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
                     std::cout << "INVALID MOVE: Try a different move.\n";
                     return false;
@@ -427,10 +441,12 @@ bool Board::makeMove(vector<int> move, int col) {
             if(movePutsKingInCheck(move.at(0), move.at(1), col, ownPieces, 
                 oppPieces)) return false;
         }
-        else if(moveNum - currNum == currLetter - moveLetter) { // left diagonal
-            int i = moveNum - currNum < 0 ? move.at(0) + 9 : move.at(1) + 9;
-            int j = moveNum - currNum < 0 ? move.at(1) : move.at(0);
-            for(i; i < j; i += 9) {
+
+        // Bishop is moving on the left diagonal
+        else if(moveNum - currNum == currLetter - moveLetter) {
+            int i = moveNum < currNum ? move.at(0) + 9 : move.at(1) + 9;
+            int j = moveNum < currNum ? move.at(1) : move.at(0);
+            for( ; i < j; i += 9) {
                 if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
                     std::cout << "INVALID MOVE: Try a different move.\n";
                     return false;
@@ -448,13 +464,13 @@ bool Board::makeMove(vector<int> move, int col) {
             return false;
         }
     }
-    else if((*ownPieces)[move.at(0)] == 'Q'
-             || (*ownPieces)[move.at(0)] == 'q') {
+    else if((*ownPieces)[move.at(0)] == 'Q' || 
+            (*ownPieces)[move.at(0)] == 'q') {
         // Queen is moving horizontally
         if(currNum == moveNum) {
             int i = currLetter > moveLetter ? move.at(1) + 10 : move.at(0) + 10;
             int j = currLetter > moveLetter ? move.at(0) : move.at(1);
-            for(i; i < j; i += 10) {
+            for( ; i < j; i += 10) {
                 if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
                     std::cout << "qh1INVALID MOVE: There's a piece in between. ";
                     std::cout << "Try a different move.\n";
@@ -470,11 +486,12 @@ bool Board::makeMove(vector<int> move, int col) {
             if(movePutsKingInCheck(move.at(0), move.at(1), col, ownPieces, 
                 oppPieces)) return false;
         }
+
         // Queen is moving vertically
         else if(currLetter == moveLetter) {
             int i = currNum > moveNum ? move.at(1) + 1 : move.at(0) + 1;
             int j = currNum > moveNum ? move.at(0) : move.at(1);
-            for(i; i < j; ++i) {
+            for( ; i < j; ++i) {
                 if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
                     std::cout << "INVALID MOVE: Try a different move.\n";
                     return false;
@@ -489,10 +506,12 @@ bool Board::makeMove(vector<int> move, int col) {
             if(movePutsKingInCheck(move.at(0), move.at(1), col, ownPieces, 
                 oppPieces)) return false;
         }
-        else if(moveNum - currNum == moveLetter - currLetter) { // right diagonal
-            int i = moveNum - currNum < 0 ? move.at(1) + 11 : move.at(0) + 11;
-            int j = moveNum - currNum < 0 ? move.at(0) : move.at(1);
-            for(i; i < j; i += 11) {
+
+        // Queen is moving on right diagonal
+        else if(moveNum - currNum == moveLetter - currLetter) {
+            int i = moveNum < currNum ? move.at(1) + 11 : move.at(0) + 11;
+            int j = moveNum < currNum ? move.at(0) : move.at(1);
+            for( ; i < j; i += 11) {
                 if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
                     std::cout << "INVALID MOVE: Try a different move.\n";
                     return false;
@@ -506,9 +525,9 @@ bool Board::makeMove(vector<int> move, int col) {
                 oppPieces)) return false;
         }
         else if(moveNum - currNum == currLetter - moveLetter) { // left diagonal
-            int i = moveNum - currNum < 0 ? move.at(0) + 9 : move.at(1) + 9;
-            int j = moveNum - currNum < 0 ? move.at(1) : move.at(0);
-            for(i; i < j; i += 9) {
+            int i = moveNum < currNum ? move.at(0) + 9 : move.at(1) + 9;
+            int j = moveNum < currNum ? move.at(1) : move.at(0);
+            for( ; i < j; i += 9) {
                 if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
                     std::cout << "INVALID MOVE: Try a different move.\n";
                     return false;
@@ -526,8 +545,11 @@ bool Board::makeMove(vector<int> move, int col) {
             return false;
         }
     }
-    else if((*ownPieces)[move.at(0)] == 'K'
-             || (*ownPieces)[move.at(0)] == 'k') {
+
+    else if((*ownPieces)[move.at(0)] == 'K' || 
+            (*ownPieces)[move.at(0)] == 'k') {
+
+        // King moves 1 square
         if((currNum == moveNum && 
           (currLetter == moveLetter - 1 || currLetter == moveLetter + 1))
           || (currLetter == moveLetter && 
@@ -545,6 +567,8 @@ bool Board::makeMove(vector<int> move, int col) {
 
             if((*ownPieces)[move.at(1)] == 'K') whiteKingMoved = true;
             else blackKingMoved = true;
+
+        // White king attempts to castle
         } else if(col == 0 && !inCheck(0) && move.at(0) == 40 && 
                   ((move.at(1) == 60 && !whiteKingMoved && !whiteRRookMoved && (*ownPieces).count(70) == 1 && (*ownPieces)[70] == 'R') ||
                   (move.at(1) == 20 && !whiteKingMoved && !whiteLRookMoved &&
@@ -552,7 +576,7 @@ bool Board::makeMove(vector<int> move, int col) {
 
             int i = move.at(1) > move.at(0) ? 50 : 10;
             int j = move.at(1) > move.at(0) ? 70 : 40;
-            for(i; i < j; i += 10) {
+            for( ; i < j; i += 10) {
                 if((*ownPieces).count(i) == 1 || 
                     (*oppPieces).count(i) == 1) return false;
             }
@@ -590,15 +614,16 @@ bool Board::makeMove(vector<int> move, int col) {
                 return false;
             }
             whiteKingMoved = true;
-        }
-        else if(col == 1 && !inCheck(1) && move.at(0) == 47 && 
+
+        // Black king attempts to castle
+        } else if(col == 1 && !inCheck(1) && move.at(0) == 47 && 
                   ((move.at(1) == 67 && !blackKingMoved && !blackRRookMoved && (*ownPieces).count(77) == 1 && (*ownPieces)[77] == 'r') ||
                   (move.at(1) == 27 && !blackKingMoved && !blackLRookMoved &&
                   (*ownPieces).count(7) == 1 && (*ownPieces)[7] == 'r'))) {
 
             int i = move.at(1) > move.at(0) ? 57 : 17;
             int j = move.at(1) > move.at(0) ? 77 : 47;
-            for(i; i < j; i += 10) {
+            for( ; i < j; i += 10) {
                 if((*ownPieces).count(i) == 1 || 
                     (*oppPieces).count(i) == 1) return false;
             }
@@ -645,6 +670,8 @@ bool Board::makeMove(vector<int> move, int col) {
     if(enPassantPawns.size() == 2) enPassantPawns.erase(enPassantPawns.begin());
     else if(enPassantPawns.size() == 1 && enPassantPawns.at(0) != move.at(1))
         enPassantPawns.erase(enPassantPawns.begin());
+    
+    if(possibleRookDeath) *possibleRookDeath = true;
     return true;
 }
 
