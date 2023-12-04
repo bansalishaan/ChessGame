@@ -43,11 +43,11 @@ bool Board::init(bool normal, char piece, int location, bool remove) {
     else {
         if(piece == 'p' || piece == 'r' || piece == 'n' || piece == 'b' || 
            piece == 'q' || piece == 'k') {
-            if(whitePieces.at(location) == 1) whitePieces.erase(location);
+            if(whitePieces.count(location) == 1) whitePieces.erase(location);
             blackPieces[location] = piece;
         } else if(piece == 'P' || piece == 'R' || piece == 'N' || 
                   piece == 'B' || piece == 'Q' || piece == 'K') {
-            if(blackPieces.at(location) == 1) blackPieces.erase(location);
+            if(blackPieces.count(location) == 1) blackPieces.erase(location);
             whitePieces[location] = piece;
         }
         else {
