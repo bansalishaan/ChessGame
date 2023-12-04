@@ -2299,13 +2299,12 @@ vector<int> Bot3::getMove(string start, string end) {
                        !board->movePutsKingInCheck(40, i, 0, 
                        ownPieces, oppPieces, true)); i -= 10);
                 if(i == 0) {
-                    bool rNoCapture = avoidsCapture(0, 30);
                     ownPieces->erase(0);
                     (*ownPieces)[30] = 'R';
                     bool inCheck = board->movePutsKingInCheck(40, 20, 1, ownPieces, oppPieces, true);
                     ownPieces->erase(30);
                     (*ownPieces)[0] = 'R';
-                    if(inCheck || rNoCapture) movesList.emplace_back(
+                    if(inCheck) movesList.emplace_back(
                         vector<int> {*pieceLoc, 20});
                 }
             }
@@ -2317,13 +2316,12 @@ vector<int> Bot3::getMove(string start, string end) {
                        oppPieces->count(i) == 0 && !board->movePutsKingInCheck(
                        40, i, 0, ownPieces, oppPieces, true); i += 10);
                 if(i == 70) {
-                    bool rNoCapture = avoidsCapture(70, 50);
                     ownPieces->erase(70);
                     (*ownPieces)[50] = 'R';
                     bool inCheck = board->movePutsKingInCheck(40, 60, 1, ownPieces, oppPieces, true);
                     ownPieces->erase(50);
                     (*ownPieces)[70] = 'R';
-                    if(inCheck || rNoCapture) movesList.emplace_back(
+                    if(inCheck) movesList.emplace_back(
                         vector<int> {*pieceLoc, 60});
                 }
             }
@@ -2335,13 +2333,12 @@ vector<int> Bot3::getMove(string start, string end) {
                        oppPieces->count(i) == 0 && (i == 17 || !board->movePutsKingInCheck(47, i, 1, 
                        ownPieces, oppPieces, true)); i -= 10);
                 if(i == 7) {
-                    bool rNoCapture = avoidsCapture(7, 37);
                     ownPieces->erase(7);
                     (*ownPieces)[37] = 'r';
                     bool inCheck = board->movePutsKingInCheck(47, 27, 0, ownPieces, oppPieces, true);
                     ownPieces->erase(37);
                     (*ownPieces)[7] = 'r';
-                    if(inCheck || rNoCapture) movesList.emplace_back(
+                    if(inCheck) movesList.emplace_back(
                         vector<int> {*pieceLoc, 27});
                 }
             }
@@ -2353,13 +2350,12 @@ vector<int> Bot3::getMove(string start, string end) {
                        oppPieces->count(i) == 0 && !board->movePutsKingInCheck(
                        47, i, 1, ownPieces, oppPieces, true); i += 10);
                 if(i == 77) {
-                    bool rNoCapture = avoidsCapture(77, 57);
                     ownPieces->erase(77);
                     (*ownPieces)[57] = 'r';
                     bool inCheck = board->movePutsKingInCheck(47, 67, 0, ownPieces, oppPieces, true);
                     ownPieces->erase(57);
                     (*ownPieces)[77] = 'r';
-                    if(inCheck || rNoCapture) movesList.emplace_back(
+                    if(inCheck) movesList.emplace_back(
                         vector<int> {*pieceLoc, 67});
                 }
             }
