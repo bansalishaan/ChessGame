@@ -22,7 +22,7 @@ class Bot: public Player {
         Board *board;
         int col;
         template<typename T>
-            void randNumGenerator(T *list);
+            void shuffler(T *list);
     public:
         Bot(Board *b, int col);
         virtual ~Bot() = default;
