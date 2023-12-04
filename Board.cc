@@ -641,6 +641,7 @@ bool Board::noMoves(int col) {
     map<int, char> *ownPieces = col == 0? &whitePieces : &blackPieces;
     map<int, char> *oppPieces = col == 0? &blackPieces : &whitePieces;
 
+    // Initializes and grabs Kings location information
     int kingLetter, kingNum, kingLoc;
     for(auto &piece: *ownPieces) {
         if(piece.second == 'K' || piece.second == 'k') {
@@ -650,796 +651,405 @@ bool Board::noMoves(int col) {
         }
     }
 
+    // Creating copy of ownPieces so that ownPieces can be manipulated without
+    // affecting the for loop
     map<int, char> ownPiecesCopy = *ownPieces;
     for(auto piece: ownPiecesCopy) {
+        // Piece information
         int pieceLetter = piece.first / 10;
         int pieceNum = piece.first % 10;
 
+        // Piece is a white pawn
         if(piece.second == 'P') {
             // Pawn moves forward 1 square
             if(ownPieces->count(piece.first + 1) == 0 &&
-               oppPieces->count(piece.first + 1) == 0) {
+               oppPieces->count(piece.first + 1) == 0 &&
+               !movePutsKingInCheck(piece.first, piece.first + 1, 0, ownPieces,
+               oppPieces, true)) return false;
 
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first + 1] = 'P';
-                bool check = inCheck(0);
-                ownPieces->erase(piece.first + 1);
-                (*ownPieces)[piece.first] = 'P';
-                if(!check) {
-                    std::cout << "HERE1\n";
-                    return false;
-                }
-            }
             // Pawn moves forward 2 squares
             if(ownPieces->count(piece.first + 1) == 0 &&
                     oppPieces->count(piece.first + 1) == 0 &&
                     ownPieces->count(piece.first + 2) == 0 &&
                     oppPieces->count(piece.first + 2) == 0 &&
-                    pieceNum == 1) {
+                    pieceNum == 1 && !movePutsKingInCheck(piece.first, 
+                    piece.first + 2, 0, ownPieces, oppPieces, true)) 
+                return false;
 
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first + 2] = 'P';
-                bool check = inCheck(0);
-                ownPieces->erase(piece.first + 2);
-                (*ownPieces)[piece.first] = 'P';
-                if(!check) {
-                    std::cout << "HERE2\n";
-                    return false;
-                }
-            }
             // Pawn takes diagonally left and doesn't perform en passant
-            if(oppPieces->count(piece.first - 9) == 1) {
-                char oppPiece = (*oppPieces)[piece.first - 9];
-                ownPieces->erase(piece.first);
-                oppPieces->erase(piece.first - 9);
-                (*ownPieces)[piece.first - 9] = 'P';
-                bool check = inCheck(0);
-                ownPieces->erase(piece.first - 9);
-                (*ownPieces)[piece.first] = 'P';
-                (*oppPieces)[piece.first - 9] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE3\n";
-                    return false;
-                }
-            }
+            if(oppPieces->count(piece.first - 9) == 1 && 
+            !movePutsKingInCheck(piece.first, piece.first - 9, 0, ownPieces, 
+            oppPieces, true)) return false;
+
             // Pawn takes diagonally right and doesn't perform en passant
-            if(oppPieces->count(piece.first + 11) == 1) {
-                char oppPiece = (*oppPieces)[piece.first + 11];
-                ownPieces->erase(piece.first);
-                oppPieces->erase(piece.first + 11);
-                (*ownPieces)[piece.first + 11] = 'P';
-                bool check = inCheck(0);
-                ownPieces->erase(piece.first + 11);
-                (*ownPieces)[piece.first] = 'P';
-                (*oppPieces)[piece.first + 11] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE4\n";
-                    return false;
-                }
-            }
+            if(oppPieces->count(piece.first + 11) == 1 &&
+            !movePutsKingInCheck(piece.first, piece.first + 11, 0, ownPieces, 
+            oppPieces, true)) return false;
+
             // Pawn takes diagonally left and performs en passant
             if(enPassantPawns.size() == 1 &&
                     enPassantPawns.at(0) == piece.first - 10) {
-                ownPieces->erase(piece.first);
+    
                 oppPieces->erase(piece.first - 10);
-                (*ownPieces)[piece.first - 9] = 'P';
-                bool check = inCheck(0);
-                ownPieces->erase(piece.first - 9);
-                (*ownPieces)[piece.first] = 'P';
-                (*oppPieces)[piece.first - 10] = 'p';
-                if(!check) {
-                    std::cout << "HERE5\n";
+                if(!movePutsKingInCheck(piece.first, piece.first - 9, 0, 
+                ownPieces, oppPieces, true)) {
+                    (*oppPieces)[piece.first - 10] = 'p';
                     return false;
-                }
+                } else (*oppPieces)[piece.first - 10] = 'p';
             }
+
             // Pawn takes diagonally right and performs en passant
             if(enPassantPawns.size() == 1 &&
                     enPassantPawns.at(0) == piece.first + 10) {
-                ownPieces->erase(piece.first);
+
                 oppPieces->erase(piece.first + 10);
-                (*ownPieces)[piece.first + 11] = 'P';
-                bool check = inCheck(0);
-                ownPieces->erase(piece.first + 11);
-                (*ownPieces)[piece.first] = 'P';
-                (*oppPieces)[piece.first + 10] = 'p';
-                if(!check) {
-                    std::cout << "HERE6\n";
+                if(!movePutsKingInCheck(piece.first, piece.first + 11, 0, 
+                ownPieces, oppPieces, true)) {
+                    (*oppPieces)[piece.first + 10] = 'p';
                     return false;
-                }
+                } else (*oppPieces)[piece.first + 10] = 'p';
             }
         }
 
+        // Piece is a black pawn
         else if(piece.second == 'p') {
             // Pawn moves forward 1 square
             if(ownPieces->count(piece.first - 1) == 0 &&
-               oppPieces->count(piece.first - 1) == 0) {
+               oppPieces->count(piece.first - 1) == 0 &&
+               !movePutsKingInCheck(piece.first, piece.first - 1, 1, ownPieces, oppPieces, true)) return false;
 
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first - 1] = 'p';
-                bool check = inCheck(1);
-                ownPieces->erase(piece.first - 1);
-                (*ownPieces)[piece.first] = 'p';
-                if(!check) {
-                    std::cout << "HERE7 " << piece.first << "\n";
-                    return false;
-                }
-            }
             // Pawn moves forward 2 squares
             if(ownPieces->count(piece.first - 1) == 0 &&
                     oppPieces->count(piece.first - 1) == 0 &&
                     ownPieces->count(piece.first - 2) == 0 &&
                     oppPieces->count(piece.first - 2) == 0 &&
-                    pieceNum == 6) {
+                    pieceNum == 6 && !movePutsKingInCheck(piece.first, 
+                    piece.first - 2, 1, ownPieces, oppPieces, true))
+                return false;
 
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first - 2] = 'p';
-                bool check = inCheck(1);
-                ownPieces->erase(piece.first - 2);
-                (*ownPieces)[piece.first] = 'p';
-                if(!check) {
-                    std::cout << "HERE8\n";
-                    return false;
-                }
-            }
             // Pawn takes diagonally left and doesn't perform en passant
-            if(oppPieces->count(piece.first - 11) == 1) {
-                char oppPiece = (*oppPieces)[piece.first - 11];
-                ownPieces->erase(piece.first);
-                oppPieces->erase(piece.first - 11);
-                (*ownPieces)[piece.first - 11] = 'p';
-                bool check = inCheck(1);
-                ownPieces->erase(piece.first - 11);
-                (*ownPieces)[piece.first] = 'p';
-                (*oppPieces)[piece.first - 11] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE9\n";
-                    return false;
-                }            }
+            if(oppPieces->count(piece.first - 11) == 1 &&
+            !movePutsKingInCheck(piece.first, piece.first - 11, 1, ownPieces, 
+            oppPieces, true)) return false;
+    
             // Pawn takes diagonally right and doesn't perform en passant
-            if(oppPieces->count(piece.first + 9) == 1) {
-                char oppPiece = (*oppPieces)[piece.first + 9];
-                ownPieces->erase(piece.first);
-                oppPieces->erase(piece.first + 9);
-                (*ownPieces)[piece.first + 9] = 'p';
-                bool check = inCheck(1);
-                ownPieces->erase(piece.first + 9);
-                (*ownPieces)[piece.first] = 'p';
-                (*oppPieces)[piece.first + 9] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE10\n";
-                    return false;
-                }            }
+            if(oppPieces->count(piece.first + 9) == 1 &&
+            !movePutsKingInCheck(piece.first, piece.first + 9, 1, ownPieces, oppPieces, true)) return false;
+
             // Pawn takes diagonally left and performs en passant
             if(enPassantPawns.size() == 1 &&
                     enPassantPawns.at(0) == piece.first - 10) {
-                ownPieces->erase(piece.first);
+                
                 oppPieces->erase(piece.first - 10);
-                (*ownPieces)[piece.first - 11] = 'p';
-                bool check = inCheck(1);
-                ownPieces->erase(piece.first - 11);
-                (*ownPieces)[piece.first] = 'p';
-                (*oppPieces)[piece.first - 10] = 'P';
-                if(!check) {
-                    std::cout << "HERE11\n";
+                if(!movePutsKingInCheck(piece.first, piece.first - 11, 1, ownPieces, oppPieces, true)) {
+                    (*oppPieces)[piece.first - 10] = 'P';
                     return false;
-                }            }
+                } else (*oppPieces)[piece.first - 10] = 'P';
+            }
+            
             // Pawn takes diagonally right and performs en passant
             if(enPassantPawns.size() == 1 &&
                     enPassantPawns.at(0) == piece.first + 10) {
-                ownPieces->erase(piece.first);
+
                 oppPieces->erase(piece.first + 10);
-                (*ownPieces)[piece.first + 9] = 'p';
-                bool check = inCheck(1);
-                ownPieces->erase(piece.first + 9);
-                (*ownPieces)[piece.first] = 'p';
-                (*oppPieces)[piece.first + 10] = 'P';
-                if(!check) {
-                    std::cout << "HERE12\n";
+                if(!movePutsKingInCheck(piece.first, piece.first + 9, 1, ownPieces, oppPieces, true)) {
+                    (*oppPieces)[piece.first + 10] = 'P';
                     return false;
-                }            }
+                } else (*oppPieces)[piece.first + 10] = 'P';
+            }
         }
+
+        // Piece is a knight
         else if(piece.second == 'n' || piece.second == 'N') {
+            // Knight moves 2 left, 1 down
             if(ownPieces->count(piece.first - 21) == 0 && 
-               piece.first - 21 >= 0 && piece.first % 10 != 0) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first - 21) == 1) {
-                    oppPiece = (*oppPieces)[piece.first - 21];
-                    oppPieces->erase(piece.first - 21);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first - 21] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first - 21);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first - 21] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE13\n";
-                    return false;
-                }            }
+               piece.first - 21 >= 0 && piece.first % 10 != 0 &&
+               !movePutsKingInCheck(piece.first, piece.first - 21, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // Knight moves 2 left, 1 up
             if(ownPieces->count(piece.first - 19) == 0 && 
-               piece.first - 19 >= 0 && piece.first % 10 != 8) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first - 19) == 1) {
-                    oppPiece = (*oppPieces)[piece.first - 19];
-                    oppPieces->erase(piece.first - 19);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first - 19] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first - 19);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first - 19] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE14\n";
-                    return false;
-                }            }
+               piece.first - 19 >= 0 && piece.first % 10 != 7 &&
+               !movePutsKingInCheck(piece.first, piece.first - 19, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // Knight moves 1 left, 2 up
             if(ownPieces->count(piece.first - 8) == 0 && 
-               piece.first - 8 >= 0 && piece.first % 10 != 7
-               && piece.first % 10 != 6) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first - 8) == 1) {
-                    oppPiece = (*oppPieces)[piece.first - 8];
-                    oppPieces->erase(piece.first - 8);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first - 8] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first - 8);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first - 8] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE15\n";
-                    return false;
-                }            }
+               piece.first - 8 >= 0 && piece.first % 10 <= 5 &&
+               !movePutsKingInCheck(piece.first, piece.first - 8, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // Knight moves 1 left, 2 down
             if(ownPieces->count(piece.first - 12) == 0 && 
-               piece.first - 12 >= 0 && piece.first % 10 != 0
-               && piece.first % 10 != 1) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first - 12) == 1) {
-                    oppPiece = (*oppPieces)[piece.first - 12];
-                    oppPieces->erase(piece.first - 12);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first - 12] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first - 12);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first - 12] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE16\n";
-                    return false;
-                }            }
+               piece.first - 12 >= 0 && piece.first % 10 >= 2 &&
+               !movePutsKingInCheck(piece.first, piece.first - 12, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // Knight moves 1 right, 2 down
             if(ownPieces->count(piece.first + 8) == 0 && 
-               piece.first + 8 < 78 && piece.first % 10 != 0
-               && piece.first % 10 != 1) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first + 8) == 1) {
-                    oppPiece = (*oppPieces)[piece.first + 8];
-                    oppPieces->erase(piece.first + 8);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first + 8] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first + 8);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first + 8] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE17\n";
-                    return false;
-                }            }
+               piece.first + 8 < 78 && piece.first % 10 >= 2 &&
+               !movePutsKingInCheck(piece.first, piece.first + 8, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // Knight moves 1 right, 2 up
             if(ownPieces->count(piece.first + 12) == 0 && 
-               piece.first + 12 < 78 && piece.first % 10 != 6
-               && piece.first % 10 != 7) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first + 12) == 1) {
-                    oppPiece = (*oppPieces)[piece.first + 12];
-                    oppPieces->erase(piece.first + 12);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first + 12] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first + 12);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first + 12] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE18\n";
-                    return false;
-                }            }
+               piece.first + 12 < 78 && piece.first % 10 <= 5 &&
+               !movePutsKingInCheck(piece.first, piece.first + 12, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // Kngiht moves 2 right, 1 down
             if(ownPieces->count(piece.first + 19) == 0 && 
-               piece.first + 19 < 78 && piece.first % 10 != 9
-               && piece.first % 10 != 0) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first + 19) == 1) {
-                    oppPiece = (*oppPieces)[piece.first + 19];
-                    oppPieces->erase(piece.first + 19);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first + 19] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first + 19);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first + 19] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE19\n";
-                    return false;
-                }            }
+               piece.first + 19 < 78 && piece.first % 10 != 0 &&
+               !movePutsKingInCheck(piece.first, piece.first + 19, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // Knight moves 2 right, 1 up
             if(ownPieces->count(piece.first + 21) == 0 && 
-               piece.first + 21 < 78 && piece.first % 10 != 7) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first + 21) == 1) {
-                    oppPiece = (*oppPieces)[piece.first + 21];
-                    oppPieces->erase(piece.first + 21);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first + 21] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first + 21);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first + 21] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE20\n";
-                    return false;
-                }            }
+               piece.first + 21 < 78 && piece.first % 10 != 7 &&
+               !movePutsKingInCheck(piece.first, piece.first + 21, col, 
+               ownPieces, oppPieces, true)) return false;
         }
+
+        // Piece is a rook
         else if(piece.second == 'r' || piece.second == 'R') {
-            ownPieces->erase(piece.first);
-            for(int i = piece.first + 1; i < pieceLetter * 10 + 8; ++i) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
+            // Rook moves up
+            for(int i = piece.first + 1; i < pieceLetter * 10 + 8 && 
+                    ownPieces->count(i) != 1; ++i) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
+            }
 
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    (*ownPieces)[piece.first] = piece.second;
-                    std::cout << "HERE21\n";
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+            // Rook moves down
+            for(int i = piece.first - 1; i >= pieceLetter * 10 &&
+                    ownPieces->count(i) != 1; --i) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            for(int i = piece.first - 1; i >= pieceLetter * 10; --i) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
+            
+            // Rook moves right
+            for(int i = piece.first + 10; i < 78 && 
+                    ownPieces->count(i) != 1; i += 10) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
+            }
 
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE22\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+            // Rook moves left
+            for(int i = piece.first - 10; i >= 0 && 
+                    ownPieces->count(i) != 1; i -= 10) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            for(int i = piece.first + 10; i < 78; i += 10) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
-
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE23\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
-            }
-            for(int i = piece.first - 10; i >= 0; i -= 10) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
-                    
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE24\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
-            }
-            (*ownPieces)[piece.first] = piece.second;
         }
+
+        // Piece is a bishop
         else if(piece.second == 'b' || piece.second == 'B') {
-            ownPieces->erase(piece.first);
-            for(int i = piece.first + 11; i < 78 && i % 10 != 8; i += 11) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
-                
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE25\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+            // Bishop moves right and up
+            for(int i = piece.first + 11; i < 78 && i % 10 != 8 && 
+                    ownPieces->count(i) != 1; i += 11) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            for(int i = piece.first - 11; i >= 0 && i % 10 != 9; i -= 11) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
 
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE26\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+            // Bishop moves left and down
+            for(int i = piece.first - 11; i >= 0 && i % 10 != 9 &&
+                    ownPieces->count(i) != 1; i -= 11) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            for(int i = piece.first + 9; i < 78 && i % 10 != 9; i += 9) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
-                
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE27\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+
+            // Bishop moves right and down
+            for(int i = piece.first + 9; i < 78 && i % 10 != 9 &&
+                    ownPieces->count(i) != 1; i += 9) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            for(int i = piece.first - 9; i >= 0 && i % 10 != 8; i -= 9) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
-                    
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE28\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+
+            // Bishop moves left and up
+            for(int i = piece.first - 9; i >= 0 && i % 10 != 8 &&
+                    ownPieces->count(i) != 1; i -= 9) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            (*ownPieces)[piece.first] = piece.second;
         }
+
+        // Piece is a queen
         else if(piece.second == 'Q' || piece.second == 'q') {
-            ownPieces->erase(piece.first);
-            for(int i = piece.first + 1; i < pieceLetter * 10 + 8; ++i) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
-                    
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE29\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+            // Queen moves up
+            for(int i = piece.first + 1; i < pieceLetter * 10 + 8 && 
+                    ownPieces->count(i) != 1; ++i) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            for(int i = piece.first - 1; i >= pieceLetter * 10; --i) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
 
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE30\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+            // Queen moves down
+            for(int i = piece.first - 1; i >= pieceLetter * 10 &&
+                    ownPieces->count(i) != 1; --i) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            for(int i = piece.first + 10; i < 78; i += 10) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
-                
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE31\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+            
+            // Queen moves right
+            for(int i = piece.first + 10; i < 78 && 
+                    ownPieces->count(i) != 1; i += 10) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            for(int i = piece.first - 10; i >= 0; i -= 10) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
- 
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE32\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
-            }
-            for(int i = piece.first + 11; i < 78 && i % 10 != 8; i += 11) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
 
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE33\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+            // Queen moves left
+            for(int i = piece.first - 10; i >= 0 && 
+                    ownPieces->count(i) != 1; i -= 10) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            for(int i = piece.first - 11; i >= 0 && i % 10 != 9; i -= 11) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
 
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE34\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+            // Queen moves right and up
+            for(int i = piece.first + 11; i < 78 && i % 10 != 8 && 
+                    ownPieces->count(i) != 1; i += 11) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            for(int i = piece.first + 9; i < 78 && i % 10 != 9; i += 9) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
 
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE35\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+            // Queen moves left and down
+            for(int i = piece.first - 11; i >= 0 && i % 10 != 9 &&
+                    ownPieces->count(i) != 1; i -= 11) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            for(int i = piece.first - 9; i >= 0 && i % 10 != 8; i -= 9) {
-                char oppPiece = '\0';
-                if(ownPieces->count(i) == 1) break;
-                    
-                if(oppPieces->count(i) == 1) {
-                    oppPiece = (*oppPieces)[i];
-                    oppPieces->erase(i);
-                }
-                (*ownPieces)[i] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(i);
-                if(oppPiece != '\0') (*oppPieces)[i] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE36\n";
-                    (*ownPieces)[piece.first] = piece.second;
-                    return false;
-                }
-                if(oppPiece != '\0') break;
+
+            // Queen moves right and down
+            for(int i = piece.first + 9; i < 78 && i % 10 != 9 &&
+                    ownPieces->count(i) != 1; i += 9) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
             }
-            (*ownPieces)[piece.first] = piece.second;
+
+            // Queen moves left and up
+            for(int i = piece.first - 9; i >= 0 && i % 10 != 8 &&
+                    ownPieces->count(i) != 1; i -= 9) {
+                if(!movePutsKingInCheck(piece.first, i, col, ownPieces, 
+                oppPieces, true)) return false;
+                if(oppPieces->count(i) == 1) break;
+            }
         }
+
+        // Piece is a king
         else if(piece.second == 'K' || piece.second == 'k') {
+            // King moves up 1
             if(ownPieces->count(piece.first + 1) == 0 && 
-               piece.first + 1 < 78 && piece.first % 10 != 7) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first + 1) == 1) {
-                    oppPiece = (*oppPieces)[piece.first + 1];
-                    oppPieces->erase(piece.first + 1);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first + 1] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first + 1);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first + 1] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE37\n";
-                    return false;
-                }
-            }
+               piece.first % 10 != 7 &&
+               !movePutsKingInCheck(piece.first, piece.first + 1, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // King moves down 1
             if(ownPieces->count(piece.first - 1) == 0 && 
-               piece.first - 1 >= 0 && piece.first % 10 != 0) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first - 1) == 1) {
-                    oppPiece = (*oppPieces)[piece.first - 1];
-                    oppPieces->erase(piece.first - 1);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first - 1] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first - 1);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first - 1] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE38\n";
-                    return false;
-                }
-            }
+               piece.first % 10 != 0 &&
+               !movePutsKingInCheck(piece.first, piece.first - 1, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // King moves right 1
             if(ownPieces->count(piece.first + 10) == 0 && 
-               piece.first + 10 < 78) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first + 10) == 1) {
-                    oppPiece = (*oppPieces)[piece.first + 10];
-                    oppPieces->erase(piece.first + 10);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first + 10] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first + 10);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first + 10] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE39\n";
-                    return false;
-                }
-            }
+               piece.first + 10 < 78 &&
+               !movePutsKingInCheck(piece.first, piece.first + 10, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // King moves left 1
             if(ownPieces->count(piece.first - 10) == 0 && 
-               piece.first - 10 >= 0) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first - 10) == 1) {
-                    oppPiece = (*oppPieces)[piece.first - 10];
-                    oppPieces->erase(piece.first - 10);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first - 10] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first - 10);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first - 10] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE40\n";
-                    return false;
-                }
-            }
+               piece.first - 10 >= 0 &&
+               !movePutsKingInCheck(piece.first, piece.first - 10, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // King moves right 1, up 1
             if(ownPieces->count(piece.first + 11) == 0 && 
-               piece.first + 11 < 78 && piece.first % 10 != 7) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first + 11) == 1) {
-                    oppPiece = (*oppPieces)[piece.first + 11];
-                    oppPieces->erase(piece.first + 11);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first + 11] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first + 11);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first + 11] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE41\n";
-                    return false;
-                }
-            }
+               piece.first + 11 < 78 && piece.first % 10 != 7 &&
+               !movePutsKingInCheck(piece.first, piece.first + 11, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // King moves right 1, down 1
             if(ownPieces->count(piece.first + 9) == 0 && 
-               piece.first + 9 < 78 && piece.first % 10 != 0) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first + 9) == 1) {
-                    oppPiece = (*oppPieces)[piece.first + 9];
-                    oppPieces->erase(piece.first + 9);
-                }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first + 9] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first + 9);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first + 9] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE42\n";
-                    return false;
-                }
-            }
+               piece.first + 9 < 78 && piece.first % 10 != 0 &&
+               !movePutsKingInCheck(piece.first, piece.first + 9, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // King moves left 1, down 1
             if(ownPieces->count(piece.first - 11) == 0 && 
-               piece.first - 11 >= 0 && piece.first % 10 != 0) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first - 11) == 1) {
-                    oppPiece = (*oppPieces)[piece.first - 11];
-                    oppPieces->erase(piece.first - 11);
+               piece.first - 11 >= 0 && piece.first % 10 != 0 &&
+               !movePutsKingInCheck(piece.first, piece.first - 11, col, 
+               ownPieces, oppPieces, true)) return false;
+
+            // King moves left 1, up 1
+            if(ownPieces->count(piece.first - 9) == 0 && 
+               piece.first - 9 >= 0 && piece.first % 10 != 7 &&
+               !movePutsKingInCheck(piece.first, piece.first - 9, col, 
+               ownPieces, oppPieces, true)) return false;
+            
+            // White king castles left
+            if(col == 0 && !inCheck(0) && !whiteKingMoved && !whiteLRookMoved) {
+                int i = 10, j = 40;
+                for( ; i < j; i += 10) {
+                    if((*ownPieces).count(i) == 1 || 
+                        (*oppPieces).count(i) == 1) break;
                 }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first - 11] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first - 11);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first - 11] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE43\n";
-                    return false;
+                if(i == j) {
+                    i = 30;
+                    for( ; i >= 20 && !movePutsKingInCheck(40, i, 0, ownPieces, oppPieces, true); i -= 10);
+                    if(i == 10) return false;
                 }
             }
-            if(ownPieces->count(piece.first - 9) == 0 && 
-               piece.first - 9 >= 0 && piece.first % 10 != 7) {
-                char oppPiece = '\0';
-                if(oppPieces->count(piece.first - 9) == 1) {
-                    oppPiece = (*oppPieces)[piece.first - 9];
-                    oppPieces->erase(piece.first - 9);
+
+            // White King castles right
+            if(col == 0 && !inCheck(0) && !whiteKingMoved && !whiteRRookMoved) {
+                int i = 50, j = 70;
+                for( ; i < j; i += 10) {
+                    if((*ownPieces).count(i) == 1 || 
+                        (*oppPieces).count(i) == 1) break;
                 }
-                ownPieces->erase(piece.first);
-                (*ownPieces)[piece.first - 9] = piece.second;
-                bool check = inCheck(col);
-                ownPieces->erase(piece.first - 9);
-                (*ownPieces)[piece.first] = piece.second;
-                if(oppPiece != '\0') (*oppPieces)[piece.first - 9] = oppPiece;
-                if(!check) {
-                    std::cout << "HERE44\n";
-                    return false;
+                if(i == j) {
+                    i = 50;
+                    for( ; i <= 60 && !movePutsKingInCheck(40, i, 0, ownPieces, oppPieces, true); i += 10);
+                    if(i == 70) return false;
+                }
+            }
+
+            // Black king castles left
+            if(col == 1 && !inCheck(1) && !blackKingMoved && !blackLRookMoved) {
+                int i = 17, j = 47;
+                for( ; i < j; i += 10) {
+                    if((*ownPieces).count(i) == 1 || 
+                        (*oppPieces).count(i) == 1) break;
+                }
+                if(i == j) {
+                    i = 37;
+                    for( ; i >= 27 && !movePutsKingInCheck(47, i, 1, ownPieces, oppPieces, true); i -= 10);
+                    if(i == 17) return false;
+                }
+            }
+
+            // Black King castles right
+            if(col == 1 && !inCheck(1) && !blackKingMoved && !blackRRookMoved) {
+                int i = 57, j = 77;
+                for( ; i < j; i += 10) {
+                    if((*ownPieces).count(i) == 1 || 
+                        (*oppPieces).count(i) == 1) break;
+                }
+                if(i == j) {
+                    i = 50;
+                    for( ; i <= 60 && !movePutsKingInCheck(47, i, 1, ownPieces, oppPieces, true); i += 10);
+                    if(i == 77) return false;
                 }
             }
         }
