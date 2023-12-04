@@ -1,59 +1,12 @@
 #include "Board.h"
 
-Board::Display::Display(map<int, char> *whitePieces, map<int, char> *blackPieces): whitePieces{whitePieces}, blackPieces{blackPieces} {}
 
-Board::TextDisplay::TextDisplay(map<int, char> *whitePieces, map<int, char> *blackPieces): Display{whitePieces, blackPieces} {}
-
-Board::GraphicsDisplay::GraphicsDisplay(map<int, char> *whitePieces, map<int, char> *blackPieces): Display{whitePieces, blackPieces}, window{400, 400} {}
-
-void Board::TextDisplay::display() {
-    for(int i = 7; i >= 0; --i) {
-        std::cout << i+1 << " ";
-        for(int j = 0; j < 8; ++j) {
-            // Checks if white has a piece at that location and prints it if
-            // true
-            if(whitePieces->count(j*10 + i) != 0) std::cout << 
-                                                  (*whitePieces)[j*10 + i];
-            // Checks if black has a piece at that location and prints it if
-            // true
-            else if(blackPieces->count(j*10 + i) != 0) std::cout << 
-                                                       (*blackPieces)[j*10 + i];
-            // Square is empty
-            else if((i + j) % 2 == 0) std::cout << "_";
-            else std::cout << " ";
-        }
-        std::cout << "\n";
-    }
-    std::cout << "\n  abcdefgh\n";
-}
-
-void Board::GraphicsDisplay::display() {
-    const int squareSize = 50; // Adjust square size as needed
-
-    for(int i = 7; i >= 0; --i) { // Start from the bottom of the board
-        for(int j = 0; j < 8; ++j) { // Loop through each column
-            int x = j * squareSize;
-            int y = i * squareSize; // No need to invert since we are starting from bottom
-            int color = (i + j) % 2 == 0 ? Xwindow::White : Xwindow::Black;
-            int textColor = (i + j) % 2 == 0 ? Xwindow::Black : Xwindow::White;
-
-            // Draw square
-            window.fillRectangle(x, y, squareSize, squareSize, color);
-
-            // Draw piece if present
-            int location = j * 10 + (7 - i); // Convert board coordinates to array index
-            if(whitePieces->count(location) != 0) {
-                window.drawString(x + squareSize/4, y + squareSize/4, string(1, (*whitePieces)[location]), textColor);
-            } else if(blackPieces->count(location) != 0) {
-                window.drawString(x + squareSize/4, y + squareSize/4, string(1, (*blackPieces)[location]), textColor);
-            }
-        }
-    }
-}
-
-Board::Board(int boardType): whitePieces{}, blackPieces{}, enPassantPawns{}, d{make_unique<Board::TextDisplay> (&whitePieces, &blackPieces)} {}
+Board::Board(int boardType): whitePieces{}, blackPieces{}, enPassantPawns{}, 
+tDisplay{make_unique<TextDisplay> (&whitePieces, &blackPieces)}, 
+gDisplay{make_unique<GraphicsDisplay> (&whitePieces, &blackPieces)} {}
 
 bool Board::init(bool normal, char piece, int location, bool remove) {
+    // Normal board setup
     if(normal) {
         for(int i = 0; i < 8; ++i) {
             whitePieces[i*10 + 1] = 'P';
@@ -81,26 +34,21 @@ bool Board::init(bool normal, char piece, int location, bool remove) {
             }
         }
     }
+    // Player wants to remove a piece
     else if(remove) {
         whitePieces.erase(location);
         blackPieces.erase(location);
     }
+    // Adding a piece to the board
     else {
-        if(blackPieces.count(location) != 1 && (piece == 'p' || piece == 'r' || 
-            piece == 'n' || piece == 'b' || piece == 'q' || piece == 'k')) {
-                blackPieces[location] = piece;
-        }
-        else if(whitePieces.count(location) != 1 && (piece == 'P' || 
-                piece == 'R' || piece == 'N' || piece == 'B' || piece == 'Q'
-                || piece == 'K')) {
-                    whitePieces[location] = piece;
-        }
-        else if(blackPieces.count(location) == 1
-                || whitePieces.count(location) == 1) {
-            char loc = 'a' + location / 10;
-            std::cout << "There already exists a piece at " << loc 
-                      << location % 10 + 1 << "!\n";
-            return false;
+        if(piece == 'p' || piece == 'r' || piece == 'n' || piece == 'b' || 
+           piece == 'q' || piece == 'k') {
+            if(whitePieces.at(location) == 1) whitePieces.erase(location);
+            blackPieces[location] = piece;
+        } else if(piece == 'P' || piece == 'R' || piece == 'N' || 
+                  piece == 'B' || piece == 'Q' || piece == 'K') {
+            if(blackPieces.at(location) == 1) blackPieces.erase(location);
+            whitePieces[location] = piece;
         }
         else {
             std::cout << "Invalid Piece!\n";
@@ -111,66 +59,84 @@ bool Board::init(bool normal, char piece, int location, bool remove) {
 }
 
 bool Board::validInit() {
-    vector<int> invalidPawns,  whiteKings, blackKings;
+    vector<int> invalidPawns, whiteKings, blackKings;
 
     for(auto &piece : blackPieces) {
-        if(piece.second == 'p' && piece.first % 10 == 0)
-            invalidPawns.emplace_back(piece.first);
+        if(piece.second == 'p' && (piece.first % 10 == 0 || 
+                                   piece.first % 10 == 7))
+            invalidPawns.emplace_back(piece.first); // Pawn on invalid row
         else if (piece.second == 'k') blackKings.emplace_back(piece.first);
+        // Tracking location of black king(s) on the board
     }
     for(auto &piece : whitePieces) {
-        if(piece.second == 'P' && piece.first % 10 == 7) 
-            invalidPawns.emplace_back(piece.first);
+        if(piece.second == 'P' && (piece.first % 10 == 7 ||
+                                   piece.first % 10 == 0)) 
+            invalidPawns.emplace_back(piece.first); // Pawn on invalid row
         else if (piece.second == 'K') whiteKings.emplace_back(piece.first);
+        // Tracking location of white king(s) on the board
     }
+    // Valid board setup
     if(invalidPawns.size() == 0 && whiteKings.size() == 1 &&
-       blackKings.size() == 1) return true;
+       blackKings.size() == 1 && !inCheck(0) && !inCheck(1)) return true;
 
+
+    // Invalid pawns and outputting which ones
     if(invalidPawns.size() == 1) std::cout << "ERROR: Pawn ";
     else if(invalidPawns.size() > 1) std::cout << "ERROR: Pawns ";
     
     if(invalidPawns.size() > 0) {
         char loc = 'a' + invalidPawns.at(0) / 10;
-        std::cout << loc << invalidPawns.at(0) % 10;
+        std::cout << loc << invalidPawns.at(0) % 10 + 1;
         for(int i = 1; i < invalidPawns.size(); ++i) {
             loc = 'a' + invalidPawns.at(i) / 10;
-            std::cout << ", " << loc << invalidPawns.at(i) % 10;
+            std::cout << ", " << loc << invalidPawns.at(i) % 10 + 1;
         }
     }
 
-    if(invalidPawns.size() == 1) std::cout << " is on the last square!"
+    if(invalidPawns.size() == 1) std::cout << " is on an invalid row!"
         << " Fix this problem to continue.\n";
-    else if(invalidPawns.size() >= 1) std::cout << " are on the last square!"
+    else if(invalidPawns.size() >= 1) std::cout << " are on an invalid row!"
         << " Fix this problem to continue.\n";
-    
+
+
+    // Invalid number of white kings
     if(whiteKings.size() == 0) std::cout << "ERROR: There are no white kings!"
         << " Fix this problem to continue.\n";
     else if(whiteKings.size() > 1) {
         std::cout << "ERROR: Multiple white kings on ";
 
         char loc = 'a' + whiteKings.at(0) / 10;
-        std::cout << loc << whiteKings.at(0) % 10;
+        std::cout << loc << whiteKings.at(0) % 10 + 1;
         for(int i = 1; i < whiteKings.size(); ++i) {
             loc = 'a' + whiteKings.at(i) / 10;
-            std::cout << ", " << loc << whiteKings.at(i) % 10;
+            std::cout << ", " << loc << whiteKings.at(i) % 10 + 1;
         }
         std::cout << ". Fix this problem to continue.\n";
     }
 
-
+    // Invalid number of black kings
     if(blackKings.size() == 0) std::cout << "ERROR: There are no black kings!"
         << " Fix this problem to continue.\n";
     else if(blackKings.size() > 1) {
         std::cout << "ERROR: Multiple black kings on ";
 
         char loc = 'a' + blackKings.at(0) / 10;
-        std::cout << loc << blackKings.at(0) % 10;
+        std::cout << loc << blackKings.at(0) % 10 + 1;
         for(int i = 1; i < blackKings.size(); ++i) {
             loc = 'a' + blackKings.at(i) / 10;
-            std::cout << ", " << loc << blackKings.at(i) % 10;
+            std::cout << ", " << loc << blackKings.at(i) % 10 + 1;
         }
         std::cout << ". Fix this problem to continue.\n";
     }
+
+
+    // White king is in check
+    if(inCheck(0)) std::cout << "ERROR: White King is in check!"
+        << " Fix this problem to continue.\n";
+    
+    // Black king is in check
+    if(inCheck(1)) std::cout << "ERROR: Black King is in check!"
+        << " Fix this problem to continue.\n";
 
     return false;
 }
@@ -185,7 +151,7 @@ bool Board::movePutsKingInCheck(int pieceLoc, int moveLoc, int col,
     }
     (*ownPieces)[moveLoc] = (*ownPieces)[pieceLoc];
     ownPieces->erase(pieceLoc);
-    // Checks if moving rook puts King in check
+    // Checks if moving the piece puts King in check
     if(inCheck(col)) {
         if(oppPiece != '\0') (*oppPieces)[moveLoc] = oppPiece;
         (*ownPieces)[pieceLoc] = (*ownPieces)[moveLoc];
@@ -1729,4 +1695,7 @@ bool Board::inCheck(int col, int move) {
     return false;
 }
 
-void Board::display() {d->display();}
+void Board::display() {
+    tDisplay->display(); 
+    gDisplay->display();
+}

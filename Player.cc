@@ -262,8 +262,7 @@ vector<int> Bot1::getMove(string start, string end)
             }
         }
 
-        else if (pieceType == 'r' || pieceType == 'R')
-        {
+        else if (pieceType == 'r' || pieceType == 'R') {
             std::cout << "REACHED HERE\n";
             for (int i = *pieceLoc + 1; i % 10 != 8 &&
                                         ownPieces->count(i) == 0; ++i) {
@@ -333,8 +332,8 @@ vector<int> Bot1::getMove(string start, string end)
                 std::cout << x.at(0) << " " << x.at(1) << "\n";
         }
 
-        else if (pieceType == 'b' || pieceType == 'B')
-        {
+        else if (pieceType == 'b' || pieceType == 'B') {
+
             for (int i = *pieceLoc + 11; i < 78 && i % 10 != 8 &&
                                          ownPieces->count(i) == 0; i += 11) {
 
@@ -393,8 +392,8 @@ vector<int> Bot1::getMove(string start, string end)
             }
         }
 
-        else if (pieceType == 'q' || pieceType == 'Q')
-        {
+        else if (pieceType == 'q' || pieceType == 'Q') {
+
             for (int i = *pieceLoc + 1; i % 10 != 8 &&
                                         ownPieces->count(i) == 0; ++i) {
 
@@ -560,8 +559,8 @@ vector<int> Bot1::getMove(string start, string end)
                 movesList.emplace_back(vector<int> {*pieceLoc, *pieceLoc + 8});
         }
 
-        else if (pieceType == 'k' || pieceType == 'K')
-        {
+        else if (pieceType == 'k' || pieceType == 'K') {
+    
             if (*pieceLoc % 10 != 7 && ownPieces->count(*pieceLoc + 1) == 0 &&
                 !board->movePutsKingInCheck(*pieceLoc, *pieceLoc + 1,
                                             col, ownPieces, oppPieces, true))
@@ -605,6 +604,39 @@ vector<int> Bot1::getMove(string start, string end)
                 !board->movePutsKingInCheck(*pieceLoc, *pieceLoc - 9,
                                             col, ownPieces, oppPieces, true))
                 movesList.emplace_back(vector<int> {*pieceLoc, *pieceLoc - 9});
+            
+            if(col == 0 && !board->whiteKingMoved && !board->whiteLRookMoved) {
+                int i = *pieceLoc - 10;
+                for( ; i >= 10 && ownPieces->count(i) == 0 &&
+                       oppPieces->count(i) == 0 && (i == 10 || 
+                       !board->movePutsKingInCheck(40, i, 0, 
+                       ownPieces, oppPieces, true)); i -= 10);
+                if(i == 0) movesList.emplace_back(vector<int> {*pieceLoc, 20});
+            }
+
+            if(col == 0 && !board->whiteKingMoved && !board->whiteRRookMoved) {
+                int i = *pieceLoc + 10;
+                for( ; i <= 60 && ownPieces->count(i) == 0 &&
+                       oppPieces->count(i) == 0 && !board->movePutsKingInCheck(
+                       40, i, 0, ownPieces, oppPieces, true); i += 10);
+                if(i == 70) movesList.emplace_back(vector<int> {*pieceLoc, 60});
+            }
+
+            if(col == 1 && !board->blackKingMoved && !board->blackLRookMoved) {
+                int i = *pieceLoc - 10;
+                for( ; i >= 17 && ownPieces->count(i) == 0 &&
+                       oppPieces->count(i) == 0 && (i == 17 || !board->movePutsKingInCheck(47, i, 1, 
+                       ownPieces, oppPieces, true)); i -= 10);
+                if(i == 7) movesList.emplace_back(vector<int> {*pieceLoc, 27});
+            }
+
+            if(col == 1 && !board->blackKingMoved && !board->blackRRookMoved) {
+                int i = *pieceLoc + 10;
+                for( ; i <= 67 && ownPieces->count(i) == 0 &&
+                       oppPieces->count(i) == 0 && !board->movePutsKingInCheck(
+                       47, i, 1, ownPieces, oppPieces, true); i += 10);
+                if(i == 77) movesList.emplace_back(vector<int> {*pieceLoc, 67});
+            }
         }
 
         if (movesList.size() == 0) continue;
@@ -615,7 +647,7 @@ vector<int> Bot1::getMove(string start, string end)
 
 Bot2::Bot2(Board *b, int col) : Bot1{b, col} {}
 
-vector<int> Bot2::getMove2(string start, string end) {
+vector<int> Bot2::getMove(string start, string end) {
 
     map<int, char> *ownPieces = (col == 0 ? &board->whitePieces : 
                                             &board->blackPieces);
@@ -1399,7 +1431,7 @@ bool Bot3::avoidsCapture(int loc, int move) {
     return true;
 }
 
-vector<int> Bot3::getMove3(string start, string end) {
+vector<int> Bot3::getMove(string start, string end) {
     
     map<int, char> *ownPieces = (col == 0 ? &board->whitePieces : 
                                             &board->blackPieces);

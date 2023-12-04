@@ -37,20 +37,20 @@ class Bot1: public Bot {
 class Bot2: public Bot1 {
     public:
         Bot2(Board *b, int col);
-        vector<int> getMove2(string start, string end);
+        vector<int> getMove(string start, string end) override;
 };
 
 class Bot3: public Bot1 {
     bool avoidsCapture(int loc, int move);
     public:
         Bot3(Board *b, int col);
-        vector<int> getMove3(string start, string end);
+        vector<int> getMove(string start, string end);
 };
 
 // class Bot4: public Bot {
 //     public:
 //         Bot4();
-//         vector<int> getMove() override;
+//         vector<int> getMove(string start, string end) override;
 // };
 
 #endif
