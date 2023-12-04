@@ -1486,14 +1486,16 @@ bool Board::noMoves(int col) {
 }
 
 bool Board::inCheck(int col, int move) {
-    map<int, char> *ownPieces = col == 0? &whitePieces : &blackPieces;
-    map<int, char> *oppPieces = col == 0? &blackPieces : &whitePieces;
+    map<int, char> *ownPieces = col == 0 ? &whitePieces : &blackPieces;
+    map<int, char> *oppPieces = col == 0 ? &blackPieces : &whitePieces;
 
     int kingLetter, kingNum, kingLoc;
+    // Initializes with arbitrary piece being checked if being taken
     if(move != -1) {
         kingLetter = move / 10;
         kingNum = move % 10;
         kingLoc = move;
+    // Initializes with King as the piece being checked if being taken
     } else {
         for(auto &piece: *ownPieces) {
             if(piece.second == 'K' || piece.second == 'k') {
@@ -1508,99 +1510,109 @@ bool Board::inCheck(int col, int move) {
         int pieceLetter = piece.first / 10;
         int pieceNum = piece.first % 10;
         
+        // Checks if can be taken by black pawn
         if(piece.second == 'p' && 
            (piece.first == kingLoc + 11 || piece.first == kingLoc - 9))  
                 return true;
-
+        
+         // Checks if can be taken by white pawn
         else if(piece.second == 'P' && 
                 (piece.first == kingLoc + 9 || piece.first == kingLoc - 11))
                 return true;
 
+        // Checks if can be taken by rook
         else if(piece.second == 'r' || piece.second == 'R') {
+            // Opponent rook is on the same letter column
             if(kingLetter == pieceLetter) {
                 int i = kingNum > pieceNum ? piece.first + 1 : kingLoc + 1;
                 int j = kingNum > pieceNum ? kingLoc : piece.first;
-                for(i; i < j; ++i) {
+                for( ; i < j; ++i) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
                 if(i == j) return true;
             }
+            // Opponent rook is on the same number row
             else if(kingNum == pieceNum) {
                 int i = kingLetter > pieceLetter ? piece.first + 10 : 
-                kingLoc + 10;
+                                                   kingLoc + 10;
                 int j = kingLetter > pieceLetter ? kingLoc : piece.first;
-                for(i; i < j; i += 10) {
+                for( ; i < j; i += 10) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
                 if(i == j) return true;
             }
-            else continue;
         }
+        // Checks if can be taken by bishop
         else if(piece.second == 'b' || piece.second == 'B') {
+            // Opponent bishop is on the same right diagonal
             if(kingNum - pieceNum == kingLetter - pieceLetter) {
                 int i = kingNum < pieceNum ? kingLoc + 11 : piece.first + 11;
                 int j = kingNum < pieceNum ? piece.first : kingLoc;
-
-                for(i; i < j; i += 11) {
+                for( ; i < j; i += 11) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
                 if(i == j) return true;
             }
+            // Opponent bishop is on the same left diagonal
             else if(kingNum - pieceNum == pieceLetter - kingLetter) {
                 int i = kingNum < pieceNum ? piece.first + 9 : kingLoc + 9;
                 int j = kingNum < pieceNum ? kingLoc : piece.first;
-                for(i; i < j; i += 9) {
+                for( ; i < j; i += 9) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
                 if(i == j) return true;
             }
-            else continue;
         }
+        // Checks if can be taken by queen
         else if(piece.second == 'q' || piece.second == 'Q') {
+            // Opponent queen on the same letter column
             if(kingLetter == pieceLetter) {
                 int i = kingNum > pieceNum ? piece.first + 1 : kingLoc + 1;
                 int j = kingNum > pieceNum ? kingLoc : piece.first;
-                for(i; i < j; ++i) {
+                for( ; i < j; ++i) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
                 if(i == j) return true;
             }
+            // Opponent queen on the same number column
             else if(kingNum == pieceNum) {
                 int i = kingLetter > pieceLetter ? piece.first + 10 : 
-                kingLoc + 10;
+                                                   kingLoc + 10;
                 int j = kingLetter > pieceLetter ? kingLoc : piece.first;
-                for(i; i < j; i += 10) {
+                for( ; i < j; i += 10) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1)
                         break;
                 }
                 if(i == j) return true;
             }
+            // Opponent queen on the same right diagonal
             else if(kingNum - pieceNum == kingLetter - pieceLetter) {
                 int i = kingNum < pieceNum ? kingLoc + 11 : piece.first + 11;
                 int j = kingNum < pieceNum ? piece.first : kingLoc;
-
-                for(i; i < j; i += 11) {
+                for( ; i < j; i += 11) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
                 if(i == j) return true;
             }
+            // Opponent queen on the same left diagonal
             else if(kingNum - pieceNum == pieceLetter - kingLetter) {
                 int i = kingNum < pieceNum ? piece.first + 9 : kingLoc + 9;
                 int j = kingNum < pieceNum ? kingLoc : piece.first;
-                for(i; i < j; i += 9) {
+                for( ; i < j; i += 9) {
                     if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) 
                         break;
                 }
                 if(i == j) return true;
             }
-            else continue;
         }
+
+        // Checks if can be taken by knight
         else if((piece.second == 'n' || piece.second == 'N') &&
                 (kingLoc == piece.first - 21 || kingLoc == piece.first - 19 ||
                 kingLoc == piece.first - 8 || kingLoc == piece.first - 12 ||
@@ -1608,6 +1620,7 @@ bool Board::inCheck(int col, int move) {
                 kingLoc == piece.first + 19 || kingLoc == piece.first + 21)) 
                 return true;
 
+        // Checks if can be taken by king
         else if((piece.second == 'k' || piece.second == 'K') &&
                 (kingLoc == piece.first + 1 || kingLoc == piece.first - 1 ||
                 kingLoc == piece.first + 10 || kingLoc == piece.first - 10 ||
@@ -1615,6 +1628,7 @@ bool Board::inCheck(int col, int move) {
                 kingLoc == piece.first + 9 || kingLoc == piece.first - 9))
                 return true;
     }
+    // No piece could take it
     return false;
 }
 
