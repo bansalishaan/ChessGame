@@ -44,7 +44,7 @@ class Bot3: public Bot1 {
     bool avoidsCapture(int loc, int move);
     public:
         Bot3(Board *b, int col);
-        vector<int> getMove(string start, string end);
+        vector<int> getMove(string start, string end) override;
 };
 
 // class Bot4: public Bot {
