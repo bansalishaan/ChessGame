@@ -16,6 +16,7 @@ int main()
     int whiteScore = 0;
     int blackScore = 0;
     int gameCount = 0;
+    int whiteMoveCount = 0;
     string whiteScoreString = "";
     string blackScoreString = "";
     bool gameRunning = false;
@@ -120,6 +121,7 @@ int main()
                     break;
                 }
                 gameCount++;
+                whiteMoveCount = 0;
                 out << "Game " << gameCount << ":" << endl;
                 string whitePlayerType, blackPlayerType;
                 iss >> whitePlayerType >> blackPlayerType;
@@ -207,11 +209,19 @@ int main()
                         {
                             move = players.at(0)->getMove(start, end);
                             out << "White moves from " << start << " to " << end << "." << endl;
+                            whiteMoveCount++;
                         }
                         else
                         {
                             move = players.at(1)->getMove(start, end);
                             out << "Black moves from " << start << " to " << end << "." << endl;
+                        }
+                        if (whiteMoveCount > 2)
+                        {
+                            cout << "You have made more than 2 moves and have failed the puzzle." << endl;
+                            out << "PUZZLE FAILED." << endl;
+                            gameRunning = false;
+                            break;
                         }
                     }
                     else
@@ -220,10 +230,10 @@ int main()
                         {
                             move = players.at(0)->getMove("", "");
                             int second = (move[0] % 10) + 1;
-                            char first = (move[0] / 10) + 'a'; 
+                            char first = (move[0] / 10) + 'a';
                             string move_start = first + to_string(second);
                             int second1 = (move[1] % 10) + 1;
-                            char first1 = (move[1] / 10) + 'a'; 
+                            char first1 = (move[1] / 10) + 'a';
                             string move_end = first1 + to_string(second1);
                             out << "White moves from " << move_start << " to " << move_end << "." << endl;
                         }
@@ -231,10 +241,10 @@ int main()
                         {
                             move = players.at(1)->getMove("", "");
                             int second = (move[0] % 10) + 1;
-                            char first = (move[0] / 10) + 'a'; 
+                            char first = (move[0] / 10) + 'a';
                             string move_start = first + to_string(second);
                             int second1 = (move[1] % 10) + 1;
-                            char first1 = (move[1] / 10) + 'a'; 
+                            char first1 = (move[1] / 10) + 'a';
                             string move_end = first1 + to_string(second1);
                             out << "Black moves from " << move_start << " to " << move_end << "." << endl;
                         }
@@ -332,6 +342,65 @@ int main()
                 cout << "Black: " << blackScoreString << endl;
                 out << "Black: " << blackScoreString << endl;
                 return 0;
+            }
+            else if (command == "puzzle1")
+            {
+                if (gameRunning)
+                {
+                    gameRunning = false;
+                    setupFlag = false;
+                    break;
+                }
+                setupFlag = true;
+                cout << "This is a simple chess puzzle, which can have White Mate in 2 moves." << endl;
+                out << "Puzzle 1:" << endl;
+                game.init(false, 'b', 21);
+                game.init(false, 'r', 31);
+                game.init(false, 'R', 51);
+                game.init(false, 'B', 02);
+                game.init(false, 'P', 62);
+                game.init(false, 'K', 72);
+                game.init(false, 'r', 33);
+                game.init(false, 'N', 63);
+                game.init(false, 'P', 73);
+                game.init(false, 'k', 74);
+                game.init(false, 'p', 65);
+                players.emplace_back(make_unique<Human>());
+                players.emplace_back(make_unique<Bot3>(&game, 1));
+                game.display();
+                whiteMove = true;
+                gameRunning = true;
+                whiteMoveCount = 0;
+                cout << "You are white, make your move: " << endl;
+            }
+            else if (command == "puzzle2")
+            {
+                if (gameRunning)
+                {
+                    gameRunning = false;
+                    setupFlag = false;
+                    break;
+                }
+                setupFlag = true;
+                cout << "This is a simple chess puzzle, which can have White Mate in 2 moves." << endl;
+                out << "Puzzle 2:" << endl;
+                game.init(false, 'R', 40);
+                game.init(false, 'K', 60);
+                game.init(false, 'P', 51);
+                game.init(false, 'P', 61);
+                game.init(false, 'Q', 62);
+                game.init(false, 'P', 72);
+                game.init(false, 'P', 55);
+                game.init(false, 'k', 77);
+                game.init(false, 'q', 67);
+                game.init(false, 'p', 75);
+                players.emplace_back(make_unique<Human>());
+                players.emplace_back(make_unique<Bot3>(&game, 1));
+                game.display();
+                whiteMove = true;
+                gameRunning = true;
+                whiteMoveCount = 0;
+                cout << "You are white, make your move: " << endl;
             }
             else
             {
