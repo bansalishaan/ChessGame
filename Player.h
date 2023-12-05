@@ -41,16 +41,17 @@ class Bot2: public Bot1 {
 };
 
 class Bot3: public Bot1 {
-    bool avoidsCapture(int loc, int move);
+    protected:
+        bool avoidsCapture(int loc, int move);
     public:
         Bot3(Board *b, int col);
         vector<int> getMove(string start, string end) override;
 };
 
-// class Bot4: public Bot {
-//     public:
-//         Bot4();
-//         vector<int> getMove(string start, string end) override;
-// };
+class Bot4: public Bot3 {
+    public:
+        Bot4(Board *b, int col);
+        vector<int> getMove(string start, string end) override;
+};
 
 #endif

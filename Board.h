@@ -25,6 +25,7 @@ class Board {
     friend class Bot1;
     friend class Bot2;
     friend class Bot3;
+    friend class Bot4;
 
     bool movePutsKingInCheck(int pieceLoc, int moveLoc, int col,
         map<int, char> *ownPieces, map<int, char> *oppPieces, 
