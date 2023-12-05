@@ -34,21 +34,26 @@ class Bot1: public Bot {
         vector<int> getMove(string start, string end) override;
 };
 
-class Bot2: public Bot1 {
+class Bot2: public Bot {
+    unique_ptr<Bot1> bot1;
     public:
         Bot2(Board *b, int col);
         vector<int> getMove(string start, string end) override;
 };
 
-class Bot3: public Bot1 {
+class Bot3: public Bot {
     protected:
+        unique_ptr<Bot1> bot1;
         bool avoidsCapture(int loc, int move);
     public:
         Bot3(Board *b, int col);
         vector<int> getMove(string start, string end) override;
 };
 
-class Bot4: public Bot3 {
+class Bot4: public Bot {
+    protected:
+        unique_ptr<Bot1> bot1;
+        bool avoidsCapture(int loc, int move);
     public:
         Bot4(Board *b, int col);
         vector<int> getMove(string start, string end) override;
