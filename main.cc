@@ -144,7 +144,7 @@ int main()
                 }
                 else if (whitePlayerType == "computer4")
                 {
-                    // players.emplace_back(make_unique<Bot4>(&game, 0));
+                    players.emplace_back(make_unique<Bot4>(&game, 0));
                 }
                 if (blackPlayerType == "human")
                 {
@@ -164,7 +164,7 @@ int main()
                 }
                 else if (blackPlayerType == "computer4")
                 {
-                    // players.emplace_back(make_unique<Bot4>(&game, 1));
+                    players.emplace_back(make_unique<Bot4>(&game, 1));
                 }
                 gameRunning = true;
                 if (!setupFlag)
@@ -204,6 +204,41 @@ int main()
                         if (iss >> promotion)
                         {
                             // Handle pawn promotion
+                            if (whiteMove)
+                            {
+                                move = players.at(0)->getMove(start, end);
+                                int col = whiteMove ? 0 : 1;
+                                bool success = game.makeMove(move, col);
+                                if (success)
+                                {
+                                    whiteMove = !whiteMove;
+                                    int first_loc = end[0] - 'a';
+                                    int second_loc = end[1] - '1';
+                                    int end_location = first_loc * 10 + second_loc;
+                                    game.init(false, '\0', end_location, true);
+                                    game.init(false, promotion[0], end_location);
+                                }
+                                out << "White moves from " << start << " to " << end << " and promotes to " << promotion << "." << endl;
+                                whiteMoveCount++;
+                                continue;
+                            }
+                            else
+                            {
+                                move = players.at(1)->getMove(start, end);
+                                int col = whiteMove ? 0 : 1;
+                                bool success = game.makeMove(move, col);
+                                if (success)
+                                {
+                                    whiteMove = !whiteMove;
+                                    int first_loc = end[0] - 'a';
+                                    int second_loc = end[1] - '1';
+                                    int end_location = first_loc * 10 + second_loc;
+                                    game.init(false, '\0', end_location, true);
+                                    game.init(false, promotion[0], end_location);
+                                }
+                                out << "Black moves from " << start << " to " << end << " and promotes to " << promotion << "." << endl;
+                                continue;
+                            }
                         }
                         if (whiteMove)
                         {
