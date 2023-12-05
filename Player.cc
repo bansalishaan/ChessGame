@@ -683,7 +683,7 @@ vector<int> Bot1::getMove(string start, string end) {
     }
 }
 
-Bot2::Bot2(Board *b, int col) : Bot1{b, col} {}
+Bot2::Bot2(Board *b, int col) : Bot{b, col}, bot1{make_unique<Bot1>(b, col)} {}
 
 vector<int> Bot2::getMove(string start, string end) {
     // Initializes own and opponent pieces
@@ -1502,12 +1502,12 @@ vector<int> Bot2::getMove(string start, string end) {
     // Do a random move
     } else {
         std::cout << "BOT!\n";
-        return getMove(start, end);
+        return bot1->getMove(start, end);
     }
 }
 
 
-Bot3::Bot3(Board *b, int col) : Bot1{b, col} {}
+Bot3::Bot3(Board *b, int col) : Bot{b, col}, bot1{make_unique<Bot1>(b, col)} {}
 
 bool Bot3::avoidsCapture(int loc, int move) {
     map<int, char> *ownPieces = (col == 0 ? &board->whitePieces : 
@@ -2332,12 +2332,32 @@ vector<int> Bot3::getMove(string start, string end) {
         return movesList.at(0);
     } else {
         std::cout << "BOT!\n";
-        return getMove(start, end);
+        return bot1->getMove(start, end);
     }
 }
 
+bool Bot4::avoidsCapture(int loc, int move) {
+    map<int, char> *ownPieces = (col == 0 ? &board->whitePieces : 
+                                            &board->blackPieces);
+    map<int, char> *oppPieces = (col == 0 ? &board->blackPieces : 
+                                            &board->whitePieces);
+    char oppPiece = '\0';
+    if(oppPieces->count(move) == 1) {
+        oppPiece = (*oppPieces)[move];
+        oppPieces->erase(move);
+    }
+    (*ownPieces)[move] = (*ownPieces)[loc];
+    ownPieces->erase(loc);
+    bool captured = board->inCheck(col, move);
+    if(oppPiece != '\0') (*oppPieces)[move] = oppPiece;
+    (*ownPieces)[loc] = (*ownPieces)[move];
+    ownPieces->erase(move);
 
-Bot4::Bot4(Board *b, int col) : Bot3{b, col} {}
+    if(captured) return false;
+    return true;
+}
+
+Bot4::Bot4(Board *b, int col) : Bot{b, col}, bot1{make_unique<Bot1>(b, col)} {}
 
 vector<int> Bot4::getMove(string start, string end) {
     // Initializes own and opponent pieces
@@ -3706,5 +3726,5 @@ vector<int> Bot4::getMove(string start, string end) {
     }
 
     // Returns a random piece
-    return getMove(start, end);
+    return bot1->getMove(start, end);
 }
