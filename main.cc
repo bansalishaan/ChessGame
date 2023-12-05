@@ -208,11 +208,13 @@ int main()
                             {
                                 move = players.at(0)->getMove(start, end);
                                 move.emplace_back(promotion[0]);
+                                out << "White moves from " << move_start << " to " << move_end << << " and promotes to " << promotion << "." << endl;
                             }
                             else
                             {
                                 move = players.at(1)->getMove(start, end);
                                 move.emplace_back(promotion[0]);
+                                out << "Black moves from " << move_start << " to " << move_end << << " and promotes to " << promotion << "." << endl;
                             }
                         } 
                         else
