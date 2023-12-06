@@ -3513,26 +3513,26 @@ vector<int> Bot4::getMove(string start, string end) {
             if((*oppPieces)[i->at(1)] == 'Q' ||
             (*oppPieces)[i->at(1)] == 'q') return *i;
 
-            if((*oppPieces)[i->at(1)] == 'R' ||
-            (*oppPieces)[i->at(1)] == 'r' && 5 > value) {
+            if(((*oppPieces)[i->at(1)] == 'R' ||
+            (*oppPieces)[i->at(1)] == 'r') && 5 > value) {
                 value = 5;
                 bestMove = *i;
             }
 
-            if((*oppPieces)[i->at(1)] == 'N' ||
-            (*oppPieces)[i->at(1)] == 'n' && 3 > value) {
+            if(((*oppPieces)[i->at(1)] == 'N' ||
+            (*oppPieces)[i->at(1)] == 'n') && 3 > value) {
                 value = 3;
                 bestMove = *i;
             }
 
-            if((*oppPieces)[i->at(1)] == 'B' ||
-            (*oppPieces)[i->at(1)] == 'b' && 3 > value) {
+            if(((*oppPieces)[i->at(1)] == 'B' ||
+            (*oppPieces)[i->at(1)] == 'b') && 3 > value) {
                 value = 3;
                 bestMove = *i;
             }
 
-            if((*oppPieces)[i->at(1)] == 'p' ||
-            (*oppPieces)[i->at(1)] == 'p' && 1 > value) {
+            if(((*oppPieces)[i->at(1)] == 'p' ||
+            (*oppPieces)[i->at(1)] == 'p') && 1 > value) {
                 value = 1;
                 bestMove = *i;
             }
@@ -3555,26 +3555,26 @@ vector<int> Bot4::getMove(string start, string end) {
             if((*oppPieces)[i->at(1)] == 'Q' ||
             (*oppPieces)[i->at(1)] == 'q') return *i;
 
-            if((*oppPieces)[i->at(1)] == 'R' ||
-            (*oppPieces)[i->at(1)] == 'r' && 5 > value) {
+            if(((*oppPieces)[i->at(1)] == 'R' ||
+            (*oppPieces)[i->at(1)] == 'r') && 5 > value) {
                 value = 5;
                 bestMove = *i;
             }
 
-            if((*oppPieces)[i->at(1)] == 'N' ||
-            (*oppPieces)[i->at(1)] == 'n' && 3 > value) {
+            if(((*oppPieces)[i->at(1)] == 'N' ||
+            (*oppPieces)[i->at(1)] == 'n') && 3 > value) {
                 value = 3;
                 bestMove = *i;
             }
 
-            if((*oppPieces)[i->at(1)] == 'B' ||
-            (*oppPieces)[i->at(1)] == 'b' && 3 > value) {
+            if(((*oppPieces)[i->at(1)] == 'B' ||
+            (*oppPieces)[i->at(1)] == 'b') && 3 > value) {
                 value = 3;
                 bestMove = *i;
             }
 
-            if((*oppPieces)[i->at(1)] == 'p' ||
-            (*oppPieces)[i->at(1)] == 'p' && 1 > value) {
+            if(((*oppPieces)[i->at(1)] == 'p' ||
+            (*oppPieces)[i->at(1)] == 'p') && 1 > value) {
                 value = 1;
                 bestMove = *i;
             }
@@ -3599,8 +3599,8 @@ vector<int> Bot4::getMove(string start, string end) {
             else if((*ownPieces)[i->at(0)] == 'P' ||
             (*ownPieces)[i->at(0)] == 'p') ownPieceValue = 1;
 
-            if((*oppPieces)[i->at(1)] == 'Q' ||
-            (*oppPieces)[i->at(1)] == 'q' &&
+            if(((*oppPieces)[i->at(1)] == 'Q' ||
+            (*oppPieces)[i->at(1)] == 'q') &&
             9 - ownPieceValue > value) {
                 bestMove = *i;
                 value = 9 - ownPieceValue;
@@ -3613,22 +3613,22 @@ vector<int> Bot4::getMove(string start, string end) {
                 bestMove = *i;
             }
 
-            if((*oppPieces)[i->at(1)] == 'N' ||
-            (*oppPieces)[i->at(1)] == 'n' &&
+            if(((*oppPieces)[i->at(1)] == 'N' ||
+            (*oppPieces)[i->at(1)] == 'n') &&
             3 - ownPieceValue > value) {
                 value = 3 - ownPieceValue;
                 bestMove = *i;
             }
 
-            if((*oppPieces)[i->at(1)] == 'B' ||
-            (*oppPieces)[i->at(1)] == 'b' &&
+            if(((*oppPieces)[i->at(1)] == 'B' ||
+            (*oppPieces)[i->at(1)] == 'b') &&
             3 - ownPieceValue > value) {
                 value = 3 - ownPieceValue;
                 bestMove = *i;
             }
 
-            if((*oppPieces)[i->at(1)] == 'p' ||
-            (*oppPieces)[i->at(1)] == 'p' &&
+            if(((*oppPieces)[i->at(1)] == 'p' ||
+            (*oppPieces)[i->at(1)] == 'p') &&
             1 - ownPieceValue > value) {
                 value = 1 - ownPieceValue;
                 bestMove = *i;
@@ -3653,8 +3653,8 @@ vector<int> Bot4::getMove(string start, string end) {
             else if((*ownPieces)[i->at(0)] == 'P' ||
             (*ownPieces)[i->at(0)] == 'p') ownPieceValue = 1;
 
-            if((*oppPieces)[i->at(1)] == 'Q' ||
-            (*oppPieces)[i->at(1)] == 'q' &&
+            if(((*oppPieces)[i->at(1)] == 'Q' ||
+            (*oppPieces)[i->at(1)] == 'q') &&
             9 - ownPieceValue > value) {
                 bestMove = *i;
                 value = 9 - ownPieceValue;
@@ -3667,22 +3667,22 @@ vector<int> Bot4::getMove(string start, string end) {
                 bestMove = *i;
             }
 
-            if((*oppPieces)[i->at(1)] == 'N' ||
-            (*oppPieces)[i->at(1)] == 'n' &&
+            if(((*oppPieces)[i->at(1)] == 'N' ||
+            (*oppPieces)[i->at(1)] == 'n') &&
             3 - ownPieceValue > value) {
                 value = 3 - ownPieceValue;
                 bestMove = *i;
             }
 
-            if((*oppPieces)[i->at(1)] == 'B' ||
-            (*oppPieces)[i->at(1)] == 'b' &&
+            if(((*oppPieces)[i->at(1)] == 'B' ||
+            (*oppPieces)[i->at(1)] == 'b') &&
             3 - ownPieceValue > value) {
                 value = 3 - ownPieceValue;
                 bestMove = *i;
             }
 
-            if((*oppPieces)[i->at(1)] == 'p' ||
-            (*oppPieces)[i->at(1)] == 'p' &&
+            if(((*oppPieces)[i->at(1)] == 'p' ||
+            (*oppPieces)[i->at(1)] == 'p') &&
             1 - ownPieceValue > value) {
                 value = 1 - ownPieceValue;
                 bestMove = *i;
@@ -3700,16 +3700,16 @@ vector<int> Bot4::getMove(string start, string end) {
         int value = 10;
         vector<int> bestMove;
         for(auto i = capture.begin(); i != capture.end(); ++i) {
-            if((*ownPieces)[i->at(0)] == 'Q' ||
-            (*ownPieces)[i->at(0)] == 'q' && 9 < value) value = 9;
-            else if((*ownPieces)[i->at(0)] == 'R' ||
-            (*ownPieces)[i->at(0)] == 'r' && 5 < value) value = 5;
-            else if((*ownPieces)[i->at(0)] == 'N' ||
-            (*ownPieces)[i->at(0)] == 'n' && 3 < value) value = 3;
-            else if((*ownPieces)[i->at(0)] == 'B' ||
-            (*ownPieces)[i->at(0)] == 'b' && 3 < value) value = 3;
-            else if((*ownPieces)[i->at(0)] == 'P' ||
-            (*ownPieces)[i->at(0)] == 'p' && 3 < value) value = 1;
+            if(((*ownPieces)[i->at(0)] == 'Q' ||
+            (*ownPieces)[i->at(0)] == 'q') && 9 < value) value = 9;
+            else if(((*ownPieces)[i->at(0)] == 'R' ||
+            (*ownPieces)[i->at(0)] == 'r') && 5 < value) value = 5;
+            else if(((*ownPieces)[i->at(0)] == 'N' ||
+            (*ownPieces)[i->at(0)] == 'n') && 3 < value) value = 3;
+            else if(((*ownPieces)[i->at(0)] == 'B' ||
+            (*ownPieces)[i->at(0)] == 'b') && 3 < value) value = 3;
+            else if(((*ownPieces)[i->at(0)] == 'P' ||
+            (*ownPieces)[i->at(0)] == 'p') && 3 < value) value = 1;
         } 
         return bestMove;
     }
