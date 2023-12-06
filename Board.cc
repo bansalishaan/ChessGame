@@ -236,7 +236,11 @@ bool Board::makeMove(vector<int> move, int col) {
                 && ownPieces->count(move.at(1)) == 0
                 && oppPieces->count(move.at(1)) == 0) {
             
-            if(moveNum == 7 && move.size() != 3) return false;
+            if(moveNum == 7 && move.size() != 3 && 
+            !(((*ownPieces)[move.at(0)]) == 'R' || 
+            ((*ownPieces)[move.at(0)]) == 'Q' || 
+            ((*ownPieces)[move.at(0)]) == 'B' || 
+            ((*ownPieces)[move.at(0)]) == 'N')) return false;
             if(moveNum == 7) (*ownPieces)[move.at(0)] = move.at(2);
             if(movePutsKingInCheck(move.at(0), move.at(1), 0, ownPieces, 
             oppPieces)) {
@@ -250,7 +254,11 @@ bool Board::makeMove(vector<int> move, int col) {
                  currLetter == moveLetter - 1) && currNum == moveNum - 1
                 && oppPieces->count(move.at(1)) == 1) {
             
-            if(moveNum == 7 && move.size() != 3) return false;
+            if(moveNum == 7 && move.size() != 3 && 
+            !(((*ownPieces)[move.at(0)]) == 'R' || 
+            ((*ownPieces)[move.at(0)]) == 'Q' || 
+            ((*ownPieces)[move.at(0)]) == 'B' || 
+            ((*ownPieces)[move.at(0)]) == 'N')) return false;
             if(moveNum == 7) (*ownPieces)[move.at(0)] = move.at(2);
             if(movePutsKingInCheck(move.at(0), move.at(1), 0, ownPieces, 
             oppPieces)) {
@@ -306,7 +314,11 @@ bool Board::makeMove(vector<int> move, int col) {
                 && ownPieces->count(move.at(1)) == 0
                 && oppPieces->count(move.at(1)) == 0) {
             
-            if(moveNum == 0 && move.size() != 3) return false;
+            if(moveNum == 0 && move.size() != 3 && 
+            !(((*ownPieces)[move.at(0)]) == 'r' || 
+            ((*ownPieces)[move.at(0)]) == 'q' || 
+            ((*ownPieces)[move.at(0)]) == 'b' || 
+            ((*ownPieces)[move.at(0)]) == 'n')) return false;
             if(moveNum == 0) (*ownPieces)[move.at(0)] = move.at(2);
             if(movePutsKingInCheck(move.at(0), move.at(1), 1, ownPieces, 
             oppPieces)) {
@@ -320,7 +332,11 @@ bool Board::makeMove(vector<int> move, int col) {
                  currLetter == moveLetter - 1) && currNum == moveNum + 1
                 && oppPieces->count(move.at(1)) == 1) {
             
-            if(moveNum == 0 && move.size() != 3) return false;
+            if(moveNum == 0 && move.size() != 3 && 
+            !(((*ownPieces)[move.at(0)]) == 'R' || 
+            ((*ownPieces)[move.at(0)]) == 'Q' || 
+            ((*ownPieces)[move.at(0)]) == 'B' || 
+            ((*ownPieces)[move.at(0)]) == 'N')) return false;
             if(moveNum == 0) (*ownPieces)[move.at(0)] = move.at(2);
             if(movePutsKingInCheck(move.at(0), move.at(1), 1, ownPieces, 
             oppPieces)) {
