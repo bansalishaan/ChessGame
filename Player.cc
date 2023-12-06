@@ -341,9 +341,6 @@ vector<int> Bot1::getMove(string start, string end) {
                 movesList.emplace_back(vector<int> {*pieceLoc, i});
                 if (oppPieces->count(i) == 1) break;
             }
-
-            for(auto x : movesList)
-                std::cout << x.at(0) << " " << x.at(1) << "\n";
         }
 
         else if (pieceType == 'b' || pieceType == 'B') {
@@ -676,7 +673,6 @@ vector<int> Bot1::getMove(string start, string end) {
 
         // If there are no moves possible, check next piece
         if (movesList.size() == 0) continue;
-        std::cout << movesList.size();
         // Shuffles available moves
         shuffler(&movesList);
         return movesList.at(0);
@@ -700,7 +696,6 @@ vector<int> Bot2::getMove(string start, string end) {
     vector<vector<int>> movesList;
     // Goes through shuffled list of own pieces one by one
     for (auto pieceLoc = mapLoc.begin(); pieceLoc != mapLoc.end(); ++pieceLoc) {
-        std::cout << *pieceLoc << " DONE\n";
         char pieceType = (*ownPieces)[*pieceLoc];
 
         // Piece is a white pawn
@@ -1493,15 +1488,12 @@ vector<int> Bot2::getMove(string start, string end) {
             }
         }
     }
-    std::cout << "FORLOOPENDS\n";
     // There is a preferred move available
     if (movesList.size() != 0) {
         shuffler(&movesList);
-        std::cout << movesList.at(0).at(0) << " " << movesList.at(0).at(1) << "\n";
         return movesList.at(0);
     // Do a random move
     } else {
-        std::cout << "BOT!\n";
         return bot1->getMove(start, end);
     }
 }
@@ -2325,13 +2317,10 @@ vector<int> Bot3::getMove(string start, string end) {
             }
         }
     }
-    std::cout << "FORLOOPENDS\n";
     if (movesList.size() != 0) {
         shuffler(&movesList);
-        std::cout << movesList.at(0).at(0) << " " << movesList.at(0).at(1) << "\n";
         return movesList.at(0);
     } else {
-        std::cout << "BOT!\n";
         return bot1->getMove(start, end);
     }
 }
