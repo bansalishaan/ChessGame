@@ -356,14 +356,14 @@ bool Board::makeMove(vector<int> move, int col) {
             int j = currLetter > moveLetter ? move.at(0) : move.at(1);
             for( ; i < j; i += 10) {
                 if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
-                    std::cout << "rh1INVALID MOVE: There's a piece in between. ";
+                    std::cout << "INVALID MOVE: There's a piece in between. ";
                     std::cout << "Try a different move.\n";
                     return false;
                 }
             }
             if(ownPieces->count(move.at(1)) == 1) {
                 std::cout << move.at(0) << " " << move.at(1) << "\n";
-                std::cout << "rh2INVALID MOVE: There's a piece in between. ";
+                std::cout << "INVALID MOVE: There's a piece in between. ";
                 std::cout << "Try a different move.\n";
                 return false;
             }
@@ -387,7 +387,7 @@ bool Board::makeMove(vector<int> move, int col) {
                 }
             }
             if(ownPieces->count(move.at(1)) == 1) {
-                std::cout << "rvINVALID MOVE: There's a piece in between. ";
+                std::cout << "INVALID MOVE: There's a piece in between. ";
                 std::cout << "Try a different move.\n";
                 return false;
             }
@@ -472,13 +472,13 @@ bool Board::makeMove(vector<int> move, int col) {
             int j = currLetter > moveLetter ? move.at(0) : move.at(1);
             for( ; i < j; i += 10) {
                 if(ownPieces->count(i) == 1 || oppPieces->count(i) == 1) {
-                    std::cout << "qh1INVALID MOVE: There's a piece in between. ";
+                    std::cout << "INVALID MOVE: There's a piece in between. ";
                     std::cout << "Try a different move.\n";
                     return false;
                 }
             }
             if(ownPieces->count(move.at(1)) == 1) {
-                std::cout << "qh2INVALID MOVE: There's a piece in between. ";
+                std::cout << "INVALID MOVE: There's a piece in between. ";
                 std::cout << "Try a different move.\n";
                 return false;
             }
@@ -498,7 +498,7 @@ bool Board::makeMove(vector<int> move, int col) {
                 }
             }
             if(ownPieces->count(move.at(1)) == 1) {
-                std::cout << "qvINVALID MOVE: There's a piece in between. ";
+                std::cout << "INVALID MOVE: There's a piece in between. ";
                 std::cout << "Try a different move.\n";
                 return false;
             }
